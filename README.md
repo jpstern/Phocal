@@ -1,11 +1,11 @@
 Phocal
 ======
 
+Open terminal and follow the following:
+
 install cocoapods (cocoapods.org) on your computers by running
 
 sudo gem install cocoapods
-
-in your terminal
 
 Then when you clone the repo initially, run 
 
