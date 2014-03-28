@@ -13,5 +13,16 @@ pod install
 
 to get the libraries were using
 
+If the project is open, close it and run
+
+open Phocal.xcworkspace
+
+in your terminal
+
+***IMPORTANT***
+USE Phocal.xcworkspace NOT Phocal.xcodeproj for all work
+
+
+
 
 Location aware photos app
