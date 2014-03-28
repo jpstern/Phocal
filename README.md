@@ -1,21 +1,21 @@
 Phocal
 ======
 
+Open terminal and follow the following:
+
 install cocoapods (cocoapods.org) on your computers by running
 
-sudo gem install cocoapods
-
-in your terminal
+***sudo gem install cocoapods***
 
 Then when you clone the repo initially, run 
 
-pod install
+***pod install***
 
 to get the libraries were using
 
 If the project is open, close it and run
 
-open Phocal.xcworkspace
+***open Phocal.xcworkspace***
 
 in your terminal
 
