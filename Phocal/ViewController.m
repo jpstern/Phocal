@@ -50,7 +50,6 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    
     //do something with the image
 }
 
