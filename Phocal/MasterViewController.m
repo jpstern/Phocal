@@ -31,6 +31,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    
     _masterScroll.contentSize = CGSizeMake(640, self.view.frame.size.height);
     _masterScroll.pagingEnabled = YES;
     
