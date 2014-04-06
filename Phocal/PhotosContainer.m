@@ -154,14 +154,7 @@
     } completion:^(BOOL finished) {
         
     }];
-//    [UIView animateWithDuration:0.5 animations:^{
-//       
-//        CGRect tmp = mainView.frame;
-//        
-//        mainView.frame = smallView.frame;
-//        smallView.frame = tmp;
-//        
-//    }];
+
 }
 
 /*
