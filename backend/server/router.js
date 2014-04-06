@@ -1,15 +1,15 @@
 var mongo 	 = require("./database.js"),
-	routes 	= require("./routes.js");
+	Photos 	= require("./photos.js");
 
 module.exports = function(app) {
 
 	mongo.connect(function(msg) {
 		if(msg == null) {
-			console.log("Mongo Connected!");
 
-			// define API routes here
-			app.get('/', routes.index);
-			app.get('/db', routes.db);
+			var photos = new Photos();
+			// define API photo here
+			app.get('/photos', photos.get);
+			app.post('/photos', photos.post);
 
 		} else {
 			console.log(msg);

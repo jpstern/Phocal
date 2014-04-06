@@ -1,10 +1,25 @@
 var mongo = require("./database.js");
 
-// main page
-exports.index = function(req, res){
-    res.send('hello world');
-};
+/*
+    /photos GET, POST endpoints
+*/
 
+module.exports = function() {
+
+    this.get = function(req, res){
+        res.send("hello world");
+    };
+
+    this.post = function(req, res) {
+        res.send("done");
+    }
+
+}
+
+
+
+
+/*
 // db test
 exports.db = function(req, res){
     mongo.db.collection("test", function(err, collection){
@@ -14,3 +29,4 @@ exports.db = function(req, res){
         });
     });
 };
+*/
