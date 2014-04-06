@@ -6,15 +6,29 @@ var mongo = require("./database.js");
 
 module.exports = function() {
 
+    var photos = mongo.db.collection("photos");
+
+    // GET /photos
     this.get = function(req, res){
-        res.send("hello world");
+        photos.find({}, {_id:0}).toArray(db_response(req, res));
     };
 
+    // POST /phots
     this.post = function(req, res) {
-        res.send("done");
+        photos.insert(req.body, db_response(req, res));
     }
 
+    function db_response(req, res) {
+        return function(err, docs) {
+            if(err) {
+                res.send(404, err);
+            } else {
+                res.send(docs);
+            }
+        }
+    }
 }
+
 
 
 
