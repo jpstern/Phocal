@@ -10,6 +10,7 @@
 
 #import "PhotosTableViewController.h"
 #import "CameraViewController.h"
+#import "DummyViewController.h"
 
 @interface MasterViewController ()
 
@@ -36,7 +37,8 @@
     _masterScroll.pagingEnabled = YES;
     
     UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
-    PhotosTableViewController *viewController = [[PhotosTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    DummyViewController *viewController = [[DummyViewController alloc] init];
+//                                           WithStyle:UITableViewStylePlain];
     [viewControllerView addSubview:viewController.view];
     [_masterScroll addSubview:viewControllerView];
     
