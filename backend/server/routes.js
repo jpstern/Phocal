@@ -1,22 +1,8 @@
-var mongo = require("./database.js"),
-    email = require("./email.js");
+var mongo = require("./database.js");
 
 // main page
 exports.index = function(req, res){
-    res.render('index');
-};
-
-// email test
-exports.email = function(req, res){
-    email.send({
-        name: "Otto",
-        email: "ottosipe@gmail.com"
-    }
-    // templates defined in /server/email/
-    ,'template.jade', function(msg) {
-        console.log(msg);
-        res.send(msg);
-    });
+    res.send('hello world');
 };
 
 // db test
@@ -26,10 +12,5 @@ exports.db = function(req, res){
             if(err) throw err
             res.send(docs);
         });
-    })
-};
-
-// admin page
-exports.admin = function(req, res){
-    res.send("<h3> You are an admin! </h3>");
+    });
 };

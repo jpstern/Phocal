@@ -9,9 +9,7 @@ module.exports = function(app) {
 
 			// define API routes here
 			app.get('/', routes.index);
-			app.get('/email', routes.email);
 			app.get('/db', routes.db);
-			app.get('/admin', routes.admin);
 
 		} else {
 			console.log(msg);
