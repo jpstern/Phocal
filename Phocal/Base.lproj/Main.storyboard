@@ -31,33 +31,33 @@
             </objects>
             <point key="canvasLocation" x="-679" y="-196"/>
         </scene>
-        <!--Photos Table View Controller-->
-        <scene sceneID="Lyh-TX-59f">
+        <!--Table View Controller-->
+        <scene sceneID="5Tp-Gf-lL5">
             <objects>
-                <tableViewController id="RnI-mS-zFP" customClass="PhotosTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="AiY-ot-4yf">
+                <tableViewController id="KdO-Qu-e5y" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="9cf-ES-IWG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="aYu-Kv-C9K">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Gg1-K6-hs7">
                                 <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aYu-Kv-C9K" id="Kaa-Gp-2Pe">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Gg1-K6-hs7" id="DD6-fa-hgr">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="RnI-mS-zFP" id="OvF-Ba-j3v"/>
-                            <outlet property="delegate" destination="RnI-mS-zFP" id="gKh-5Z-upb"/>
+                            <outlet property="dataSource" destination="KdO-Qu-e5y" id="7L8-Pe-t4x"/>
+                            <outlet property="delegate" destination="KdO-Qu-e5y" id="iAe-bM-KtA"/>
                         </connections>
                     </tableView>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="b20-5c-d0u" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KeN-As-dD2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-232" y="-732"/>
+            <point key="canvasLocation" x="-155" y="-612"/>
         </scene>
         <!--Camera View Controller-->
         <scene sceneID="JwT-SQ-xfd">

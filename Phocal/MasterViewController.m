@@ -7,8 +7,7 @@
 //
 
 #import "MasterViewController.h"
-
-#import "PhotosTableViewController.h"
+#import "PhotosListViewController.h"
 #import "CameraViewController.h"
 #import "DummyViewController.h"
 
