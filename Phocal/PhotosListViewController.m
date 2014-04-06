@@ -64,6 +64,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    
+    
+    
     //Newly Selected Cell
     if(_idx!=indexPath.row)
     {
@@ -75,8 +78,7 @@
         _idx=-1;
     }
     
-    [tableView beginUpdates];
-    [tableView endUpdates];
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     
     
 }
@@ -86,11 +88,21 @@
     
    if(_idx!=-1&&indexPath.row==_idx)
    {
+       
        return 305.0;
+       
    }
     return 205.0;
 }
 
+-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(_idx!=-1&&indexPath.row==_idx)
+    {
+        [tableView scrollToRowAtIndexPath:indexPath
+                         atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
+}
 
 
 @end
