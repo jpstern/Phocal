@@ -30,6 +30,7 @@
 		80EA833218E727CD00981338 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA833118E727CD00981338 /* CameraViewController.m */; };
 		80EA837618EDEAD300981338 /* PhotosTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA837518EDEAD300981338 /* PhotosTableViewController.m */; };
 		8B7CDE8B18F27C97004CE666 /* likeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8A18F27C97004CE666 /* likeView.m */; };
+		8B7CDE8D18F27D0D004CE666 /* heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8C18F27D0D004CE666 /* heart.png */; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		80EA837518EDEAD300981338 /* PhotosTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosTableViewController.m; sourceTree = "<group>"; };
 		8B7CDE8918F27C97004CE666 /* likeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = likeView.h; sourceTree = "<group>"; };
 		8B7CDE8A18F27C97004CE666 /* likeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = likeView.m; sourceTree = "<group>"; };
+		8B7CDE8C18F27D0D004CE666 /* heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heart.png; sourceTree = "<group>"; };
 		A10B80E192C6433D8F741B0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F19AE05970974A588932E45D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -146,6 +148,7 @@
 		80EA82F518E5D22D00981338 /* Phocal */ = {
 			isa = PBXGroup;
 			children = (
+				8B7CDE8C18F27D0D004CE666 /* heart.png */,
 				8B7CDE8918F27C97004CE666 /* likeView.h */,
 				8B7CDE8A18F27C97004CE666 /* likeView.m */,
 				72A3BB4E18F1BE6400B06A0F /* PhotosListViewController.h */,
@@ -288,6 +291,7 @@
 			files = (
 				80EA830818E5D22D00981338 /* Images.xcassets in Resources */,
 				80EA82FA18E5D22D00981338 /* InfoPlist.strings in Resources */,
+				8B7CDE8D18F27D0D004CE666 /* heart.png in Resources */,
 				80EA830318E5D22D00981338 /* Main.storyboard in Resources */,
 				72A3BB5518F1C2C700B06A0F /* Portofino-wallpapers.jpg in Resources */,
 			);
