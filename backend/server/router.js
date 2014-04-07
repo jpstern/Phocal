@@ -7,7 +7,7 @@ module.exports = function(app) {
 		if(msg == null) {
 
 			app.get("/", function(req,res) {
-				res.send('<html><body><form action="/photos" method="post" enctype="multipart/form-data"><input type="text" name="photoName"><input type="file" name="photo"></form></body></html>')
+				res.send('<html><body><form action="/photos" method="post" enctype="multipart/form-data"><input type="text" name="photoName"><input type="file" name="photo" multiple=""></form></body></html>')
 			})
 
 			var photos = new Photos();
