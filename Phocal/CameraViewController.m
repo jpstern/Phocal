@@ -8,7 +8,14 @@
 
 #import "CameraViewController.h"
 
+#import <CoreImage/CoreImage.h>
+#import <ImageIO/ImageIO.h>
+#import <AssertMacros.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+
 @interface CameraViewController ()
+
+@property (nonatomic, strong) AVCaptureStillImageOutput *output;
 
 @end
 
@@ -33,13 +40,52 @@
     layer.frame = CGRectMake(0, 0, 320, self.view.frame.size.height);
     
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    //device.position ;
-    NSError *error = nil;
-    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
-    [session addInput:input];
-    [session startRunning];
+    if (device) {
+        NSError *error = nil;
+        AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
+        [session addInput:input];
+        
+        _output = [[AVCaptureStillImageOutput alloc] init];
+        [session addOutput:_output];
+        
+
+        [session startRunning];
+    }
     
     [self.view.layer addSublayer:layer];
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button setTitle:@"Take Photo" forState:UIControlStateNormal];
+    button.frame = CGRectMake(0, 40, 200, 40);
+    [button addTarget:self action:@selector(takePhoto) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+    
+}
+
+- (void)takePhoto {
+    
+    NSLog(@"FUCKER");
+    
+    AVCaptureConnection *connection = [_output connectionWithMediaType:AVMediaTypeVideo];
+    
+    [_output captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+        
+        // trivial simple JPEG case
+        NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
+                                                                    imageDataSampleBuffer,
+                                                                    kCMAttachmentMode_ShouldPropagate);
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
+            if (error) {
+                //                    [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
+            }
+        }];
+        
+        if (attachments)
+            CFRelease(attachments);
+        
+    }];
 }
 
 - (void)didReceiveMemoryWarning
