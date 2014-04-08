@@ -1,8 +1,8 @@
-var  mongo     = require("./database.js"),
-     Busboy    = require('busboy'),
-     fs        = require('fs'),
-     path      = require('path'),
-     uuid      = require('node-uuid');
+var  mongo         = require("./database.js"),
+     multiparty    = require('multiparty'),
+     path          = require('path'),
+     async         = require('async'),
+     fs            = require('fs');
 
      var s3 = require("knox").createClient({
          key: process.env.AWS_KEY,
@@ -38,71 +38,85 @@ module.exports = function() {
             //time: { $lt: ,  }
 		};
 
+        // TODO: REMOVE THIS SHIT LATER
+        if(!req.query.lng || !req.query.lat) {
+            query = {};
+        }
         photos.find(query, {_id:0}).limit(20).toArray(db_response(req, res));
     };
 
-    // POST /phots
+    // POST /photos
     this.post = function(req, res) {
 
-        var busboy = new Busboy({ headers: req.headers });
-        var metadata = {};
-
-        busboy.on('field', function(key, val, valTruncated, keyTruncated) {
-            console.log('Field [' + key + ']: value: ' + val);
-            metadata[key] = val;
+        var form = new multiparty.Form({
+            hash: "sha1"
         });
 
+        // form.parse(req);
+        // form.on("part", function(part){
+        //     console.log(part.name);
+        // });
 
-        // TODO: this assumes only one photo is updated, handle multiples?
-        busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+        form.parse(req, function(err, fields, files) {
+            if (err && !files.photo) {
+                res.json(502, {error: err || "No Upload"});
+                return;
+            }
+            async.map(files.photo, saveFile, db_response(req, res));
+        });
+    }
 
-            file.on('data', function(data) {
-                // when file data is retrieved, put to S3
+    // saves file to s3 and returns the hash
+    function saveFile(file, callback) {
 
-                var headers = {
-                    'Content-Length': data.length,
-                    'Content-Type': mimetype,
-                    'x-amz-acl': 'public-read' // ensure public
-                };
+        if (file.size == 0) {
+            callback("Invalid File");
+        }
+        
+        var metadata = {
+            id: file.hash,
+            size: file.size,
+            type: file.headers["content-type"],
+            loc: {
+                type: "Point",
+                coordinates: [
+                    // TODO: figure out how to do file location...
 
-                // generate unique id for photo
-                metadata.id = uuid.v4();
-                var put = s3.put(metadata.id, headers);
-                put.end(data);
+                    parseFloat(file.lng) || 0,
+                    parseFloat(file.lat) || 0
+                ]
+            },
+            time: file.time || new Date()
+        }
 
-                console.log(put.url);
-
-                put.on('error', function(err) {
-                    res.send(404, {"error": err});
-                });
-
-                // after
-                put.on('response', function(put_res){
-                    if (200 == put_res.statusCode) {
-
-                        photos.insert({
-                            loc: {
-                                type: "Point",
-                                coordinates: [ metadata.lng, metadata.lat ]
-                            },
-                            id: metadata.id,
-                            time: metadata.time || new Date()
-                        }, db_response(req, res));
-
-                    } else {
-                        res.send(404, {"error": "Can't Save to S3"});
-                    }
-                });
-            });
+        var put = s3.put(metadata.id, {
+            'Content-Length': metadata.size,
+            'Content-Type': metadata.type,
+            'x-amz-acl': 'public-read' // ensure public
         });
 
-        req.pipe(busboy);
+        console.log("Posted Image URL:", put.url);
+
+        // TODO: see if we can use putStream.. don't use tmp file save.
+        fs.createReadStream(file.path).pipe(put);
+
+        put.on('error', function(err) {
+            callback(err);
+        });
+
+        put.on('response', function(res){
+            if (200 == res.statusCode) {
+                photos.insert(metadata, callback);
+            } else {
+                callback({"error": "Can't Save to S3"});
+            }
+        });
     }
 
     function db_response(req, res) {
         return function(err, docs) {
             if(err) {
-                res.send(404, {"error":err});
+                res.send(500, {"error":err});
             } else {
                 res.send(docs);
             }

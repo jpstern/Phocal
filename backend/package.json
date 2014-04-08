@@ -9,8 +9,8 @@
     "express": "3.5.1",
     "colors": "*",
     "mongodb": "*",
-    "busboy": "*",
+    "multiparty": "*",
     "knox": "*",
-    "node-uuid":"*"
+    "async": "*"
   }
 }
