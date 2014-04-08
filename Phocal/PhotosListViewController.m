@@ -80,10 +80,9 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    [cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row], @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200"
-                                                                   ]];
+    [cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row], @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200" ]];
     
-    cell.container.imageScroll.tag = indexPath.row;
+    cell.tag = indexPath.row;
     [cell addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)]];
 
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);

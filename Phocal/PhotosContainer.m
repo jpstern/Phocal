@@ -100,7 +100,7 @@
         CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
         UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
 //        imageView.backgroundColor = color;
-        //[imageView setImageWithURL:[NSURL URLWithString:path]];
+        [imageView setImageWithURL:[NSURL URLWithString:path]];
         [_imageViews addObject:imageView];
         [_imageScroll addSubview:imageView];
         
