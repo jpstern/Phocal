@@ -8,6 +8,8 @@
 
 #import "CameraViewController.h"
 
+#import "DatabaseDelegate.h"
+
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
@@ -85,6 +87,8 @@
             }
             
             NSLog(@"Took picture");
+            
+            [[DatabaseDelegate sharedManager] postPhoto:jpegData];
         }];
         
         if (attachments)

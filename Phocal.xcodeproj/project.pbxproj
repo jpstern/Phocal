@@ -31,6 +31,7 @@
 		80EA837618EDEAD300981338 /* PhotosTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA837518EDEAD300981338 /* PhotosTableViewController.m */; };
 		8B7CDE8B18F27C97004CE666 /* likeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8A18F27C97004CE666 /* likeView.m */; };
 		8B7CDE8D18F27D0D004CE666 /* heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8C18F27D0D004CE666 /* heart.png */; };
+		B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,8 @@
 		8B7CDE8A18F27C97004CE666 /* likeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = likeView.m; sourceTree = "<group>"; };
 		8B7CDE8C18F27D0D004CE666 /* heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heart.png; sourceTree = "<group>"; };
 		A10B80E192C6433D8F741B0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B358F20E18F3A10A00B52461 /* DatabaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseDelegate.h; sourceTree = "<group>"; };
+		B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseDelegate.m; sourceTree = "<group>"; };
 		F19AE05970974A588932E45D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -154,6 +157,8 @@
 				72A3BB4E18F1BE6400B06A0F /* PhotosListViewController.h */,
 				72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */,
 				72A3BB5018F1BE6400B06A0F /* ImageCell.h */,
+				B358F20E18F3A10A00B52461 /* DatabaseDelegate.h */,
+				B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */,
 				72A3BB5118F1BE6400B06A0F /* ImageCell.m */,
 				80EA82FE18E5D22D00981338 /* AppDelegate.h */,
 				80EA82FF18E5D22D00981338 /* AppDelegate.m */,
@@ -347,6 +352,7 @@
 			files = (
 				80EA837618EDEAD300981338 /* PhotosTableViewController.m in Sources */,
 				80EA830618E5D22D00981338 /* ViewController.m in Sources */,
+				B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */,
 				80EA830018E5D22D00981338 /* AppDelegate.m in Sources */,
 				80EA832A18E7220800981338 /* MasterViewController.m in Sources */,
 				80EA833218E727CD00981338 /* CameraViewController.m in Sources */,

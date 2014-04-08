@@ -6,17 +6,29 @@
 //  Copyright (c) 2014 Abbey Ciolek. All rights reserved.
 //
 
+#import "DatabaseDelegate.h"
 #import "PhotosListViewController.h"
 #import "ImageCell.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+
+NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 @interface PhotosListViewController ()
 
-
+@property (nonatomic, strong) NSMutableArray* photoURLs;
 
 @end
 
 @implementation PhotosListViewController
 
+- (id)initWithStyle:(UITableViewStyle)style {
+    if (self = [super initWithStyle:style]) {
+        _photoURLs = [[NSMutableArray alloc] init];
+        self.refreshControl = [[UIRefreshControl alloc] init];
+    }
+    
+    return self;
+}
 
 
 - (void)viewDidLoad
@@ -25,7 +37,25 @@
 	// Do any additional setup after loading the view, typically from a nib.
     _idx=-1;
    // [self.tableView registerClass:[ImageCell class] forCellReuseIdentifier:@"CellID"];
- 
+    [self refreshPhotos];
+}
+
+- (void)refreshPhotos {
+    [self.refreshControl beginRefreshing];
+    
+    [[DatabaseDelegate sharedManager] getPhotos:^(NSArray * photos) {
+        if (!photos) {
+            NSLog(@"no photos");
+            return;
+        }
+        
+        for (NSDictionary* photoDict in photos) {
+            [self.photoURLs addObject:photoDict[@"id"]];
+        }
+
+        [self.tableView reloadData];
+        [self.refreshControl endRefreshing];
+    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -36,7 +66,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 6;
+    return self.photoURLs.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -52,12 +82,12 @@
         cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     }
     
-    UIImage *image = [UIImage imageNamed:@"Portofino-wallpapers.jpg"];
-    
-    
     cell.imageView.frame= CGRectMake(3, 5, 314, 200);
     cell.frame = CGRectMake(3, 5, 314, 200);
-    [cell.imageView setImage:image];
+        
+    // Set placeholder image.
+    NSURL* url = [NSURL URLWithString:[kImageBaseUrl stringByAppendingString:self.photoURLs[indexPath.row]]];
+    [cell.imageView setImageWithURL:url placeholderImage:[UIImage imageNamed:@"Portofino-wallpapers.jpg"]];
     
     return (UITableViewCell *)cell;
 }
