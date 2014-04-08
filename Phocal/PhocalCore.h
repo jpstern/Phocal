@@ -13,6 +13,8 @@
 
 + (instancetype)sharedClient;
 
+- (void)postPhoto:(NSData *)imageData;
+- (void)getPhotos:(void (^)(NSArray *))completion;
 
 
 @end

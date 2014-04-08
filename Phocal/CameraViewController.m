@@ -8,6 +8,8 @@
 
 #import "CameraViewController.h"
 
+#import "DatabaseDelegate.h"
+
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
@@ -36,8 +38,10 @@
     // Do any additional setup after loading the view.
     
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
+    session.sessionPreset = AVCaptureSessionPresetPhoto;
     AVCaptureVideoPreviewLayer *layer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
-    layer.frame = CGRectMake(0, 0, 320, self.view.frame.size.height);
+    layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    layer.frame = self.view.bounds;
     
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if (device) {
@@ -56,16 +60,14 @@
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setTitle:@"Take Photo" forState:UIControlStateNormal];
-    button.frame = CGRectMake(0, 40, 200, 40);
+    button.frame = CGRectMake(0, 30, 320, 100);
     [button addTarget:self action:@selector(takePhoto) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
     
 }
 
 - (void)takePhoto {
-    
-    NSLog(@"FUCKER");
-    
+        
     AVCaptureConnection *connection = [_output connectionWithMediaType:AVMediaTypeVideo];
     
     [_output captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
@@ -79,7 +81,12 @@
         [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
             if (error) {
                 //                    [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
+              return;
             }
+            
+            NSLog(@"Took picture");
+            
+            [[PhocalCore sharedClient] postPhoto:jpegData];
         }];
         
         if (attachments)

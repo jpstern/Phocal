@@ -32,6 +32,7 @@
 
 - (void)addPhotosWithFrame:(CGRect)rect AndPaths:(NSArray *)paths {
     
+    [_container removeFromSuperview];
     _container = [[PhotosContainer alloc] initWithFrame:rect andImagePaths:paths];
     [self.contentView addSubview:_container];
 }

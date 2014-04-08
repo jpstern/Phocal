@@ -38,7 +38,7 @@
 //        _imageScroll.backgroundColor = [UIColor greenColor];
 //        _imageScroll.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 //        _imageScroll.userInteractionEnabled = NO;
-        _imageScroll.contentSize = CGSizeMake(640, frame.size.height);
+        _imageScroll.contentSize = CGSizeMake(900, frame.size.height);
         [self addSubview:_imageScroll];
         
 //        _masterImageView =
@@ -46,11 +46,12 @@
         mainImageView.userInteractionEnabled = YES;
         UIGestureRecognizer *tap = [[UIGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)];
         tap.delegate = self;
+        mainImageView.contentMode = UIViewContentModeScaleAspectFill;
         [mainImageView addGestureRecognizer:tap];
 //        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
 //        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
         mainImageView.sortIndex = 0;
-        mainImageView.backgroundColor = color;//[UIColor darkGrayColor];
+//        mainImageView.backgroundColor = color;//[UIColor darkGrayColor];
         [_imageScroll addSubview:mainImageView];
 
         _masterImageView = mainImageView;
@@ -69,12 +70,10 @@
     return self;
 }
 
-
-
 - (void)cellDidGrowToHeight:(CGFloat)height {
     
     _expanded = YES;
-    CGFloat currentX = 35;
+    CGFloat currentX = 30;
     
     self.frame = CGRectMake(0, 0, 320, height);
     _imageScroll.frame = CGRectMake(0, 0, 320, height);
@@ -82,7 +81,9 @@
     NSInteger index = 1;
     for (NSString *path in _imagePaths) {
         
-        IndexUIImageView *imageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(320, 200, 50, 50)];
+//        _masterImageView.frame.size.height + _masterImageView.frame.origin.y + (self.frame.size.height - (_masterImageView.frame.size.height + _masterImageView.frame.origin.y)) / 2
+        
+        IndexUIImageView *imageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(320, 200, 80, 80)];
         imageView.sortIndex = index;
         imageView.userInteractionEnabled = YES;
         [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
@@ -90,7 +91,7 @@
         CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
         CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
         UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
-        imageView.backgroundColor = color;
+//        imageView.backgroundColor = color;
         [imageView setImageWithURL:[NSURL URLWithString:path]];
         [_imageViews addObject:imageView];
         [_imageScroll addSubview:imageView];
@@ -100,13 +101,11 @@
             imageView.center = CGPointMake(currentX, imageView.center.y);
             
         } completion:^(BOOL finished) {
-            
-            NSLog(@"%@", _imageViews);
-            
+                        
         }];
         
         index ++;
-        currentX += 70;
+        currentX += 100;
     }
     
 }
@@ -148,11 +147,11 @@
             return [tag1 compare:tag2];
         }];
         
-        CGFloat currentX = 35;
+        CGFloat currentX = 30;
         for (UIImageView *view in _imageViews) {
         
-            view.frame = CGRectMake(currentX - 25, _originalHeight, 50, 50);
-            currentX += 70;
+            view.frame = CGRectMake(currentX - 25, _originalHeight, 80, 80);
+            currentX += 100;
         }
         
     } completion:^(BOOL finished) {
@@ -161,8 +160,14 @@
     
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    
+    return YES;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
+    if (gestureRecognizer.view == _masterImageView) return NO;
     return _expanded;
 }
 //

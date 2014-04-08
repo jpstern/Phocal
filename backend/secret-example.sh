@@ -4,5 +4,6 @@ export DB_URL=x.x.com
 export DB_PORT=1234
 export DB_NAME=x
 
-export EMAIL_USER=xxx
-export EMAIL_PASS=xxx
+export AWS_KEY=x
+export AWS_SECRETxx
+export AWS_S3_BUCKET=xxx

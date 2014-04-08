@@ -8,7 +8,9 @@
 
 #import "PhocalCore.h"
 
-#define API_BASE_PATH @"www.google.com"
+//NSString* kMongoBaseURL = @"http://phocal.aws.af.cm/";
+
+#define API_BASE_PATH @"http://phocal.aws.af.cm/"
 #define API_BASE_URL [NSURL URLWithString:API_BASE_PATH]
 
 @implementation PhocalCore
@@ -27,6 +29,26 @@
     });
     
     return client;
+}
+
+- (void)postPhoto:(NSData *)imageData {
+    [self POST:@"photos" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [formData appendPartWithFileData:imageData name:@"photo" fileName:@"file" mimeType:@"image/jpeg"];
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"Success uploading photo! %@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failure uploading photo! %@", error);
+    }];
+}
+
+- (void)getPhotos:(void (^)(NSArray *))completion {
+    [self GET:@"photos" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"response object %@", responseObject);
+        completion(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failure getting photos %@", error);
+        completion(nil);
+    }];
 }
 
 @end
