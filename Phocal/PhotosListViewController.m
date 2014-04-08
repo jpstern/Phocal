@@ -55,8 +55,8 @@
     UIImage *image = [UIImage imageNamed:@"Portofino-wallpapers.jpg"];
     
     
-    cell.imageView.frame= CGRectMake(3, 5, 320, 200);
-    cell.frame = CGRectMake(3, 5, 320, 200);
+    cell.imageView.frame= CGRectMake(3, 5, 314, 200);
+    cell.frame = CGRectMake(3, 5, 314, 200);
     [cell.imageView setImage:image];
     
     return (UITableViewCell *)cell;
