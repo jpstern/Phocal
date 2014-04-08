@@ -58,6 +58,10 @@ module.exports = function() {
         // });
 
         form.parse(req, function(err, fields, files) {
+            if (err && !files.photo) {
+                res.json(502, {error: err || "No Upload"});
+                return;
+            }
             async.map(files.photo, saveFile, db_response(req, res));
         });
     }
@@ -65,6 +69,10 @@ module.exports = function() {
     // saves file to s3 and returns the hash
     function saveFile(file, callback) {
 
+        if (file.size == 0) {
+            callback("Invalid File");
+        }
+        
         var metadata = {
             id: file.hash,
             size: file.size,
@@ -108,7 +116,7 @@ module.exports = function() {
     function db_response(req, res) {
         return function(err, docs) {
             if(err) {
-                res.send(404, {"error":err});
+                res.send(500, {"error":err});
             } else {
                 res.send(docs);
             }
