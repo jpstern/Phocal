@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface likeView : UIView
+@interface LikeGestureView : UIView
+
 @property (nonatomic,strong) NSString * status;
 @property (nonatomic,strong) UIImageView *imgview;
 @property (nonatomic,strong) UILongPressGestureRecognizer *gestreg;

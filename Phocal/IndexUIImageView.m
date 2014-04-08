@@ -8,6 +8,8 @@
 
 #import "IndexUIImageView.h"
 
+#import "LikeGestureView.h"
+
 @implementation IndexUIImageView
 
 - (id)initWithFrame:(CGRect)frame
@@ -15,6 +17,10 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        
+        LikeGestureView *likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        
+        [self addSubview:likeView];
     }
     return self;
 }

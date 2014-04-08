@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Patrick Wilson. All rights reserved.
 //
 
-#import "likeView.h"
+#import "LikeGestureView.h"
 
-@implementation likeView
+@implementation LikeGestureView
 
 - (id)initWithFrame:(CGRect)frame
 {
