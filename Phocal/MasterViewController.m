@@ -36,8 +36,8 @@
     _masterScroll.pagingEnabled = YES;
     
     UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
-    DummyViewController *viewController = [[DummyViewController alloc] init];
-//                                           WithStyle:UITableViewStylePlain];
+    PhotosListViewController *viewController = [[PhotosListViewController alloc] initWithStyle:UITableViewStylePlain];
+//    DummyViewController *viewController = [[DummyViewController alloc] init];
     [viewControllerView addSubview:viewController.view];
     [_masterScroll addSubview:viewControllerView];
     

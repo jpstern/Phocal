@@ -10,13 +10,15 @@
 
 #import "IndexUIImageView.h"
 
-@interface PhotosContainer : UIView <UIScrollViewDelegate>
+@interface PhotosContainer : UIView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) IndexUIImageView *masterImageView;
 @property (nonatomic, strong) NSMutableArray *imageViews;
 
 @property (nonatomic, strong) NSArray *imagePaths;
 @property (nonatomic, strong) UIScrollView *imageScroll;
+
+@property (nonatomic, assign) BOOL expanded;
 
 - (id)initWithFrame:(CGRect)frame andImagePaths:(NSArray *)paths;
 

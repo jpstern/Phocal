@@ -360,6 +360,7 @@
 				80EA833218E727CD00981338 /* CameraViewController.m in Sources */,
 				72A3BB5218F1BE6400B06A0F /* PhotosListViewController.m in Sources */,
 				80EA82FC18E5D22D00981338 /* main.m in Sources */,
+				72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */,
 				80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */,
 				80EA832618E60FAC00981338 /* PhocalCore.m in Sources */,
 			);

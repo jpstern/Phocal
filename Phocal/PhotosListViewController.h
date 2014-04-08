@@ -9,10 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface PhotosListViewController : UITableViewController
-//<UITableViewDataSource, UITableViewDelegate>
 
-//@property (nonatomic,strong) IBOutlet UITableView *tableView;
 @property (nonatomic,assign) NSInteger idx;
-
 
 @end

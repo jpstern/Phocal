@@ -26,22 +26,29 @@
         _imageViews = [[NSMutableArray alloc] init];
 
         _imagePaths = paths;
-        _originalHeight = frame.size.height;
+        _originalHeight = 200;
         
         CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
         CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
         CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
         UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
         
-        _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, frame.size.width)];
+        _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 300)];
         _imageScroll.delegate = self;
+//        _imageScroll.backgroundColor = [UIColor greenColor];
+//        _imageScroll.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+//        _imageScroll.userInteractionEnabled = NO;
         _imageScroll.contentSize = CGSizeMake(640, frame.size.height);
         [self addSubview:_imageScroll];
         
 //        _masterImageView =
-        IndexUIImageView *mainImageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        IndexUIImageView *mainImageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
         mainImageView.userInteractionEnabled = YES;
-        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
+        UIGestureRecognizer *tap = [[UIGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)];
+        tap.delegate = self;
+        [mainImageView addGestureRecognizer:tap];
+//        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
+//        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
         mainImageView.sortIndex = 0;
         mainImageView.backgroundColor = color;//[UIColor darkGrayColor];
         [_imageScroll addSubview:mainImageView];
@@ -54,22 +61,28 @@
         
         NSURL *rootURL = [NSURL URLWithString:rootPath];
         
+        [_masterImageView setImageWithURL:rootURL];
         
+        _imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
     }
     
     return self;
 }
 
+
+
 - (void)cellDidGrowToHeight:(CGFloat)height {
     
+    _expanded = YES;
     CGFloat currentX = 35;
     
     self.frame = CGRectMake(0, 0, 320, height);
+    _imageScroll.frame = CGRectMake(0, 0, 320, height);
     
     NSInteger index = 1;
     for (NSString *path in _imagePaths) {
         
-        IndexUIImageView *imageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(320, _originalHeight, 50, 50)];
+        IndexUIImageView *imageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(320, 200, 50, 50)];
         imageView.sortIndex = index;
         imageView.userInteractionEnabled = YES;
         [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
@@ -82,11 +95,13 @@
         [_imageViews addObject:imageView];
         [_imageScroll addSubview:imageView];
         
-        [UIView animateWithDuration:0.5 delay:1 usingSpringWithDamping:0.6 initialSpringVelocity:1 options:0 animations:^{
+        [UIView animateWithDuration:0.5 delay:0.25 usingSpringWithDamping:0.6 initialSpringVelocity:1 options:0 animations:^{
            
             imageView.center = CGPointMake(currentX, imageView.center.y);
             
         } completion:^(BOOL finished) {
+            
+            NSLog(@"%@", _imageViews);
             
         }];
         
@@ -98,6 +113,8 @@
 
 - (void)cellDidShrink {
     
+    _expanded = NO;
+    
     self.frame = CGRectMake(0, 0, 320, _originalHeight);
     
 }
@@ -108,7 +125,7 @@
 }
 
 - (void)swapImages:(UITapGestureRecognizer *)gesture {
-    
+
     if (gesture.view == _masterImageView) return;
     
     NSInteger index = [_imageViews indexOfObject:gesture.view];
@@ -144,18 +161,23 @@
     
 }
 
-- (void)swapLarge:(UIImageView *)mainView WithSmall:(UIImageView*)smallView {
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
-    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:0.75 options:0 animations:^{
-        CGRect tmp = mainView.frame;
-        
-        mainView.frame = smallView.frame;
-        smallView.frame = tmp;
-    } completion:^(BOOL finished) {
-        
-    }];
-
+    return _expanded;
 }
+//
+//- (void)swapLarge:(UIImageView *)mainView WithSmall:(UIImageView*)smallView {
+//    
+//    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:0.75 options:0 animations:^{
+//        CGRect tmp = mainView.frame;
+//        
+//        mainView.frame = smallView.frame;
+//        smallView.frame = tmp;
+//    } completion:^(BOOL finished) {
+//        
+//    }];
+//
+//}
 
 /*
 // Only override drawRect: if you perform custom drawing.

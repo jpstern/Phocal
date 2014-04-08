@@ -37,7 +37,7 @@
     
     [super viewWillAppear:animated];
     
-    _container = [[PhotosContainer alloc] initWithFrame:CGRectMake(0, 0, 320, 200) andImagePaths:@[@"1", @"2",@"1", @"2",@"1", @"2",@"1", @"2",@"1", @"2"]];
+    _container = [[PhotosContainer alloc] initWithFrame:CGRectMake(0, 0, 320, 300) andImagePaths:@[@"1", @"2",@"1", @"2",@"1", @"2",@"1", @"2",@"1", @"2"]];
     
     [self.view addSubview:_container];
 }

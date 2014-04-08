@@ -17,15 +17,23 @@
     if (self) {
         // Initialization code
         
-        imageView=[[UIImageView alloc]init];
+//        imageView=[[UIImageView alloc]init];
+//        
+//        [self.contentView addSubview:imageView];
         
-        [self.contentView addSubview:imageView];
-        
-        
+
+        self.clipsToBounds = YES;
+        self.layer.masksToBounds = YES;
         
         
     }
     return self;
+}
+
+- (void)addPhotosWithFrame:(CGRect)rect AndPaths:(NSArray *)paths {
+    
+    _container = [[PhotosContainer alloc] initWithFrame:rect andImagePaths:paths];
+    [self.contentView addSubview:_container];
 }
 
 -(void) logButtonRow:(UIButton *) sender
