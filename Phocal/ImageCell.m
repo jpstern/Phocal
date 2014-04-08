@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Abbey Ciolek. All rights reserved.
 //
 
+#import "LikeGestureView.h"
 #import "ImageCell.h"
 
 @implementation ImageCell

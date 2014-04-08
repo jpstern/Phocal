@@ -84,7 +84,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
                                                                    ]];
     
     cell.container.imageScroll.tag = indexPath.row;
-    [cell.container.imageScroll addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)]];
+    [cell addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)]];
 
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     
@@ -116,7 +116,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
     NSInteger row = tap.view.tag;
 
-//    NSLog(@"%@", tap.view.superview.superview.superview);
+    NSLog(@"%@", tap.view.superview.superview.superview);
     
     ImageCell *cell = (ImageCell *)[self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
     

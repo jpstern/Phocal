@@ -10,6 +10,8 @@
 
 #import "IndexUIImageView.h"
 
+@class LikeGestureView;
+
 @interface PhotosContainer : UIView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) IndexUIImageView *masterImageView;
@@ -17,6 +19,7 @@
 
 @property (nonatomic, strong) NSArray *imagePaths;
 @property (nonatomic, strong) UIScrollView *imageScroll;
+@property (nonatomic, strong) LikeGestureView* likeView;
 
 @property (nonatomic, assign) BOOL expanded;
 

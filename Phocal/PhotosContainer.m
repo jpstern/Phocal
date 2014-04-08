@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
+#import "LikeGestureView.h"
 #import "PhotosContainer.h"
 
 @interface PhotosContainer ()
@@ -24,6 +25,7 @@
     if (self) {
         
         _imageViews = [[NSMutableArray alloc] init];
+        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
 
         _imagePaths = paths;
         _originalHeight = 200;
@@ -61,8 +63,8 @@
         NSString *rootPath = [paths firstObject];
         
         NSURL *rootURL = [NSURL URLWithString:rootPath];
-        
-        [_masterImageView setImageWithURL:rootURL];
+
+        [_masterImageView setImageWithURL:rootURL placeholderImage:[UIImage imageNamed:@"placeholder"]];
         
         _imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
     }
@@ -78,6 +80,12 @@
     self.frame = CGRectMake(0, 0, 320, height);
     _imageScroll.frame = CGRectMake(0, 0, 320, height);
     
+    // Add the like view.
+    if (![[self subviews] containsObject:self.likeView]) {
+        [self addSubview:_likeView];
+    }
+    
+    
     NSInteger index = 1;
     for (NSString *path in _imagePaths) {
         
@@ -92,7 +100,7 @@
         CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
         UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
 //        imageView.backgroundColor = color;
-        [imageView setImageWithURL:[NSURL URLWithString:path]];
+        //[imageView setImageWithURL:[NSURL URLWithString:path]];
         [_imageViews addObject:imageView];
         [_imageScroll addSubview:imageView];
         
@@ -113,6 +121,7 @@
 - (void)cellDidShrink {
     
     _expanded = NO;
+    [self.likeView removeFromSuperview];
     
     self.frame = CGRectMake(0, 0, 320, _originalHeight);
     

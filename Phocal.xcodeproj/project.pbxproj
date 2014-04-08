@@ -28,7 +28,6 @@
 		80EA832A18E7220800981338 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA832918E7220800981338 /* MasterViewController.m */; };
 		80EA832F18E725C400981338 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA832E18E725C400981338 /* AVFoundation.framework */; };
 		80EA833218E727CD00981338 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA833118E727CD00981338 /* CameraViewController.m */; };
-		80EA837618EDEAD300981338 /* PhotosTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EA837518EDEAD300981338 /* PhotosTableViewController.m */; };
 		80EBE1A418F1C2CE0003620D /* PhotosContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A318F1C2CE0003620D /* PhotosContainer.m */; };
 		80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A618F1CA1D0003620D /* DummyViewController.m */; };
 		80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A918F1DBB50003620D /* IndexUIImageView.m */; };
@@ -80,8 +79,6 @@
 		80EA832E18E725C400981338 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		80EA833018E727CD00981338 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraViewController.h; sourceTree = "<group>"; };
 		80EA833118E727CD00981338 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraViewController.m; sourceTree = "<group>"; };
-		80EA837418EDEAD300981338 /* PhotosTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosTableViewController.h; sourceTree = "<group>"; };
-		80EA837518EDEAD300981338 /* PhotosTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosTableViewController.m; sourceTree = "<group>"; };
 		80EBE1A218F1C2CE0003620D /* PhotosContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosContainer.h; sourceTree = "<group>"; };
 		80EBE1A318F1C2CE0003620D /* PhotosContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosContainer.m; sourceTree = "<group>"; };
 		80EBE1A518F1CA1D0003620D /* DummyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummyViewController.h; sourceTree = "<group>"; };
@@ -172,8 +169,6 @@
 				80EA82FE18E5D22D00981338 /* AppDelegate.h */,
 				80EA82FF18E5D22D00981338 /* AppDelegate.m */,
 				80EA830118E5D22D00981338 /* Main.storyboard */,
-				80EA837418EDEAD300981338 /* PhotosTableViewController.h */,
-				80EA837518EDEAD300981338 /* PhotosTableViewController.m */,
 				80EA830418E5D22D00981338 /* ViewController.h */,
 				80EA830518E5D22D00981338 /* ViewController.m */,
 				80EBE1A818F1DBB50003620D /* IndexUIImageView.h */,
@@ -365,7 +360,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80EA837618EDEAD300981338 /* PhotosTableViewController.m in Sources */,
 				80EA830618E5D22D00981338 /* ViewController.m in Sources */,
 				B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */,
 				80EA830018E5D22D00981338 /* AppDelegate.m in Sources */,

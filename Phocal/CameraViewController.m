@@ -38,7 +38,7 @@
     // Do any additional setup after loading the view.
     
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    session.sessionPreset = AVCaptureSessionPresetPhoto;
+    session.sessionPreset = AVCaptureSessionPreset640x480; // TODO: should be full qual.
     AVCaptureVideoPreviewLayer *layer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
     layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     layer.frame = self.view.bounds;
