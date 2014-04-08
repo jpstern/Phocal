@@ -96,6 +96,10 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         [cell.container cellDidGrowToHeight:300];
         
     }
+    else {
+        
+        [cell.container cellDidShrink];
+    }
 
 //
 //    UIImage *image = [UIImage imageNamed:@"Portofino-wallpapers.jpg"];
@@ -122,11 +126,15 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     if(_idx!=row)
     {
         _idx=row;
+        
+        [cell.container cellDidGrowToHeight:300];
     }
     //Cell Already Selected Once
     else
     {
         _idx=-1;
+        
+        [cell.container cellDidShrink];
     }
     
 //
@@ -157,7 +165,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if(_idx!=-1&&indexPath.row==_idx)
+    if(_idx!=-1 && indexPath.row==_idx)
     {
         
         return 300;
@@ -170,7 +178,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 {
     if (_idx == indexPath.row) {
         
-        _idx = -1;
+//        _idx = -1;
 //        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
     }
 //    else if(_idx!=-1&&indexPath.row==_idx)
