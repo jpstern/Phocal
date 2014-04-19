@@ -32,7 +32,6 @@
 		80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A618F1CA1D0003620D /* DummyViewController.m */; };
 		80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A918F1DBB50003620D /* IndexUIImageView.m */; };
 		8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */; };
-		B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -87,8 +86,6 @@
 		8B7CDE8918F27C97004CE666 /* LikeGestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LikeGestureView.h; sourceTree = "<group>"; };
 		8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeGestureView.m; sourceTree = "<group>"; };
 		A10B80E192C6433D8F741B0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		B358F20E18F3A10A00B52461 /* DatabaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseDelegate.h; sourceTree = "<group>"; };
-		B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseDelegate.m; sourceTree = "<group>"; };
 		F19AE05970974A588932E45D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -161,8 +158,6 @@
 				72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */,
 				72A3BB5018F1BE6400B06A0F /* ImageCell.h */,
 				72A3BB5118F1BE6400B06A0F /* ImageCell.m */,
-				B358F20E18F3A10A00B52461 /* DatabaseDelegate.h */,
-				B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */,
 				80EA82FE18E5D22D00981338 /* AppDelegate.h */,
 				80EA82FF18E5D22D00981338 /* AppDelegate.m */,
 				80EA830118E5D22D00981338 /* Main.storyboard */,
@@ -357,7 +352,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				80EA830618E5D22D00981338 /* ViewController.m in Sources */,
-				B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */,
 				80EA830018E5D22D00981338 /* AppDelegate.m in Sources */,
 				80EA832A18E7220800981338 /* MasterViewController.m in Sources */,
 				80EBE1A418F1C2CE0003620D /* PhotosContainerView.m in Sources */,

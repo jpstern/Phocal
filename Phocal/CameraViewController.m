@@ -8,7 +8,6 @@
 
 #import "CameraViewController.h"
 
-#import "DatabaseDelegate.h"
 #import "MasterViewController.h"
 
 #import <CoreImage/CoreImage.h>
