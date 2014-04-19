@@ -75,6 +75,8 @@
     [_masterScroll addSubview:cameraViewControllerView];
    
     [self addChildViewController:camera];
+    
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //    
