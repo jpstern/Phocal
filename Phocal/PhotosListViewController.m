@@ -199,8 +199,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
     CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
     CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
-    oldRect.size.height -= labelHeight;
-    oldRect.origin.y += labelHeight;
+    //oldRect.size.height -= labelHeight;
+    //oldRect.origin.y += labelHeight;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     //newRect.size.height -= 60;
     [self.masterViewController displayPhotoInCell:cell inRect:newRect];

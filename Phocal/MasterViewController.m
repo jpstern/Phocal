@@ -123,7 +123,7 @@
             } completion:^(BOOL finished) {
                 [returnImage removeFromSuperview];
                 [self.selectedCell.contentView addSubview:returnImage];
-                returnImage.frame = CGRectMake(0, 60, 320, 320);
+                returnImage.frame = CGRectMake(0, 0, 320, 320);
             }];
         }];
     }
