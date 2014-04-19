@@ -138,6 +138,7 @@
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
     
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
     imagePicker.allowsEditing = YES;
     imagePicker.delegate = self;
@@ -154,8 +155,18 @@
     
     NSData *imageData = UIImageJPEGRepresentation(image,1.0);
     [[PhocalCore sharedClient] postPhoto:imageData];
-    [picker dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     
+    NSURL *referenceURL = [info valueForKey:UIImagePickerControllerReferenceURL];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+        ALAssetRepresentation *rep = [asset defaultRepresentation];
+        NSDictionary *metadata = rep.metadata;
+        NSLog(@"%@", metadata);
+        
+    } failureBlock:^(NSError *error) {
+        // error handling
+    }];
     //do something with the image
 }
 
@@ -167,6 +178,8 @@
 -(void)albumView
 {
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+    
 }
 
 
