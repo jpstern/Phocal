@@ -10,6 +10,7 @@
 		72A3BB5218F1BE6400B06A0F /* PhotosListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */; };
 		72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3BB5118F1BE6400B06A0F /* ImageCell.m */; };
 		72A3BB5518F1C2C700B06A0F /* Portofino-wallpapers.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */; };
+		808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA721903011B00D5C511 /* UIViewController+Master.m */; };
 		80EA82F018E5D22D00981338 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82EF18E5D22D00981338 /* Foundation.framework */; };
 		80EA82F218E5D22D00981338 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82F118E5D22D00981338 /* CoreGraphics.framework */; };
 		80EA82F418E5D22D00981338 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82F318E5D22D00981338 /* UIKit.framework */; };
@@ -52,6 +53,8 @@
 		72A3BB5018F1BE6400B06A0F /* ImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCell.h; sourceTree = "<group>"; };
 		72A3BB5118F1BE6400B06A0F /* ImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCell.m; sourceTree = "<group>"; };
 		72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Portofino-wallpapers.jpg"; sourceTree = "<group>"; };
+		808AAA711903011B00D5C511 /* UIViewController+Master.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Master.h"; sourceTree = "<group>"; };
+		808AAA721903011B00D5C511 /* UIViewController+Master.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Master.m"; sourceTree = "<group>"; };
 		80EA82EC18E5D22D00981338 /* Phocal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phocal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		80EA82EF18E5D22D00981338 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		80EA82F118E5D22D00981338 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -155,6 +158,8 @@
 		80EA82F518E5D22D00981338 /* Phocal */ = {
 			isa = PBXGroup;
 			children = (
+				808AAA711903011B00D5C511 /* UIViewController+Master.h */,
+				808AAA721903011B00D5C511 /* UIViewController+Master.m */,
 				8B7CDE8918F27C97004CE666 /* LikeGestureView.h */,
 				8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */,
 				72A3BB4E18F1BE6400B06A0F /* PhotosListViewController.h */,
@@ -369,6 +374,7 @@
 				72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */,
 				80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */,
 				80EA832618E60FAC00981338 /* PhocalCore.m in Sources */,
+				808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
