@@ -42,23 +42,13 @@
     }
     
     //self.frame = CGRectMake(0, 0, 320, 50);
-    
     self.image = [[IndexUIImageView alloc] init];
-    
     self.label = [[UILabel alloc] init];
-    
-    [self.label setFrame:CGRectMake(0, 10, 320, 30)];
-    
+    [self.label setFrame:CGRectMake(0, 320-70, 320, 30)];
     [self.label setTextAlignment:NSTextAlignmentCenter];
-    
-    
-    
-    [self.image setFrame:CGRectMake( 0,60, 320, 320)];
-    
+    [self.image setFrame:CGRectMake( 0,0, 320, 320)];
     self.label2 = [[UILabel alloc] init];
-    
-    [self.label2 setFrame:CGRectMake(0, 30, 320, 30)];
-    
+    [self.label2 setFrame:CGRectMake(0, 320-40, 320, 30)];
     [self.label2 setTextAlignment:NSTextAlignmentCenter];
     
     //[self.image setFrame:CGRectMake( 0,20, 320, 320)];
@@ -67,10 +57,11 @@
     
     [self.contentView addSubview:self.image];
     
-    [self.contentView addSubview:self.label];
+    [self.image addSubview:self.label];
     
-    [self.contentView addSubview:self.label2];
-    
+    [self.image addSubview:self.label2];
+    [self.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [self.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
     return self;
     
 }

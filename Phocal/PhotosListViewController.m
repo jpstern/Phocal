@@ -49,6 +49,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
       self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(goToCamera)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
       self.title = @"Photos";
+    [self.tableView setSeparatorColor:[UIColor clearColor]];
       
     [self refreshPhotos];
     
@@ -243,7 +244,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         return 300.0;
     }*/
     
-    return 380.0;
+    return 320;
 }
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(ImageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
