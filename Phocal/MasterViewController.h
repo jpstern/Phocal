@@ -10,6 +10,7 @@
 
 @interface MasterViewController : UIViewController <UIScrollViewDelegate>
 
+
 @property (nonatomic, strong) IBOutlet UIScrollView *masterScroll;
 @property (nonatomic, strong) UIView* photoDisplayView;
 @property (nonatomic, strong) UINavigationController* navController;

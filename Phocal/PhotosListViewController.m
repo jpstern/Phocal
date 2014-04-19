@@ -204,13 +204,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if(_idx!=-1 && indexPath.row==_idx)
+    /*if(_idx!=-1 && indexPath.row==_idx)
     {
         
         CGRect screenRect = [[UIScreen mainScreen]bounds];
         CGFloat screenHeight = screenRect.size.height;
-        return screenHeight;
-    }
+        return 300.0;
+    }*/
     
     return 200.0;
 }
