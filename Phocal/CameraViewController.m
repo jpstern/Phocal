@@ -50,11 +50,19 @@
         _headerView.backgroundColor = [UIColor blackColor];
 
         _previewLayer.hidden = YES;
+
+        
+        
+        
+        image = [UIImage imageWithCGImage:image.CGImage scale:4 orientation:UIImageOrientationRight];
+        
         NSLog(@"%f", image.size.height);
         NSLog(@"%f", image.size.width);
+        
         _photoPreview = [[UIImageView alloc] initWithImage:image];
+//        _photoPreview.contentMode = UIViewContentModeScaleAspectFill;
         CGRect rect = _photoPreview.frame;
-        rect.origin.y = 40;
+//        rect.origin.y = 40;
         _photoPreview.frame = rect;
         [self.view addSubview:_photoPreview];
         
@@ -62,7 +70,7 @@
         button.frame = CGRectMake(0, 0, 100, 40);
         [button setTitle:@"Cancel" forState:UIControlStateNormal];
         [button addTarget:self action:@selector(cancelPhoto) forControlEvents:UIControlEventTouchUpInside];
-        [_headerView addSubview:button];
+        [self.view addSubview:button];
     }];
 }
 
@@ -75,7 +83,9 @@
 //    session.sessionPreset = AVCaptureSessionPreset640x480; // TODO: should be full qual.
     _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
     _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    _previewLayer.frame = CGRectMake(0, 0, 320, 320 + 40);
+//    _previewLayer.frame = CGRectMake(0, 0, 320, 320 + 40);
+    
+    _previewLayer.frame = self.view.bounds;
     
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
@@ -97,19 +107,19 @@
     
     _headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
     _headerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
-    [self.view addSubview:_headerView];
+//    [self.view addSubview:_headerView];
     
     UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 360, 320, self.view.frame.size.height - 360)];
     container.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:container];
+//    [self.view addSubview:container];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
      UIImage *cameraIcon = [UIImage imageNamed:@"cameraButton"];
     [button setImage:cameraIcon forState:UIControlStateNormal];
-    button.frame = CGRectMake(130, 0, 60, 60);
-    button.center = CGPointMake(container.frame.size.width / 2, container.frame.size.height / 2);
+    button.frame = CGRectMake(130, 350, 60, 60);
+//    button.center = CGPointMake(container.frame.size.width / 2, container.frame.size.height / 2);
     [button addTarget:self action:@selector(takeImageHandler) forControlEvents:UIControlEventTouchUpInside];
-    [container addSubview:button];
+    [self.view addSubview:button];
     
     UIButton *photoViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *photoIcon = [UIImage imageNamed:@"list"];
@@ -238,19 +248,19 @@
         
         
 
-        UIImage *cropImage = [CameraViewController cropImage:image toRect:CGRectMake(0, 80, 320, 320)];
+//        UIImage *cropImage = [CameraViewController cropImage:image toRect:CGRectMake(0, 80, 320, 320)];
         
 //            CGImageRef cropRef = CGImageCreateWithImageInRect(image.CGImage, CGRectMake(0, 40, 320, 320));
 //            UIImage* cropImage = [UIImage imageWithCGImage:cropRef];
 //            CGImageRelease(cropRef);
         
-            NSData *imageData = UIImageJPEGRepresentation(cropImage, 1);
-            
-            [[PhocalCore sharedClient] postPhoto:imageData];
-            
+//            NSData *imageData = UIImageJPEGRepresentation(cropImage, 1);
+        
+//            [[PhocalCore sharedClient] postPhoto:imageData];
+        
 //            dispatch_async(dispatch_get_main_queue(), ^{
         
-                done(cropImage);
+                done(image);
                 
 //            });
 //        });
