@@ -22,3 +22,4 @@ Pods
 
 # Backend shit
 backend/secret.sh
+backend/node_modules

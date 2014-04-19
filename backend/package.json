@@ -6,11 +6,11 @@
     "start": "node server/"
   },
   "dependencies": {
+    "async": "^0.7.0",
+    "colors": "^0.6.2",
     "express": "3.5.1",
-    "colors": "*",
-    "mongodb": "*",
-    "multiparty": "*",
-    "knox": "*",
-    "async": "*"
+    "knox": "^0.8.9",
+    "mongodb": "^1.4.0",
+    "multiparty": "^3.2.4"
   }
 }
