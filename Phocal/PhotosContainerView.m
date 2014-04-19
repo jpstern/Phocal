@@ -61,6 +61,21 @@ const int kScrollHeight = 100;
         _imageScroll.contentSize = CGSizeMake(900, kScrollHeight);
         [self addSubview:_imageScroll];
         
+        int begin = 30;
+        int size = 80;
+        for (int i = 0; i < 4; i++) {
+            IndexUIImageView* thumb =
+                [[IndexUIImageView alloc] initWithFrame:CGRectMake(begin + i*size + i*begin, 0, size, size)];
+            imageView.sortIndex = i + 1;
+            thumb.userInteractionEnabled = YES;
+            [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
+            [thumb setImageWithURL:[NSURL URLWithString:@"https://u.ph.edim.co/1565433_0.jpg"]
+                  placeholderImage:[UIImage imageNamed:@"placeholder"]];
+            thumb.contentMode = UIViewContentModeScaleAspectFill;
+            [_imageScroll addSubview:thumb];
+            [_imageViews addObject:thumb];
+        }
+        
         //_imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
     }
     
