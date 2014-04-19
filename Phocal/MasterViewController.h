@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class ImageCell;
+@class MomentCell;
 @class PhotosContainerView;
 
 @interface MasterViewController : UIViewController <UIScrollViewDelegate>
@@ -16,10 +16,10 @@
 
 @property (nonatomic, strong) IBOutlet UIScrollView *masterScroll;
 @property (nonatomic, strong) PhotosContainerView* photoDisplayView;
-@property (nonatomic, strong) ImageCell* selectedCell;
+@property (nonatomic, strong) MomentCell* selectedCell;
 @property (nonatomic, assign) CGRect selectedRect;
 @property (nonatomic, strong) UINavigationController* navController;
 
-- (void)displayPhotoInCell:(ImageCell *)imageCell inRect:(CGRect)rect;
+- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect;
 
 @end

@@ -152,6 +152,10 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    NSData *imageData = UIImageJPEGRepresentation(image,1.0);
+    [[PhocalCore sharedClient] postPhoto:imageData];
+    [picker dismissModalViewControllerAnimated:YES];
+    
     //do something with the image
 }
 

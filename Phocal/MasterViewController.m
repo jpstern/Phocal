@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
-#import "ImageCell.h"
+#import "MomentCell.h"
 #import "MasterViewController.h"
 #import "PhotosContainerView.h"
 #import "PhotosListViewController.h"
@@ -65,6 +65,8 @@
     [self addChildViewController:camera];
 }
 
+
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
     int page = scrollView.contentOffset.x / scrollView.frame.size.width;
@@ -79,13 +81,13 @@
     }
 }
 
-- (void)displayPhotoInCell:(ImageCell *)imageCell inRect:(CGRect)rect {
+- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect {
     NSLog(@"Display photo.");
     
     self.selectedCell = imageCell;
     self.selectedRect = rect;
     self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window
-                                                           andImageView:imageCell.photoView
+                                                           andImageView:imageCell.image
                                                                  inRect:rect];
     [self.view addSubview:self.photoDisplayView];
     
@@ -121,7 +123,7 @@
             } completion:^(BOOL finished) {
                 [returnImage removeFromSuperview];
                 [self.selectedCell.contentView addSubview:returnImage];
-                returnImage.frame = CGRectMake(0, 0, self.selectedCell.bounds.size.width, self.selectedCell.bounds.size.height);
+                returnImage.frame = CGRectMake( 0, 60, 320, 320);
             }];
         }];
     }
