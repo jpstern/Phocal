@@ -16,5 +16,6 @@
 
     //global
     #import "PhocalCore.h"
+    #import <SDWebImage/UIImageView+WebCache.h>
 
 #endif

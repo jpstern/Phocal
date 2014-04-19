@@ -8,8 +8,6 @@
 
 #import "ViewController.h"
 
-
-
 @interface ViewController ()
 
 @end
@@ -20,6 +18,8 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+        
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -50,7 +50,6 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    
     //do something with the image
 }
 
