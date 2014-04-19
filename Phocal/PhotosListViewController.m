@@ -26,20 +26,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 @implementation PhotosListViewController
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    if (self = [super initWithStyle:style]) {
-        _photoURLs = [[NSMutableArray alloc] init];
-        self.refreshControl = [[UIRefreshControl alloc] init];
-        [self.refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
-        
-    }
-    
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _photoURLs = [[NSMutableArray alloc] init];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
+    
 	// Do any additional setup after loading the view, typically from a nib.
     _idx=-1;
    // [self.tableView registerClass:[ImageCell class] forCellReuseIdentifier:@"CellID"];
@@ -143,45 +136,6 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 }
 
 
-
-
-/*- (void)cellTapped:(UITapGestureRecognizer*)tap {
-    
-    NSInteger row = tap.view.tag;
-
-    NSLog(@"tapped");
-    
-    ImageCell *cell = (ImageCell *)[self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-    
-//    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
-    
-    //Newly Selected Cell
-    if(_idx!=row)
-    {
-        _idx=row;
-        
-        CGRect screenRect = [[UIScreen mainScreen]bounds];
-        CGFloat screenHeight = screenRect.size.height;
-        
-        [cell.container cellDidGrowToHeight:screenHeight];
-    }
-    //Cell Already Selected Once
-    else
-    {
-        _idx=-1;
-        
-        [cell.container cellDidShrink];
-    }
-    
-//
-//
-    [self.tableView beginUpdates];
-    NSIndexPath *index = [NSIndexPath indexPathForRow:row inSection:0];
-    [self.tableView reloadRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationNone];
-    [self.tableView scrollToRowAtIndexPath:index atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    [self.tableView endUpdates];
-}*/
-
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //    
 //    NSInteger index = _idx;
@@ -198,39 +152,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     self.tableView.scrollEnabled = NO;
 
     CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
-    CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
+    //CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
     //oldRect.size.height -= labelHeight;
     //oldRect.origin.y += labelHeight;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     //newRect.size.height -= 60;
     [self.masterViewController displayPhotoInCell:cell inRect:newRect];
 
-    //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
-    
-    //Newly Selected Cell
-    /*if(_idx!=indexPath.row)
-    {
-        _idx=indexPath.row;
-        
-        [cell.container cellDidGrowToHeight:300];
-    }
-    //Cell Already Selected Once
-    else
-    {
-        _idx=-1;
-        
-        [cell.container cellDidShrink];
-    }
-    
-    //
-    //
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    [self.tableView endUpdates];
-    
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [cell setSelected:NO];*/
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
