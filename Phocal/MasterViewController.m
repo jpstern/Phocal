@@ -34,7 +34,7 @@
     _masterScroll.contentSize = CGSizeMake(640, self.view.frame.size.height);
     _masterScroll.pagingEnabled = YES;
     _masterScroll.bounces = NO;
-    
+    _masterScroll.delegate = self;
    
     
     
@@ -75,12 +75,21 @@
     [_masterScroll addSubview:cameraViewControllerView];
    
     [self addChildViewController:camera];
-    
 }
 
-
-
-
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    int page = scrollView.contentOffset.x / scrollView.frame.size.width;
+    
+    if (page == 0) {
+        
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    }
+    else {
+        
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    }
+}
 
 - (void)didReceiveMemoryWarning
 {
