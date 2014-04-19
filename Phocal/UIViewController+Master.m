@@ -30,6 +30,7 @@
 @implementation UIViewController (Master)
 
 - (MasterViewController *)masterViewController {
+    
     UIViewController *iter = self.parentViewController;
     while (iter) {
         if ([iter isKindOfClass:[MasterViewController class]]) {
@@ -40,6 +41,7 @@
             iter = nil;
         }
     }
+    
     return nil;
 }
 
