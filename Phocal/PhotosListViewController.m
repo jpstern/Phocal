@@ -112,7 +112,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     CLGeocoder *test = [[CLGeocoder alloc] init];
     if ([_photoURLs[indexPath.row] objectForKey:@"first"]!=nil){
         cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"first"];
-        cell.label2.text = [_photoURLs[indexPath.row] objectForKey:@"second"];
+        
     }else{
         [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
             NSLog(@"%@",placemarks);
@@ -122,7 +122,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
             NSString *first = address[0];
             NSString *second = address[1];
             cell.label.text = first;
-            cell.label2.text = second;
+            [NSString stringWithFormat:@"%@ \n %@",first,second];
+           
             [[_photoURLs objectAtIndex:indexPath.row] setObject:first forKey:@"first"];
             [[_photoURLs objectAtIndex:indexPath.row] setObject:second forKey:@"second"];
 
@@ -130,7 +131,6 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
     }
     [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.6]];
-    [cell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.6]];
     
     
     return cell;
