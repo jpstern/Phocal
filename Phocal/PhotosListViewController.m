@@ -217,7 +217,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //NSInteger row = tap.view.tag;
-        
+    
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     MomentCell *cell = (MomentCell *)[tableView cellForRowAtIndexPath:indexPath];
     self.tableView.scrollEnabled = NO;
     [self.masterViewController displayPhoto:cell.image];
