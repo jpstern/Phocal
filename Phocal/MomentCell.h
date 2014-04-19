@@ -12,7 +12,6 @@
 @interface MomentCell : UITableViewCell
 @property (nonatomic,strong) IndexUIImageView *image;
 @property (nonatomic,strong) UILabel *label;
-@property (nonatomic,strong) UILabel *label2;
 
 
 @end
