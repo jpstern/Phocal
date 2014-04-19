@@ -189,23 +189,10 @@
             
             // trivial simple JPEG case
             NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-            CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
-                                                                        imageDataSampleBuffer,
-                                                                        kCMAttachmentMode_ShouldPropagate);
-            ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-            [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-                if (error) {
-                    //                    [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
-                    return;
-                }
-                
-                NSLog(@"Took picture");
-                
-                [[PhocalCore sharedClient] postPhoto:jpegData];
-            }];
             
-            if (attachments)
-                CFRelease(attachments);
+            NSLog(@"Took picture");
+            
+            [[PhocalCore sharedClient] postPhoto:jpegData];
             
         }];
     }];
