@@ -26,20 +26,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 @implementation PhotosListViewController
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    if (self = [super initWithStyle:style]) {
-        _photoURLs = [[NSMutableArray alloc] init];
-        self.refreshControl = [[UIRefreshControl alloc] init];
-        [self.refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
-        
-    }
-    
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _photoURLs = [[NSMutableArray alloc] init];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
+    
 	// Do any additional setup after loading the view, typically from a nib.
     _idx=-1;
    // [self.tableView registerClass:[ImageCell class] forCellReuseIdentifier:@"CellID"];
@@ -48,7 +41,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
       self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(goToCamera)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
-      self.title = @"Photos";
+      self.title = @"My Moments";
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     [self refreshPhotos];
@@ -77,7 +70,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         NSMutableArray *urls = [[NSMutableArray alloc] init];
         for (NSDictionary* photoDict in photos) {
             NSMutableDictionary *dummy = [[NSMutableDictionary alloc] init];
-            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"id"]] forKey:@"URL"];
+            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
+                      forKey:@"URL"];
             [urls addObject:dummy];
         }
         _photoURLs = urls;
@@ -110,7 +104,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     [cell.image setImageWithURL:[NSURL URLWithString:[_photoURLs[indexPath.row] objectForKey:@"URL"]]];
     //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     float latitude = 44.741802;
     float longitude = -85.662872;
@@ -119,7 +113,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     CLGeocoder *test = [[CLGeocoder alloc] init];
     if ([_photoURLs[indexPath.row] objectForKey:@"first"]!=nil){
         cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"first"];
-        cell.label2.text = [_photoURLs[indexPath.row] objectForKey:@"second"];
+        
     }else{
         [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
             NSLog(@"%@",placemarks);
@@ -129,60 +123,21 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
             NSString *first = address[0];
             NSString *second = address[1];
             cell.label.text = first;
-            cell.label2.text = second;
+            [NSString stringWithFormat:@"%@ \n %@",first,second];
+           
             [[_photoURLs objectAtIndex:indexPath.row] setObject:first forKey:@"first"];
             [[_photoURLs objectAtIndex:indexPath.row] setObject:second forKey:@"second"];
 
         }];
 
     }
-    [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
-    [cell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.6]];
     
     
     return cell;
     
 }
 
-
-
-
-/*- (void)cellTapped:(UITapGestureRecognizer*)tap {
-    
-    NSInteger row = tap.view.tag;
-
-    NSLog(@"tapped");
-    
-    ImageCell *cell = (ImageCell *)[self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
-    
-//    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
-    
-    //Newly Selected Cell
-    if(_idx!=row)
-    {
-        _idx=row;
-        
-        CGRect screenRect = [[UIScreen mainScreen]bounds];
-        CGFloat screenHeight = screenRect.size.height;
-        
-        [cell.container cellDidGrowToHeight:screenHeight];
-    }
-    //Cell Already Selected Once
-    else
-    {
-        _idx=-1;
-        
-        [cell.container cellDidShrink];
-    }
-    
-//
-//
-    [self.tableView beginUpdates];
-    NSIndexPath *index = [NSIndexPath indexPathForRow:row inSection:0];
-    [self.tableView reloadRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationNone];
-    [self.tableView scrollToRowAtIndexPath:index atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    [self.tableView endUpdates];
-}*/
 
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //    
@@ -200,39 +155,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     self.tableView.scrollEnabled = NO;
 
     CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
-    CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
+    //CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
     //oldRect.size.height -= labelHeight;
     //oldRect.origin.y += labelHeight;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     //newRect.size.height -= 60;
     [self.masterViewController displayPhotoInCell:cell inRect:newRect];
 
-    //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
-    
-    //Newly Selected Cell
-    /*if(_idx!=indexPath.row)
-    {
-        _idx=indexPath.row;
-        
-        [cell.container cellDidGrowToHeight:300];
-    }
-    //Cell Already Selected Once
-    else
-    {
-        _idx=-1;
-        
-        [cell.container cellDidShrink];
-    }
-    
-    //
-    //
-    [self.tableView beginUpdates];
-    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    [self.tableView endUpdates];
-    
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [cell setSelected:NO];*/
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
