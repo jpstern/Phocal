@@ -31,26 +31,59 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
     _masterScroll.contentSize = CGSizeMake(640, self.view.frame.size.height);
     _masterScroll.pagingEnabled = YES;
     
-    UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
-    PhotosListViewController *viewController = [[PhotosListViewController alloc] initWithStyle:UITableViewStylePlain];
-//    DummyViewController *viewController = [[DummyViewController alloc] init];
-    [viewControllerView addSubview:viewController.view];
-    [_masterScroll addSubview:viewControllerView];
+   
     
-    [self addChildViewController:viewController];
+    
+    
+    UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
+    //PhotosListViewController *viewController = [[PhotosListViewController alloc] initWithStyle:UITableViewStylePlain];
+//    DummyViewController *viewController = [[DummyViewController alloc] init];
+   
+    
+    //UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+     UINavigationController *navViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"navController"];
+    
+    navViewController.navigationBar.barTintColor = [UIColor colorWithRed:164/255.0 green:242/255.0 blue:217/255.0 alpha:1];
+  
+    
+    PhotosListViewController* pc = (PhotosListViewController*)[navViewController viewControllers][0];
+    
+    pc.master= self;
+    
+    
+    [viewControllerView addSubview:navViewController.view];
+    
+
+    [_masterScroll addSubview:viewControllerView];
+   
+    
+    
+    [self addChildViewController:navViewController];
+  
+    
     
     UIView *cameraViewControllerView = [[UIView alloc] initWithFrame:CGRectMake(320, 0, 320, self.view.frame.size.height)];
     CameraViewController *camera = [[CameraViewController alloc] init];
+    
+    camera.master=self;
+    
     [cameraViewControllerView addSubview:camera.view];
     [_masterScroll addSubview:cameraViewControllerView];
-    
+   
     [self addChildViewController:camera];
     
+    
+ 
+    
+    
 }
+
+
+
+
 
 - (void)didReceiveMemoryWarning
 {

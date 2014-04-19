@@ -32,7 +32,6 @@
 		80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A618F1CA1D0003620D /* DummyViewController.m */; };
 		80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A918F1DBB50003620D /* IndexUIImageView.m */; };
 		8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */; };
-		8B7CDE8D18F27D0D004CE666 /* heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8C18F27D0D004CE666 /* heart.png */; };
 		B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -87,7 +86,6 @@
 		80EBE1A918F1DBB50003620D /* IndexUIImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexUIImageView.m; sourceTree = "<group>"; };
 		8B7CDE8918F27C97004CE666 /* LikeGestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LikeGestureView.h; sourceTree = "<group>"; };
 		8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeGestureView.m; sourceTree = "<group>"; };
-		8B7CDE8C18F27D0D004CE666 /* heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heart.png; sourceTree = "<group>"; };
 		A10B80E192C6433D8F741B0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B358F20E18F3A10A00B52461 /* DatabaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseDelegate.h; sourceTree = "<group>"; };
 		B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseDelegate.m; sourceTree = "<group>"; };
@@ -157,7 +155,6 @@
 		80EA82F518E5D22D00981338 /* Phocal */ = {
 			isa = PBXGroup;
 			children = (
-				8B7CDE8C18F27D0D004CE666 /* heart.png */,
 				8B7CDE8918F27C97004CE666 /* LikeGestureView.h */,
 				8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */,
 				72A3BB4E18F1BE6400B06A0F /* PhotosListViewController.h */,
@@ -306,7 +303,6 @@
 			files = (
 				80EA830818E5D22D00981338 /* Images.xcassets in Resources */,
 				80EA82FA18E5D22D00981338 /* InfoPlist.strings in Resources */,
-				8B7CDE8D18F27D0D004CE666 /* heart.png in Resources */,
 				80EA830318E5D22D00981338 /* Main.storyboard in Resources */,
 				72A3BB5518F1C2C700B06A0F /* Portofino-wallpapers.jpg in Resources */,
 			);

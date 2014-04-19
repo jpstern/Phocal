@@ -9,6 +9,7 @@
 #import "CameraViewController.h"
 
 #import "DatabaseDelegate.h"
+#import "MasterViewController.h"
 
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
@@ -36,7 +37,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.view.backgroundColor=[UIColor blackColor];
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
     session.sessionPreset = AVCaptureSessionPreset640x480; // TODO: should be full qual.
     AVCaptureVideoPreviewLayer *layer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
@@ -58,11 +59,35 @@
     
     [self.view.layer addSublayer:layer];
     
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button setTitle:@"Take Photo" forState:UIControlStateNormal];
-    button.frame = CGRectMake(0, 30, 320, 100);
+    int pos = self.view.frame.size.height-54;
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+     UIImage *cameraIcon = [UIImage imageNamed:@"cameraButton"];
+    [button setImage:cameraIcon forState:UIControlStateNormal];
+    button.frame = CGRectMake(130, pos-30, 60, 60);
     [button addTarget:self action:@selector(takePhoto) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
+    
+    
+    UIButton *photoViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *photoIcon = [UIImage imageNamed:@"photoIcon"];
+    
+    
+    
+    photoViewButton.frame = CGRectMake(10, pos, 44, 44);
+    photoViewButton.tintColor = [UIColor whiteColor];
+    [photoViewButton setImage:photoIcon forState:UIControlStateNormal];
+//    [photoViewButton setTitle:@"Photos" forState:UIControlStateNormal];
+    [photoViewButton addTarget:self action:@selector(photoView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:photoViewButton];
+    
+}
+
+- (void)photoView
+{
+    [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(0,0) animated:YES];
+    
+    
     
 }
 

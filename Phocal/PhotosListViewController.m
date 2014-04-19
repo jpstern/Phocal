@@ -9,6 +9,7 @@
 #import "PhotosListViewController.h"
 #import "ImageCell.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "MasterViewController.h"
 
 NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
@@ -25,7 +26,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         _photoURLs = [[NSMutableArray alloc] init];
         self.refreshControl = [[UIRefreshControl alloc] init];
         [self.refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
-
+        
     }
     
     return self;
@@ -37,7 +38,22 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 	// Do any additional setup after loading the view, typically from a nib.
     _idx=-1;
    // [self.tableView registerClass:[ImageCell class] forCellReuseIdentifier:@"CellID"];
+    
+        self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+    
+      self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(Print_Message)];
+    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
+      self.title = @"Photos";
+      
     [self refreshPhotos];
+}
+
+- (void)Print_Message
+{
+    [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
+  
+
+    
 }
 
 - (void)refreshPhotos {
@@ -126,7 +142,10 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     {
         _idx=row;
         
-        [cell.container cellDidGrowToHeight:300];
+        CGRect screenRect = [[UIScreen mainScreen]bounds];
+        CGFloat screenHeight = screenRect.size.height;
+        
+        [cell.container cellDidGrowToHeight:screenHeight];
     }
     //Cell Already Selected Once
     else
@@ -167,7 +186,9 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     if(_idx!=-1 && indexPath.row==_idx)
     {
         
-        return 300;
+        CGRect screenRect = [[UIScreen mainScreen]bounds];
+        CGFloat screenHeight = screenRect.size.height;
+        return screenHeight;
     }
     
     return 200.0;
