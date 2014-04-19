@@ -46,7 +46,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
         self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     
-      self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(Print_Message)];
+      self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(goToCamera)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
       self.title = @"Photos";
       
@@ -58,7 +58,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     }
 }
 
-- (void)Print_Message
+- (void)goToCamera
 {
     [[self.masterViewController masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
     
