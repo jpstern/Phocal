@@ -64,9 +64,7 @@
     [self addChildViewController:camera];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-}
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
