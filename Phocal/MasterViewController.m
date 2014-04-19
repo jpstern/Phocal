@@ -57,16 +57,14 @@
     
     UIView *cameraViewControllerView = [[UIView alloc] initWithFrame:CGRectMake(320, 0, 320, self.view.frame.size.height)];
     CameraViewController *camera = [[CameraViewController alloc] init];
-    
+    camera.master=self;
     [cameraViewControllerView addSubview:camera.view];
     [_masterScroll addSubview:cameraViewControllerView];
    
     [self addChildViewController:camera];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-}
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     

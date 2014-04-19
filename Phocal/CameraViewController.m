@@ -75,9 +75,8 @@
     
     
     photoViewButton.frame = CGRectMake(10, pos, 44, 44);
-    photoViewButton.tintColor = [UIColor whiteColor];
+    //photoViewButton.tintColor = [UIColor whiteColor];
     [photoViewButton setImage:photoIcon forState:UIControlStateNormal];
-//    [photoViewButton setTitle:@"Photos" forState:UIControlStateNormal];
     [photoViewButton addTarget:self action:@selector(photoView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:photoViewButton];
     
@@ -110,7 +109,7 @@
             }
             else
             {
-                uploadViewButton.hidden=YES;
+                //uploadViewButton.hidden=YES;
             }
         
                                      
@@ -134,13 +133,13 @@
     [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(0,0) animated:YES];
     
     
-    
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
     
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+    imagePicker.allowsEditing = YES;
     imagePicker.delegate = self;
     imagePicker.sourceType = sourceType;
     
@@ -151,7 +150,8 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
+    
     NSData *imageData = UIImageJPEGRepresentation(image,1.0);
     [[PhocalCore sharedClient] postPhoto:imageData];
     [picker dismissModalViewControllerAnimated:YES];
