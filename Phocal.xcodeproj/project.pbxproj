@@ -33,7 +33,7 @@
 		80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A618F1CA1D0003620D /* DummyViewController.m */; };
 		80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A918F1DBB50003620D /* IndexUIImageView.m */; };
 		8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */; };
-		B30833C819032CB6000CBA99 /* MomentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B30833C719032CB6000CBA99 /* MomentCell.m */; };
+		B30833C819032CB6000CBA99 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
 		F542BFA81903219000DFB2BE /* LocationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA71903219000DFB2BE /* LocationDelegate.m */; };
 		F542BFAB190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */; };
@@ -289,7 +289,7 @@
 				ORGANIZATIONNAME = Josh;
 				TargetAttributes = {
 					80EA82EB18E5D22D00981338 = {
-						DevelopmentTeam = WK4AXX367F;
+						DevelopmentTeam = XM9FUD8J48;
 					};
 					80EA830C18E5D22D00981338 = {
 						TestTargetID = 80EA82EB18E5D22D00981338;
@@ -384,7 +384,7 @@
 				F542BFAE1903382100DFB2BE /* MomentCell.m in Sources */,
 				80EA833218E727CD00981338 /* CameraViewController.m in Sources */,
 				8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */,
-				B30833C819032CB6000CBA99 /* MomentCell.m in Sources */,
+				B30833C819032CB6000CBA99 /* (null) in Sources */,
 				72A3BB5218F1BE6400B06A0F /* PhotosListViewController.m in Sources */,
 				80EA82FC18E5D22D00981338 /* main.m in Sources */,
 				72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */,
