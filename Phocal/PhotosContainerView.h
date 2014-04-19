@@ -24,7 +24,7 @@
 
 @property (nonatomic, assign) BOOL expanded;
 
-- (id)initWithFrame:(CGRect)frame andImagePaths:(NSArray *)paths;
+- (id)initWithFrame:(CGRect)frame andImageView:(UIImageView *)imageView;
 
 - (void)cellDidGrowToHeight:(CGFloat)height;
 - (void)cellDidShrink;
