@@ -110,8 +110,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
 
-    float latitude = 40.714224;
-    float longitude = -73.961452;
+    float latitude = 44.741802;
+    float longitude = -85.662872;
     
     CLLocation *location = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
     CLGeocoder *test = [[CLGeocoder alloc] init];
