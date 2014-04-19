@@ -96,6 +96,9 @@
     swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
     
     [self.photoDisplayView addGestureRecognizer:swipeUp];
+    
+    [self.selectedCell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [self.selectedCell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
     [_masterScroll setScrollEnabled:NO];
     [_masterScroll setUserInteractionEnabled:NO];
 }
@@ -106,8 +109,7 @@
         for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
             [self.photoDisplayView removeGestureRecognizer:recognizer];
         }
-        [_masterScroll setScrollEnabled:YES];
-        [_masterScroll setUserInteractionEnabled:YES];
+        
         
         [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
         
@@ -124,6 +126,8 @@
                 [returnImage removeFromSuperview];
                 [self.selectedCell.contentView addSubview:returnImage];
                 returnImage.frame = CGRectMake(0, 0, 320, 320);
+                [_masterScroll setScrollEnabled:YES];
+                [_masterScroll setUserInteractionEnabled:YES];
             }];
         }];
     }
