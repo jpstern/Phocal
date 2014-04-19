@@ -98,66 +98,31 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 {
 
     MomentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];
-    
     //ImageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];// forIndexPath:indexPath];
-    
-    
-    
     if (!cell)
         
         //cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
-        
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
-    
-    
-    
     [cell.image setImageWithURL:[NSURL URLWithString:_photoURLs[indexPath.row]]];
-    
-    
-    
     //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
-    
-    
-    
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
-    
-    
-    
-    
-    
+
     float latitude = 40.714224;
-    
     float longitude = -73.961452;
     
     CLLocation *location = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
-    
     CLGeocoder *test = [[CLGeocoder alloc] init];
     
     [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
-        
-        //do something
-        
         NSLog(@"%@",placemarks);
-        
         CLPlacemark *placemark = placemarks[0];
-        
         NSDictionary *dic = placemark.addressDictionary;
-        
         NSArray *address = dic[@"FormattedAddressLines"];
-        
         NSString *first = address[0];
-        
         NSString *second = address[1];
-        
         cell.label.text = first;
-        
         cell.label2.text = second;
-        
-        
-        
-        
         
     }];
     
