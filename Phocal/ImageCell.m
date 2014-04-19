@@ -19,7 +19,8 @@
         // Initialization code
         self.clipsToBounds = YES;
         self.layer.masksToBounds = YES;
-        _photoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        _photoView =
+            [[IndexUIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         _photoView.contentMode = UIViewContentModeScaleAspectFill;
     }
     return self;

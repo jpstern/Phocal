@@ -46,10 +46,11 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
         self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     
-      self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(Print_Message)];
+      self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(goToCamera)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
-      self.title = @"Photos";
-      
+      self.title = @"My Moments";
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+
     [self refreshPhotos];
     
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
@@ -58,13 +59,14 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     }
 }
 
-- (void)Print_Message
+- (void)goToCamera
 {
     [[self.masterViewController masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
     
 }
 
 - (void)refreshPhotos {
+    NSLog(@"refresh");
     [self.refreshControl beginRefreshing];
     
     [[PhocalCore sharedClient] getPhotos:^(NSArray * photos) {
@@ -74,7 +76,9 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         }
         NSMutableArray *urls = [[NSMutableArray alloc] init];
         for (NSDictionary* photoDict in photos) {
-            [urls addObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"id"]]];
+            NSMutableDictionary *dummy = [[NSMutableDictionary alloc] init];
+            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"id"]] forKey:@"URL"];
+            [urls addObject:dummy];
         }
         _photoURLs = urls;
 
@@ -103,28 +107,37 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         
         //cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
-    [cell.image setImageWithURL:[NSURL URLWithString:_photoURLs[indexPath.row]]];
+    [cell.image setImageWithURL:[NSURL URLWithString:[_photoURLs[indexPath.row] objectForKey:@"URL"]]];
     //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
 
-    float latitude = 40.714224;
-    float longitude = -73.961452;
+    float latitude = 44.741802;
+    float longitude = -85.662872;
     
     CLLocation *location = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
     CLGeocoder *test = [[CLGeocoder alloc] init];
-    
-    [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
-        NSLog(@"%@",placemarks);
-        CLPlacemark *placemark = placemarks[0];
-        NSDictionary *dic = placemark.addressDictionary;
-        NSArray *address = dic[@"FormattedAddressLines"];
-        NSString *first = address[0];
-        NSString *second = address[1];
-        cell.label.text = first;
-        cell.label2.text = second;
-        
-    }];
+    if ([_photoURLs[indexPath.row] objectForKey:@"first"]!=nil){
+        cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"first"];
+        cell.label2.text = [_photoURLs[indexPath.row] objectForKey:@"second"];
+    }else{
+        [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
+            NSLog(@"%@",placemarks);
+            CLPlacemark *placemark = placemarks[0];
+            NSDictionary *dic = placemark.addressDictionary;
+            NSArray *address = dic[@"FormattedAddressLines"];
+            NSString *first = address[0];
+            NSString *second = address[1];
+            cell.label.text = first;
+            cell.label2.text = second;
+            [[_photoURLs objectAtIndex:indexPath.row] setObject:first forKey:@"first"];
+            [[_photoURLs objectAtIndex:indexPath.row] setObject:second forKey:@"second"];
+
+        }];
+
+    }
+    [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [cell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
     
     
     return cell;
@@ -181,12 +194,18 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 //}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //NSInteger row = tap.view.tag;
     
-      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     MomentCell *cell = (MomentCell *)[tableView cellForRowAtIndexPath:indexPath];
     self.tableView.scrollEnabled = NO;
-    [self.masterViewController displayPhoto:cell.image];
+
+    CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
+    CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
+    //oldRect.size.height -= labelHeight;
+    //oldRect.origin.y += labelHeight;
+    CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
+    //newRect.size.height -= 60;
+    [self.masterViewController displayPhotoInCell:cell inRect:newRect];
 
     //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
     
@@ -227,7 +246,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         return 300.0;
     }*/
     
-    return 380.0;
+    return 320;
 }
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(ImageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

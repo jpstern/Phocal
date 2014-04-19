@@ -13,7 +13,7 @@
 @interface ImageCell : UITableViewCell
 
 @property (nonatomic, strong) PhotosContainerView *container;
-@property (nonatomic, strong) UIImageView *photoView;
+@property (nonatomic, strong) IndexUIImageView *photoView;
 
 - (void)setPhotoURL:(NSString *)url;
 - (void)addPhotosWithFrame:(CGRect)rect AndPaths:(NSArray*)paths;

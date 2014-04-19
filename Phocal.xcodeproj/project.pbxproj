@@ -32,11 +32,12 @@
 		80EBE1A418F1C2CE0003620D /* PhotosContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A318F1C2CE0003620D /* PhotosContainerView.m */; };
 		80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A618F1CA1D0003620D /* DummyViewController.m */; };
 		80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A918F1DBB50003620D /* IndexUIImageView.m */; };
-		8B0FC72A190319950030AB94 /* MomentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B0FC729190319950030AB94 /* MomentCell.m */; };
 		8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */; };
+		B30833C819032CB6000CBA99 /* MomentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B30833C719032CB6000CBA99 /* MomentCell.m */; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
 		F542BFA81903219000DFB2BE /* LocationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA71903219000DFB2BE /* LocationDelegate.m */; };
 		F542BFAB190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */; };
+		F542BFAE1903382100DFB2BE /* MomentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFAD1903382100DFB2BE /* MomentCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,8 +90,6 @@
 		80EBE1A618F1CA1D0003620D /* DummyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DummyViewController.m; sourceTree = "<group>"; };
 		80EBE1A818F1DBB50003620D /* IndexUIImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexUIImageView.h; sourceTree = "<group>"; };
 		80EBE1A918F1DBB50003620D /* IndexUIImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexUIImageView.m; sourceTree = "<group>"; };
-		8B0FC728190319950030AB94 /* MomentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MomentCell.h; path = ../MomentCell.h; sourceTree = "<group>"; };
-		8B0FC729190319950030AB94 /* MomentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MomentCell.m; path = ../MomentCell.m; sourceTree = "<group>"; };
 		8B7CDE8918F27C97004CE666 /* LikeGestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LikeGestureView.h; sourceTree = "<group>"; };
 		8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeGestureView.m; sourceTree = "<group>"; };
 		A10B80E192C6433D8F741B0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,6 +98,8 @@
 		F542BFA71903219000DFB2BE /* LocationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationDelegate.m; sourceTree = "<group>"; };
 		F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+ImageMetadata.m"; sourceTree = "<group>"; };
 		F542BFAA190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+ImageMetadata.h"; sourceTree = "<group>"; };
+		F542BFAC1903382100DFB2BE /* MomentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MomentCell.h; sourceTree = "<group>"; };
+		F542BFAD1903382100DFB2BE /* MomentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MomentCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,12 +165,12 @@
 		80EA82F518E5D22D00981338 /* Phocal */ = {
 			isa = PBXGroup;
 			children = (
+				F542BFAC1903382100DFB2BE /* MomentCell.h */,
+				F542BFAD1903382100DFB2BE /* MomentCell.m */,
 				F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */,
 				F542BFAA190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.h */,
 				F542BFA61903219000DFB2BE /* LocationDelegate.h */,
 				F542BFA71903219000DFB2BE /* LocationDelegate.m */,
-				8B0FC728190319950030AB94 /* MomentCell.h */,
-				8B0FC729190319950030AB94 /* MomentCell.m */,
 				808AAA711903011B00D5C511 /* UIViewController+Master.h */,
 				808AAA721903011B00D5C511 /* UIViewController+Master.m */,
 				8B7CDE8918F27C97004CE666 /* LikeGestureView.h */,
@@ -287,6 +288,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = Josh;
 				TargetAttributes = {
+					80EA82EB18E5D22D00981338 = {
+						DevelopmentTeam = WK4AXX367F;
+					};
 					80EA830C18E5D22D00981338 = {
 						TestTargetID = 80EA82EB18E5D22D00981338;
 					};
@@ -377,9 +381,10 @@
 				80EBE1A418F1C2CE0003620D /* PhotosContainerView.m in Sources */,
 				F542BFA81903219000DFB2BE /* LocationDelegate.m in Sources */,
 				80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */,
+				F542BFAE1903382100DFB2BE /* MomentCell.m in Sources */,
 				80EA833218E727CD00981338 /* CameraViewController.m in Sources */,
 				8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */,
-				8B0FC72A190319950030AB94 /* MomentCell.m in Sources */,
+				B30833C819032CB6000CBA99 /* MomentCell.m in Sources */,
 				72A3BB5218F1BE6400B06A0F /* PhotosListViewController.m in Sources */,
 				80EA82FC18E5D22D00981338 /* main.m in Sources */,
 				72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */,
@@ -512,11 +517,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phocal/Phocal-Prefix.pch";
 				INFOPLIST_FILE = "Phocal/Phocal-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -527,11 +535,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Phocal/Phocal-Prefix.pch";
 				INFOPLIST_FILE = "Phocal/Phocal-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
