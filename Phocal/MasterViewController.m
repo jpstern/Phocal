@@ -34,6 +34,7 @@
     
     _masterScroll.contentSize = CGSizeMake(640, self.view.frame.size.height);
     _masterScroll.pagingEnabled = YES;
+    _masterScroll.bounces = NO;
     
     UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
     PhotosListViewController *viewController = [[PhotosListViewController alloc] initWithStyle:UITableViewStylePlain];

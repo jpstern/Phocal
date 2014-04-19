@@ -12,8 +12,9 @@
 
 @class LikeGestureView;
 
-@interface PhotosContainer : UIView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+@interface PhotosContainerView : UIView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
+@property (nonatomic, strong) UIView* imageViewerPane;
 @property (nonatomic, strong) IndexUIImageView *masterImageView;
 @property (nonatomic, strong) NSMutableArray *imageViews;
 
