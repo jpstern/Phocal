@@ -33,25 +33,15 @@ const int kScrollHeight = 100;
             // Empty.
         }];
         
-
-        
         _imageViews = [[NSMutableArray alloc] init];
         _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 300)];
 
         _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;
         
-        CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
-        CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
-        CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
-        //UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
-        
         self.masterImageView = [[IndexUIImageView alloc] initWithFrame:self.frame];
-        [self.masterImageView addGestureRecognizer:
-            [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(takeDownViewer:)]];
         self.masterImageView.contentMode = UIViewContentModeScaleAspectFill;
         [self.masterImageView setImage:imageView.image];
-        //self.masterImageView.frame = imageView.frame;
         [self addSubview:self.masterImageView];
         
         self.masterImageView.sortIndex = 0;
@@ -60,12 +50,6 @@ const int kScrollHeight = 100;
     }
     
     return self;
-}
-
-- (void)takeDownViewer:(UISwipeGestureRecognizer *)gesture {
-    if (gesture.direction == UISwipeGestureRecognizerDirectionUp) {
-        [self removeFromSuperview];
-    }
 }
 
 - (void)cellDidGrowToHeight:(CGFloat)height {

@@ -12,6 +12,7 @@
 #import "MasterViewController.h"
 #import "PhotosContainerView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "UIViewController+Master.h"
 
 NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
@@ -57,9 +58,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 - (void)Print_Message
 {
-    [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
-  
-
+    [[self.masterViewController masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
     
 }
 
@@ -169,15 +168,10 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //NSInteger row = tap.view.tag;
-    
-    NSLog(@"tapped");
-    
+        
     ImageCell *cell = (ImageCell *)[tableView cellForRowAtIndexPath:indexPath];
-    PhotosContainerView* displayView = [[PhotosContainerView alloc] initWithFrame:self.navigationController.view.window.frame
-                                                                     andImageView:cell.imageView];
-    [self.view addSubview:displayView];
     self.tableView.scrollEnabled = NO;
-    [[(MasterViewController*)_master masterScroll] setScrollEnabled:NO];
+    [self.masterViewController displayPhoto:cell.photoView];
 
     //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
     
