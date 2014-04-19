@@ -48,7 +48,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
       self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(goToCamera)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
-      self.title = @"Photos";
+      self.title = @"My Moments";
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     [self refreshPhotos];
