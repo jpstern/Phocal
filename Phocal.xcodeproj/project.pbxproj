@@ -34,8 +34,10 @@
 		80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EBE1A918F1DBB50003620D /* IndexUIImageView.m */; };
 		8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */; };
 		B30833C819032CB6000CBA99 /* MomentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B30833C719032CB6000CBA99 /* MomentCell.m */; };
-		B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
+		F542BFA81903219000DFB2BE /* LocationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA71903219000DFB2BE /* LocationDelegate.m */; };
+		F542BFAB190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */; };
+		F542BFAE1903382100DFB2BE /* MomentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFAD1903382100DFB2BE /* MomentCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,11 +93,13 @@
 		8B7CDE8918F27C97004CE666 /* LikeGestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LikeGestureView.h; sourceTree = "<group>"; };
 		8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeGestureView.m; sourceTree = "<group>"; };
 		A10B80E192C6433D8F741B0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		B30833C619032CB6000CBA99 /* MomentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MomentCell.h; sourceTree = "<group>"; };
-		B30833C719032CB6000CBA99 /* MomentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MomentCell.m; sourceTree = "<group>"; };
-		B358F20E18F3A10A00B52461 /* DatabaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseDelegate.h; sourceTree = "<group>"; };
-		B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseDelegate.m; sourceTree = "<group>"; };
 		F19AE05970974A588932E45D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		F542BFA61903219000DFB2BE /* LocationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationDelegate.h; sourceTree = "<group>"; };
+		F542BFA71903219000DFB2BE /* LocationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationDelegate.m; sourceTree = "<group>"; };
+		F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+ImageMetadata.m"; sourceTree = "<group>"; };
+		F542BFAA190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+ImageMetadata.h"; sourceTree = "<group>"; };
+		F542BFAC1903382100DFB2BE /* MomentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MomentCell.h; sourceTree = "<group>"; };
+		F542BFAD1903382100DFB2BE /* MomentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MomentCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,8 +165,12 @@
 		80EA82F518E5D22D00981338 /* Phocal */ = {
 			isa = PBXGroup;
 			children = (
-				B30833C619032CB6000CBA99 /* MomentCell.h */,
-				B30833C719032CB6000CBA99 /* MomentCell.m */,
+				F542BFAC1903382100DFB2BE /* MomentCell.h */,
+				F542BFAD1903382100DFB2BE /* MomentCell.m */,
+				F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */,
+				F542BFAA190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.h */,
+				F542BFA61903219000DFB2BE /* LocationDelegate.h */,
+				F542BFA71903219000DFB2BE /* LocationDelegate.m */,
 				808AAA711903011B00D5C511 /* UIViewController+Master.h */,
 				808AAA721903011B00D5C511 /* UIViewController+Master.m */,
 				8B7CDE8918F27C97004CE666 /* LikeGestureView.h */,
@@ -171,8 +179,6 @@
 				72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */,
 				72A3BB5018F1BE6400B06A0F /* ImageCell.h */,
 				72A3BB5118F1BE6400B06A0F /* ImageCell.m */,
-				B358F20E18F3A10A00B52461 /* DatabaseDelegate.h */,
-				B358F20F18F3A10B00B52461 /* DatabaseDelegate.m */,
 				80EA82FE18E5D22D00981338 /* AppDelegate.h */,
 				80EA82FF18E5D22D00981338 /* AppDelegate.m */,
 				80EA830118E5D22D00981338 /* Main.storyboard */,
@@ -283,7 +289,7 @@
 				ORGANIZATIONNAME = Josh;
 				TargetAttributes = {
 					80EA82EB18E5D22D00981338 = {
-						DevelopmentTeam = 4UPP947FXM;
+						DevelopmentTeam = WK4AXX367F;
 					};
 					80EA830C18E5D22D00981338 = {
 						TestTargetID = 80EA82EB18E5D22D00981338;
@@ -370,11 +376,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				80EA830618E5D22D00981338 /* ViewController.m in Sources */,
-				B358F21018F3A10B00B52461 /* DatabaseDelegate.m in Sources */,
 				80EA830018E5D22D00981338 /* AppDelegate.m in Sources */,
 				80EA832A18E7220800981338 /* MasterViewController.m in Sources */,
 				80EBE1A418F1C2CE0003620D /* PhotosContainerView.m in Sources */,
+				F542BFA81903219000DFB2BE /* LocationDelegate.m in Sources */,
 				80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */,
+				F542BFAE1903382100DFB2BE /* MomentCell.m in Sources */,
 				80EA833218E727CD00981338 /* CameraViewController.m in Sources */,
 				8B7CDE8B18F27C97004CE666 /* LikeGestureView.m in Sources */,
 				B30833C819032CB6000CBA99 /* MomentCell.m in Sources */,
@@ -383,6 +390,7 @@
 				72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */,
 				80EBE1A718F1CA1D0003620D /* DummyViewController.m in Sources */,
 				80EA832618E60FAC00981338 /* PhocalCore.m in Sources */,
+				F542BFAB190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m in Sources */,
 				808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
