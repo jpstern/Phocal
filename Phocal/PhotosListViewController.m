@@ -47,10 +47,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
       
     [self refreshPhotos];
     
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
-    {
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        
         self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.extendedLayoutIncludesOpaqueBars = YES;
+        
     }
+    
 }
 
 - (void)Print_Message

@@ -79,22 +79,30 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+//    
+    CGFloat width = scrollView.frame.size.width;
+    NSInteger pageRounded = (scrollView.contentOffset.x + (0.5f * width)) / width;
     
-    int page = scrollView.contentOffset.x / scrollView.frame.size.width;
+    NSInteger page = scrollView.contentOffset.x / scrollView.frame.size.width;
+    
+//    if (page == 0 && pageRounded == 0) {
+//        
+//        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+//    }
+//    else {
+//        
+//        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+//    }
     
     if (page == 0) {
         
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
     }
     else {
         
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
 }
-
-
-
-
 
 - (void)didReceiveMemoryWarning
 {
