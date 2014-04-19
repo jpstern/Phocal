@@ -9,6 +9,7 @@
 #import "CameraViewController.h"
 
 #import "MasterViewController.h"
+#import "LocationDelegate.h"
 
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
@@ -131,9 +132,7 @@
 - (void)photoView
 {
     [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(0,0) animated:YES];
-    
-    
-    
+
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
@@ -173,29 +172,44 @@
         
     AVCaptureConnection *connection = [_output connectionWithMediaType:AVMediaTypeVideo];
     
-    [_output captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+    [[LocationDelegate sharedInstance] refresh:^(CLLocation *loc) {
         
-        // trivial simple JPEG case
-        NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
-                                                                    imageDataSampleBuffer,
-                                                                    kCMAttachmentMode_ShouldPropagate);
-        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-            if (error) {
-                //                    [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
-              return;
-            }
+        [_output captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
             
-            NSLog(@"Took picture");
+            // violently stolen from here:
+            // http://stackoverflow.com/questions/5125323/problem-setting-exif-data-for-an-image
+            CFDictionaryRef metaDict = CMCopyDictionaryOfAttachments(NULL, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
+            CFMutableDictionaryRef mutable = CFDictionaryCreateMutableCopy(NULL, 0, metaDict);
             
-            [[PhocalCore sharedClient] postPhoto:jpegData];
+            NSMutableDictionary * mutableGPS = [self getGPSDictionaryForLocation:loc];
+            CFDictionarySetValue(mutable, kCGImagePropertyGPSDictionary, (__bridge const void *)(mutableGPS));
+            
+            // set the dictionary back to the buffer
+            CMSetAttachments(imageDataSampleBuffer, mutable, kCMAttachmentMode_ShouldPropagate);
+            
+            // trivial simple JPEG case
+            NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+            CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
+                                                                        imageDataSampleBuffer,
+                                                                        kCMAttachmentMode_ShouldPropagate);
+            ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+            [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
+                if (error) {
+                    //                    [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
+                    return;
+                }
+                
+                NSLog(@"Took picture");
+                
+                [[PhocalCore sharedClient] postPhoto:jpegData];
+            }];
+            
+            if (attachments)
+                CFRelease(attachments);
+            
         }];
-        
-        if (attachments)
-            CFRelease(attachments);
-        
     }];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -204,15 +218,67 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+//http://stackoverflow.com/questions/3884060/saving-geotag-info-with-photo-on-ios4-1/5314634#5314634
+- (NSMutableDictionary *)getGPSDictionaryForLocation:(CLLocation *)location {
+    NSMutableDictionary *gps = [NSMutableDictionary dictionary];
+    
+    // GPS tag version
+    [gps setObject:@"2.2.0.0" forKey:(NSString *)kCGImagePropertyGPSVersion];
+    
+    // Time and date must be provided as strings, not as an NSDate object
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss.SSSSSS"];
+    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSTimeStamp];
+    [formatter setDateFormat:@"yyyy:MM:dd"];
+    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSDateStamp];
+    
+    // Latitude
+    CGFloat latitude = location.coordinate.latitude;
+    if (latitude < 0) {
+        latitude = -latitude;
+        [gps setObject:@"S" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
+    } else {
+        [gps setObject:@"N" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
+    }
+    [gps setObject:[NSNumber numberWithFloat:latitude] forKey:(NSString *)kCGImagePropertyGPSLatitude];
+    
+    // Longitude
+    CGFloat longitude = location.coordinate.longitude;
+    if (longitude < 0) {
+        longitude = -longitude;
+        [gps setObject:@"W" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
+    } else {
+        [gps setObject:@"E" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
+    }
+    [gps setObject:[NSNumber numberWithFloat:longitude] forKey:(NSString *)kCGImagePropertyGPSLongitude];
+    
+    // Altitude
+    CGFloat altitude = location.altitude;
+    if (!isnan(altitude)){
+        if (altitude < 0) {
+            altitude = -altitude;
+            [gps setObject:@"1" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+        } else {
+            [gps setObject:@"0" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+        }
+        [gps setObject:[NSNumber numberWithFloat:altitude] forKey:(NSString *)kCGImagePropertyGPSAltitude];
+    }
+    
+    // Speed, must be converted from m/s to km/h
+    if (location.speed >= 0){
+        [gps setObject:@"K" forKey:(NSString *)kCGImagePropertyGPSSpeedRef];
+        [gps setObject:[NSNumber numberWithFloat:location.speed*3.6] forKey:(NSString *)kCGImagePropertyGPSSpeed];
+    }
+    
+    // Heading
+    if (location.course >= 0){
+        [gps setObject:@"T" forKey:(NSString *)kCGImagePropertyGPSTrackRef];
+        [gps setObject:[NSNumber numberWithFloat:location.course] forKey:(NSString *)kCGImagePropertyGPSTrack];
+    }
+    
+    return gps;
 }
-*/
 
 @end
