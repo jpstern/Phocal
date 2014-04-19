@@ -10,6 +10,7 @@
 
 @interface MasterViewController : UIViewController
 
+
 @property (nonatomic, strong) IBOutlet UIScrollView *masterScroll;
 
 @end

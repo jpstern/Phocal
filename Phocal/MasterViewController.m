@@ -75,7 +75,7 @@
     [_masterScroll addSubview:cameraViewControllerView];
    
     [self addChildViewController:camera];
-    
+
     
  
     

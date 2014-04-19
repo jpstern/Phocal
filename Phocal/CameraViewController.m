@@ -70,7 +70,7 @@
     
     
     UIButton *photoViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIImage *photoIcon = [UIImage imageNamed:@"photoIcon"];
+    UIImage *photoIcon = [UIImage imageNamed:@"list"];
     
     
     
@@ -81,6 +81,52 @@
     [photoViewButton addTarget:self action:@selector(photoView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:photoViewButton];
     
+    UIButton *uploadViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
+   // UIImage *uploadIcon = [UIImage imageNamed:@"arrow"];
+    
+    ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
+    [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop)
+    {
+            if (nil != group && group.numberOfAssets!=0)
+            {
+                
+                [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+                [group enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndex:group.numberOfAssets - 1]
+                options:0
+                usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop)
+                {
+                    if (nil != result)
+                    {
+                        ALAssetRepresentation *repr = [result defaultRepresentation];
+                        UIImage *uploadIcon = [UIImage imageWithCGImage:[repr fullResolutionImage]];
+                        [uploadViewButton setImage:uploadIcon forState:UIControlStateNormal];
+                        [uploadViewButton addTarget:self action:@selector(albumView) forControlEvents:UIControlEventTouchUpInside];
+                        [self.view addSubview:uploadViewButton];
+                        uploadViewButton.frame = CGRectMake(270, pos, 44, 44);
+
+                        *stop = YES;
+                        }
+                }];
+            }
+            else
+            {
+                uploadViewButton.hidden=YES;
+            }
+        
+                                     
+            *stop = NO;
+    }
+    failureBlock:^(NSError *error)
+    {
+        NSLog(@"error: %@", error);
+    }];
+    
+    
+   // uploadViewButton.tintColor = [UIColor whiteColor];
+    
+    //    [photoViewButton setTitle:@"Photos" forState:UIControlStateNormal];
+    
+    
 }
 
 - (void)photoView
@@ -90,6 +136,35 @@
     
     
 }
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
+    
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+    imagePicker.delegate = self;
+    imagePicker.sourceType = sourceType;
+    
+    [self presentViewController:imagePicker animated:YES completion:nil];
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    //do something with the image
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)albumView
+{
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+}
+
 
 - (void)takePhoto {
         
