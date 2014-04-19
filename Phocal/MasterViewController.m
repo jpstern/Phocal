@@ -66,11 +66,8 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    
-    CGFloat width = scrollView.frame.size.width;
-    NSInteger pageRounded = (scrollView.contentOffset.x + (0.5f * width)) / width;
     
-    NSInteger page = scrollView.contentOffset.x / scrollView.frame.size.width;
+    int page = scrollView.contentOffset.x / scrollView.frame.size.width;
     
 //    if (page == 0 && pageRounded == 0) {
 //        
@@ -88,6 +85,35 @@
     else {
         
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    }
+}
+
+- (void)displayPhoto:(UIImageView *)imageView {
+    NSLog(@"Display photo.");
+    
+    self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:self.view.window.frame
+                                                                     andImageView:imageView];
+    [self.view addSubview:self.photoDisplayView];
+
+    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                  action:@selector(takeDownViewer:)];
+    swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
+    
+    [self.photoDisplayView addGestureRecognizer:swipeUp];
+    [_masterScroll setScrollEnabled:NO];
+    [_masterScroll setUserInteractionEnabled:NO];
+}
+
+- (void)takeDownViewer:(UISwipeGestureRecognizer *)gesture {
+    if (gesture.direction == UISwipeGestureRecognizerDirectionUp) {
+        [self.photoDisplayView removeFromSuperview];
+        for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
+            [self.photoDisplayView removeGestureRecognizer:recognizer];
+        }
+        [_masterScroll setScrollEnabled:YES];
+        [_masterScroll setUserInteractionEnabled:YES];
+        
+        [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
     }
 }
 

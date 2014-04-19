@@ -72,7 +72,7 @@
     // Do any additional setup after loading the view.
 //    self.view.backgroundColor=[UIColor blackColor];
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    session.sessionPreset = AVCaptureSessionPreset640x480; // TODO: should be full qual.
+//    session.sessionPreset = AVCaptureSessionPreset640x480; // TODO: should be full qual.
     _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
     _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     _previewLayer.frame = CGRectMake(0, 0, 320, 320 + 40);
@@ -192,9 +192,9 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    NSData *imageData = UIImageJPEGRepresentation(image,1.0);
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.3);
     [[PhocalCore sharedClient] postPhoto:imageData];
-    [picker dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     
     //do something with the image
 }
@@ -305,7 +305,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         CGContextRotateCTM (bitmap, radians(-180.));
     }
     
-    CGContextDrawImage(bitmap, CGRectMake(0, rect.origin.y, rect.size.width, rect.size.height), imageRef);
+    CGContextDrawImage(bitmap, CGRectMake(0, 0, rect.size.width, rect.size.height), imageRef);
     CGImageRef ref = CGBitmapContextCreateImage(bitmap);
     
     UIImage *resultImage=[UIImage imageWithCGImage:ref];
