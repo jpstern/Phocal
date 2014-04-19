@@ -13,6 +13,8 @@
 #import "PhotosContainerView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "UIViewController+Master.h"
+#import "MomentCell.h"
+#import <CoreLocation/CoreLocation.h>
 
 NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
@@ -98,30 +100,77 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    ImageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];// forIndexPath:indexPath];
+    MomentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];
+    
+    //ImageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];// forIndexPath:indexPath];
+    
+    
     
     if (!cell)
-        cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
+        
+        //cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
+        
+        cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    
+    [cell.image setImageWithURL:[NSURL URLWithString:_photoURLs[indexPath.row]]];
+    
+    
+    
+    //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
+    
+    
+    
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     
-    [cell setPhotoURL:_photoURLs[indexPath.row]];
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
     
-    //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row], @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200" ]];
     
-    if (_idx == indexPath.row) {
-     
-        [cell.container cellDidGrowToHeight:300];
+    
+    
+    
+    float latitude = 40.714224;
+    
+    float longitude = -73.961452;
+    
+    CLLocation *location = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
+    
+    CLGeocoder *test = [[CLGeocoder alloc] init];
+    
+    [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
         
-    }
-    else {
+        //do something
         
-        [cell.container cellDidShrink];
-    }
+        NSLog(@"%@",placemarks);
+        
+        CLPlacemark *placemark = placemarks[0];
+        
+        NSDictionary *dic = placemark.addressDictionary;
+        
+        NSArray *address = dic[@"FormattedAddressLines"];
+        
+        NSString *first = address[0];
+        
+        NSString *second = address[1];
+        
+        cell.label.text = first;
+        
+        cell.label2.text = second;
+        
+        
+        
+        
+        
+    }];
+    
     
     return cell;
+    
 }
+
+
+
 
 /*- (void)cellTapped:(UITapGestureRecognizer*)tap {
     
@@ -171,10 +220,11 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //NSInteger row = tap.view.tag;
-        
-    ImageCell *cell = (ImageCell *)[tableView cellForRowAtIndexPath:indexPath];
+    
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    MomentCell *cell = (MomentCell *)[tableView cellForRowAtIndexPath:indexPath];
     self.tableView.scrollEnabled = NO;
-    [self.masterViewController displayPhoto:cell.photoView];
+    [self.masterViewController displayPhoto:cell.image];
 
     //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
     
@@ -215,7 +265,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         return 300.0;
     }*/
     
-    return 200.0;
+    return 320.0;
 }
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(ImageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
