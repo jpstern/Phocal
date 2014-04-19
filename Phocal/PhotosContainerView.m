@@ -35,7 +35,7 @@ const int kScrollHeight = 100;
         }];
         
         _imageViews = [[NSMutableArray alloc] init];
-        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 300)];
+        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 50, self.frame.size.width, 300)];
 
         _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;
@@ -47,7 +47,7 @@ const int kScrollHeight = 100;
         [self addSubview:self.masterImageView];
         
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-            self.masterImageView.frame = CGRectMake(0, 100, 320, rect.size.height);
+            self.masterImageView.frame = CGRectMake(0, 50, 320, rect.size.height);
         } completion:^(BOOL finished) {
             // Empty.
         }];

@@ -113,9 +113,9 @@
         
         // Replace the photo.
         UIImageView* returnImage = self.photoDisplayView.masterImageView;
-        [_masterScroll addSubview:returnImage];
-        [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-            returnImage.frame = CGRectMake(0, -100, self.selectedRect.size.width, self.selectedRect.size.height);
+        [_masterScroll insertSubview:returnImage atIndex:3];
+        [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
+            returnImage.frame = CGRectMake(0, -50, self.selectedRect.size.width, self.selectedRect.size.height);
             //returnImage.frame = self.selectedRect;
         } completion:^(BOOL finished) {
             [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
@@ -123,7 +123,7 @@
             } completion:^(BOOL finished) {
                 [returnImage removeFromSuperview];
                 [self.selectedCell.contentView addSubview:returnImage];
-                returnImage.frame = CGRectMake( 0, 60, 320, 320);
+                returnImage.frame = CGRectMake(0, 0, 320, 320);
             }];
         }];
     }

@@ -54,14 +54,13 @@
     //[self.image setFrame:CGRectMake( 0,20, 320, 320)];
     
     
-    
     [self.contentView addSubview:self.image];
     
-    [self.image addSubview:self.label];
-    
-    [self.image addSubview:self.label2];
     [self.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
     [self.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [self.image addSubview:self.label];
+    [self.image addSubview:self.label2];
+
     return self;
     
 }
