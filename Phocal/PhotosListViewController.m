@@ -70,7 +70,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         NSMutableArray *urls = [[NSMutableArray alloc] init];
         for (NSDictionary* photoDict in photos) {
             NSMutableDictionary *dummy = [[NSMutableDictionary alloc] init];
-            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"id"]] forKey:@"URL"];
+            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
+                      forKey:@"URL"];
             [urls addObject:dummy];
         }
         _photoURLs = urls;
