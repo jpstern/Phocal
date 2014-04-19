@@ -77,6 +77,10 @@
     [self addChildViewController:camera];
 
     
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
     int page = scrollView.contentOffset.x / scrollView.frame.size.width;
     
     if (page == 0) {
