@@ -8,8 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MasterViewController : UIViewController
+@interface MasterViewController : UIViewController <UIScrollViewDelegate>
+
 
 @property (nonatomic, strong) IBOutlet UIScrollView *masterScroll;
+@property (nonatomic, strong) UIView* photoDisplayView;
+@property (nonatomic, strong) UINavigationController* navController;
+
+- (void)displayPhoto:(UIImageView *)imageView;
 
 @end

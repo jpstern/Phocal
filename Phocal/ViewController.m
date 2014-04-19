@@ -51,6 +51,7 @@
     
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
     //do something with the image
+    
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {

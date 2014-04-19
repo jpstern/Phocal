@@ -7,9 +7,14 @@
 //
 
 #import "PhotosListViewController.h"
+
 #import "ImageCell.h"
-#import <SDWebImage/UIImageView+WebCache.h>
 #import "MasterViewController.h"
+#import "PhotosContainerView.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIViewController+Master.h"
+#import "MomentCell.h"
+#import <CoreLocation/CoreLocation.h>
 
 NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
@@ -46,13 +51,16 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
       self.title = @"Photos";
       
     [self refreshPhotos];
+    
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+    {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
 }
 
 - (void)Print_Message
 {
-    [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
-  
-
+    [[self.masterViewController masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
     
 }
 
@@ -89,41 +97,77 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    ImageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];// forIndexPath:indexPath];
+    MomentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];
+    
+    //ImageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];// forIndexPath:indexPath];
+    
+    
     
     if (!cell)
-        cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
+        
+        //cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
+        
+        cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    [cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row], @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200" ]];
-
+    
+    [cell.image setImageWithURL:[NSURL URLWithString:_photoURLs[indexPath.row]]];
+    
+    
+    
+    //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
+    
+    
+    
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
     
-//    cell.imageView.frame= CGRectMake(3, 5, 314, 200);
-//    cell.frame = CGRectMake(3, 5, 314, 200);
     
-    if (_idx == indexPath.row) {
-     
-        [cell.container cellDidGrowToHeight:300];
+    
+    
+    
+    float latitude = 40.714224;
+    
+    float longitude = -73.961452;
+    
+    CLLocation *location = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
+    
+    CLGeocoder *test = [[CLGeocoder alloc] init];
+    
+    [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
         
-    }
-    else {
+        //do something
         
-        [cell.container cellDidShrink];
-    }
-
-//
-//    UIImage *image = [UIImage imageNamed:@"Portofino-wallpapers.jpg"];
-//    
-//    
-//    cell.imageView.frame= CGRectMake(3, 5, 320, 200);
-//    cell.frame = CGRectMake(3, 5, 320, 200);
-//    [cell.imageView setImage:image];
-//    
+        NSLog(@"%@",placemarks);
+        
+        CLPlacemark *placemark = placemarks[0];
+        
+        NSDictionary *dic = placemark.addressDictionary;
+        
+        NSArray *address = dic[@"FormattedAddressLines"];
+        
+        NSString *first = address[0];
+        
+        NSString *second = address[1];
+        
+        cell.label.text = first;
+        
+        cell.label2.text = second;
+        
+        
+        
+        
+        
+    }];
+    
+    
     return cell;
+    
 }
+
+
+
 
 /*- (void)cellTapped:(UITapGestureRecognizer*)tap {
     
@@ -174,14 +218,15 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //NSInteger row = tap.view.tag;
     
-    NSLog(@"tapped");
-    
-    ImageCell *cell = (ImageCell *)[tableView cellForRowAtIndexPath:indexPath];
-    
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    MomentCell *cell = (MomentCell *)[tableView cellForRowAtIndexPath:indexPath];
+    self.tableView.scrollEnabled = NO;
+    [self.masterViewController displayPhoto:cell.image];
+
     //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
     
     //Newly Selected Cell
-    if(_idx!=indexPath.row)
+    /*if(_idx!=indexPath.row)
     {
         _idx=indexPath.row;
         
@@ -203,21 +248,21 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     [self.tableView endUpdates];
     
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [cell setSelected:NO];
+    [cell setSelected:NO];*/
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if(_idx!=-1 && indexPath.row==_idx)
+    /*if(_idx!=-1 && indexPath.row==_idx)
     {
         
         CGRect screenRect = [[UIScreen mainScreen]bounds];
         CGFloat screenHeight = screenRect.size.height;
-        return screenHeight;
-    }
+        return 300.0;
+    }*/
     
-    return 200.0;
+    return 380.0;
 }
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(ImageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
