@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
+#import "ImageCell.h"
 #import "MasterViewController.h"
 #import "PhotosContainerView.h"
 #import "PhotosListViewController.h"
@@ -78,13 +79,16 @@
     }
 }
 
-- (void)displayPhoto:(UIImageView *)imageView {
+- (void)displayPhotoInCell:(ImageCell *)imageCell inRect:(CGRect)rect {
     NSLog(@"Display photo.");
     
-    self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:self.view.window.frame
-                                                                     andImageView:imageView];
+    self.selectedCell = imageCell;
+    self.selectedRect = rect;
+    self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window
+                                                           andImageView:imageCell.photoView
+                                                                 inRect:rect];
     [self.view addSubview:self.photoDisplayView];
-
+    
     UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                   action:@selector(takeDownViewer:)];
     swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
@@ -104,6 +108,22 @@
         [_masterScroll setUserInteractionEnabled:YES];
         
         [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
+        
+        // Replace the photo.
+        UIImageView* returnImage = self.photoDisplayView.masterImageView;
+        [_masterScroll addSubview:returnImage];
+        [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+            returnImage.frame = CGRectMake(0, -100, self.selectedRect.size.width, self.selectedRect.size.height);
+            //returnImage.frame = self.selectedRect;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+                returnImage.frame = self.selectedRect;
+            } completion:^(BOOL finished) {
+                [returnImage removeFromSuperview];
+                [self.selectedCell.contentView addSubview:returnImage];
+                returnImage.frame = CGRectMake(0, 0, self.selectedCell.bounds.size.width, self.selectedCell.bounds.size.height);
+            }];
+        }];
     }
 }
 

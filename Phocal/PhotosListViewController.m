@@ -63,6 +63,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 }
 
 - (void)refreshPhotos {
+    NSLog(@"refresh");
     [self.refreshControl beginRefreshing];
     
     [[PhocalCore sharedClient] getPhotos:^(NSArray * photos) {
@@ -171,7 +172,10 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         
     ImageCell *cell = (ImageCell *)[tableView cellForRowAtIndexPath:indexPath];
     self.tableView.scrollEnabled = NO;
-    [self.masterViewController displayPhoto:cell.photoView];
+    CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
+    CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
+    //newRect.size.height -= 60;
+    [self.masterViewController displayPhotoInCell:cell inRect:newRect];
 
     //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
     

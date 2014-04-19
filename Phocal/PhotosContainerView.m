@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
+#import "ImageCell.h"
 #import "LikeGestureView.h"
 #import "PhotosContainerView.h"
 
@@ -20,15 +21,15 @@ const int kScrollHeight = 100;
 
 @implementation PhotosContainerView
 
-- (id)initWithFrame:(CGRect)frame andImageView:(UIImageView *)imageView {
+- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView inRect:(CGRect)rect {
     
-    self = [super initWithFrame:frame];
+    self = [super initWithFrame:window.frame];
     
     if (self) {
-        self.frame = frame;
+        self.frame = window.frame;
         
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-            self.backgroundColor = [UIColor darkGrayColor];
+            self.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
         } completion:^(BOOL finished) {
             // Empty.
         }];
@@ -39,12 +40,26 @@ const int kScrollHeight = 100;
         _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;
         
-        self.masterImageView = [[IndexUIImageView alloc] initWithFrame:self.frame];
-        self.masterImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [self.masterImageView setImage:imageView.image];
+        self.masterImageView = imageView;
+        self.masterImageView.sortIndex = 0;
+        [self.masterImageView removeFromSuperview];
+        self.masterImageView.frame = rect;
         [self addSubview:self.masterImageView];
         
-        self.masterImageView.sortIndex = 0;
+        [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+            self.masterImageView.frame = CGRectMake(0, 100, 320, rect.size.height);
+        } completion:^(BOOL finished) {
+            // Empty.
+        }];
+        
+        // Now add the like view.
+        [self addSubview:_likeView];
+        
+        // Add the scroll view.
+        _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, window.bounds.size.height-kScrollHeight, 320, kScrollHeight)];
+        _imageScroll.delegate = self;
+        _imageScroll.contentSize = CGSizeMake(900, kScrollHeight);
+        [self addSubview:_imageScroll];
         
         //_imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
     }
@@ -63,20 +78,6 @@ const int kScrollHeight = 100;
     } completion:^(BOOL finished) {
         // Empty.
     }];
-    
-    // Add the like view.
-    if (![[self subviews] containsObject:self.likeView]) {
-        [self addSubview:_likeView];
-    }
-    
-    _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, height-kScrollHeight, 320, kScrollHeight)];
-    _imageScroll.delegate = self;
-    //        _imageScroll.backgroundColor = [UIColor greenColor];
-    //        _imageScroll.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    //        _imageScroll.userInteractionEnabled = NO;
-    _imageScroll.contentSize = CGSizeMake(900, kScrollHeight);
-    [self addSubview:_imageScroll];
-    _imageScroll.scrollEnabled = NO;
 
     // Make the large image interactable.
     self.imageScroll.scrollEnabled = YES;
