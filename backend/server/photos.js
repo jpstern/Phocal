@@ -3,7 +3,7 @@ var  mongo         = require("./database.js"),
      path          = require('path'),
      async         = require('async'),
      fs            = require('fs'),
-     exif          = require('exif');
+     exif          = require('exif-parser');
 
      var s3 = require("knox").createClient({
          key: process.env.AWS_KEY,
@@ -44,7 +44,7 @@ module.exports = function() {
         if(!req.query.lng || !req.query.lat) {
             query = {};
         }
-        photos.find(query, {_id:0}).limit(20).toArray(function(err, docs) {
+        photos.find(query, {_id:0}).limit(20).sort({time:-1}).toArray(function(err, docs) {
             console.log(docs)
             for (var i in docs) {
                 var doc = docs[i];
@@ -96,52 +96,43 @@ module.exports = function() {
             callback("Invalid File");
         }
 
-        var metadata = {
-            id: file.hash,
-            size: file.size,
-            type: file.headers["content-type"],
-            loc: {
-                type: "Point",
-                coordinates: [
-                    // TODO: figure out how to do file location...
+        fs.readFile(file.path, function (err, data) {
+            var parser = require('exif-parser').create(data);
+            var exif = parser.parse();
 
-                    parseFloat(file.lng) || 0,
-                    parseFloat(file.lat) || 0
-                ]
-            },
-            time: file.time || new Date()
-        }
+            var metadata = {
+                id: file.hash,
+                size: file.size,
+                type: file.headers["content-type"],
+                loc: {
+                    type: "Point",
+                    coordinates: [
+                        // TODO: figure out how to do file location...
+                        parseFloat(exif.tags.GPSLongitude) || 0,
+                        parseFloat(exif.tags.GPSLatitude) || 0
+                    ]
+                },
+                time: new Date()
+            }
 
-        var ExifImage = exif.ExifImage;
-        new ExifImage({ image : file.path }, function (error, exifData) {
-            if (error) return callback(Error("Bad Image"));
-
-            metadata.exif = exifData;
-
-            var put = s3.put(metadata.id, {
+            var put = s3.putBuffer(data, metadata.id, {
                 'Content-Length': metadata.size,
                 'Content-Type': metadata.type,
                 'x-amz-acl': 'public-read' // ensure public
-            });
-
-            console.log("Posted Image URL:", put.url);
-
-            // TODO: see if we can use putStream.. don't use tmp file save.
-            fs.createReadStream(file.path).pipe(put);
-
-            put.on('error', function(err) {
-                callback(err);
-            });
-
-            put.on('response', function(res){
-                if (200 == res.statusCode) {
+            }, function(err, res) {
+                if (!err && 200 == res.statusCode) {
                     photos.insert(metadata, callback);
                 } else {
                     callback({"error": "Can't Save to S3"});
                 }
             });
 
+            console.log("Posted Image URL:", put.url);
+
         });
+
+
+
 
     }
 
