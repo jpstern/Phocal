@@ -11,4 +11,7 @@
 
 @interface CameraViewController : UIViewController
 
+
+@property (nonatomic,weak) id master;
+
 @end

@@ -31,6 +31,50 @@
             </objects>
             <point key="canvasLocation" x="-679" y="-196"/>
         </scene>
+        <!--Photos List View Controller - Root View Controller-->
+        <scene sceneID="KN0-f6-Wur">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ERV-Xb-s5e" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="cQP-Me-yK3" customClass="PhotosListViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="yic-y8-3Ho">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="8rs-Yh-G0H">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8rs-Yh-G0H" id="iyY-e5-yDb">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="cQP-Me-yK3" id="LHh-3B-gRn"/>
+                            <outlet property="delegate" destination="cQP-Me-yK3" id="Dam-jv-dsN"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="X5O-pN-FJL"/>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="-502" y="-875"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="XTs-Q4-Uad">
+            <objects>
+                <navigationController storyboardIdentifier="navController" definesPresentationContext="YES" id="GG5-xW-6h3" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="DNm-qT-aTq">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="cQP-Me-yK3" kind="relationship" relationship="rootViewController" id="jcY-YY-uxW"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1PF-u5-cY5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1036" y="-876"/>
+        </scene>
         <!--Table View Controller-->
         <scene sceneID="5Tp-Gf-lL5">
             <objects>
@@ -57,7 +101,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KeN-As-dD2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-155" y="-612"/>
+            <point key="canvasLocation" x="29" y="-980"/>
         </scene>
         <!--Camera View Controller-->
         <scene sceneID="JwT-SQ-xfd">
