@@ -76,10 +76,6 @@
    
     [self addChildViewController:camera];
     
-    
- 
-    
-    
 }
 
 

@@ -7,9 +7,11 @@
 //
 
 #import "PhotosListViewController.h"
+
 #import "ImageCell.h"
-#import <SDWebImage/UIImageView+WebCache.h>
 #import "MasterViewController.h"
+#import "PhotosContainerView.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
@@ -95,14 +97,11 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    [cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row], @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200" ]];
-
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     
+    [cell setPhotoURL:_photoURLs[indexPath.row]];
     
-//    cell.imageView.frame= CGRectMake(3, 5, 314, 200);
-//    cell.frame = CGRectMake(3, 5, 314, 200);
+    //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row], @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200" ]];
     
     if (_idx == indexPath.row) {
      
@@ -113,15 +112,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         
         [cell.container cellDidShrink];
     }
-
-//
-//    UIImage *image = [UIImage imageNamed:@"Portofino-wallpapers.jpg"];
-//    
-//    
-//    cell.imageView.frame= CGRectMake(3, 5, 320, 200);
-//    cell.frame = CGRectMake(3, 5, 320, 200);
-//    [cell.imageView setImage:image];
-//    
+    
     return cell;
 }
 
@@ -177,11 +168,16 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     NSLog(@"tapped");
     
     ImageCell *cell = (ImageCell *)[tableView cellForRowAtIndexPath:indexPath];
-    
+    PhotosContainerView* displayView = [[PhotosContainerView alloc] initWithFrame:self.navigationController.view.window.frame
+                                                                     andImageView:cell.imageView];
+    [self.view addSubview:displayView];
+    self.tableView.scrollEnabled = NO;
+    [[(MasterViewController*)_master masterScroll] setScrollEnabled:NO];
+
     //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
     
     //Newly Selected Cell
-    if(_idx!=indexPath.row)
+    /*if(_idx!=indexPath.row)
     {
         _idx=indexPath.row;
         
@@ -203,7 +199,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     [self.tableView endUpdates];
     
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [cell setSelected:NO];
+    [cell setSelected:NO];*/
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
