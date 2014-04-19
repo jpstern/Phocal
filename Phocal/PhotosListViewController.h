@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-
 @interface PhotosListViewController : UITableViewController
 
 @property (nonatomic,assign) NSInteger idx;

@@ -20,41 +20,33 @@ const int kScrollHeight = 100;
 
 @implementation PhotosContainerView
 
-- (id)initWithFrame:(CGRect)frame andImagePaths:(NSArray *)paths {
+- (id)initWithFrame:(CGRect)frame andImageView:(UIImageView *)imageView {
     
     self = [super initWithFrame:frame];
     
     if (self) {
-    
+        self.frame = frame;
+        
+        [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+            self.backgroundColor = [UIColor darkGrayColor];
+        } completion:^(BOOL finished) {
+            // Empty.
+        }];
+        
         _imageViews = [[NSMutableArray alloc] init];
         _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 300)];
 
-        _imagePaths = paths;
+        _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;
         
-        CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
-        CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
-        CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
-        UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
-        
-        self.masterImageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+        self.masterImageView = [[IndexUIImageView alloc] initWithFrame:self.frame];
         self.masterImageView.contentMode = UIViewContentModeScaleAspectFill;
+        [self.masterImageView setImage:imageView.image];
         [self addSubview:self.masterImageView];
         
-//        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
-//        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
         self.masterImageView.sortIndex = 0;
-//        mainImageView.backgroundColor = color;//[UIColor darkGrayColor];
-
-        //[_imageScroll addSubview:self.masterImageView];
         
-//        [_imageViews addObject:_masterImageView];
-        
-        NSString *rootPath = [paths firstObject];
-        NSURL *rootURL = [NSURL URLWithString:rootPath];
-        [_masterImageView setImageWithURL:rootURL placeholderImage:[UIImage imageNamed:@"placeholder"]];
-        
-        _imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
+        //_imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
     }
     
     return self;

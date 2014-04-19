@@ -7,6 +7,7 @@
 //
 
 #import "MasterViewController.h"
+#import "PhotosContainerView.h"
 #import "PhotosListViewController.h"
 #import "CameraViewController.h"
 #import "DummyViewController.h"
@@ -35,8 +36,6 @@
     _masterScroll.pagingEnabled = YES;
     _masterScroll.bounces = NO;
     _masterScroll.delegate = self;
-   
-    
     
     
     UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
@@ -45,31 +44,19 @@
    
     
     //UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-     UINavigationController *navViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"navController"];
+     self.navController = [self.storyboard instantiateViewControllerWithIdentifier:@"navController"];
     
-    navViewController.navigationBar.barTintColor = [UIColor colorWithRed:164/255.0 green:242/255.0 blue:217/255.0 alpha:1];
+    self.navController.navigationBar.barTintColor = [UIColor colorWithRed:164/255.0 green:242/255.0 blue:217/255.0 alpha:1];
   
-    
-    PhotosListViewController* pc = (PhotosListViewController*)[navViewController viewControllers][0];
-    
-    pc.master= self;
-    
-    
-    [viewControllerView addSubview:navViewController.view];
+    [viewControllerView addSubview:self.navController.view];
     
 
     [_masterScroll addSubview:viewControllerView];
-   
     
-    
-    [self addChildViewController:navViewController];
-  
-    
+    [self addChildViewController:self.navController];
     
     UIView *cameraViewControllerView = [[UIView alloc] initWithFrame:CGRectMake(320, 0, 320, self.view.frame.size.height)];
     CameraViewController *camera = [[CameraViewController alloc] init];
-    
-    camera.master=self;
     
     [cameraViewControllerView addSubview:camera.view];
     [_masterScroll addSubview:cameraViewControllerView];
