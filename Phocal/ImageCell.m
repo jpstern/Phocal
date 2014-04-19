@@ -10,23 +10,14 @@
 #import "ImageCell.h"
 
 @implementation ImageCell
-@synthesize imageView;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        
-//        imageView=[[UIImageView alloc]init];
-//        
-//        [self.contentView addSubview:imageView];
-        
-
         self.clipsToBounds = YES;
         self.layer.masksToBounds = YES;
-        
-        
     }
     return self;
 }
@@ -34,7 +25,7 @@
 - (void)addPhotosWithFrame:(CGRect)rect AndPaths:(NSArray *)paths {
     
     [_container removeFromSuperview];
-    _container = [[PhotosContainer alloc] initWithFrame:rect andImagePaths:paths];
+    _container = [[PhotosContainerView alloc] initWithFrame:rect andImagePaths:paths];
     [self.contentView addSubview:_container];
 }
 
@@ -47,11 +38,11 @@
     // Initialization code
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+/*- (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
-}
+}*/
 
 @end

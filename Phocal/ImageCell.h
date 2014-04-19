@@ -8,12 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#import "PhotosContainer.h"
+#import "PhotosContainerView.h"
 
 @interface ImageCell : UITableViewCell
 
-@property (nonatomic, strong) PhotosContainer *container;
-//@property (nonatomic,strong) UIImageView *imageView;
+@property (nonatomic, strong) PhotosContainerView *container;
 
 - (void)addPhotosWithFrame:(CGRect)rect AndPaths:(NSArray*)paths;
 

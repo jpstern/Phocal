@@ -33,6 +33,7 @@
     
     _masterScroll.contentSize = CGSizeMake(640, self.view.frame.size.height);
     _masterScroll.pagingEnabled = YES;
+    _masterScroll.bounces = NO;
     
    
     

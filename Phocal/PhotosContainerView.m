@@ -7,25 +7,27 @@
 //
 
 #import "LikeGestureView.h"
-#import "PhotosContainer.h"
+#import "PhotosContainerView.h"
 
-@interface PhotosContainer ()
+const int kScrollHeight = 100;
+
+@interface PhotosContainerView ()
 
 @property (nonatomic, assign) CGFloat originalHeight;
+@property (nonatomic, retain) UIGestureRecognizer* tapRecognizer;
 
 @end
 
-@implementation PhotosContainer
-
+@implementation PhotosContainerView
 
 - (id)initWithFrame:(CGRect)frame andImagePaths:(NSArray *)paths {
     
     self = [super initWithFrame:frame];
     
     if (self) {
-        
+    
         _imageViews = [[NSMutableArray alloc] init];
-        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 300)];
 
         _imagePaths = paths;
         _originalHeight = 200;
@@ -35,35 +37,21 @@
         CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
         UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
         
-        _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 300)];
-        _imageScroll.delegate = self;
-//        _imageScroll.backgroundColor = [UIColor greenColor];
-//        _imageScroll.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-//        _imageScroll.userInteractionEnabled = NO;
-        _imageScroll.contentSize = CGSizeMake(900, frame.size.height);
-        [self addSubview:_imageScroll];
+        self.masterImageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+        self.masterImageView.contentMode = UIViewContentModeScaleAspectFill;
+        [self addSubview:self.masterImageView];
         
-//        _masterImageView =
-        IndexUIImageView *mainImageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
-        mainImageView.userInteractionEnabled = YES;
-        UIGestureRecognizer *tap = [[UIGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)];
-        tap.delegate = self;
-        mainImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [mainImageView addGestureRecognizer:tap];
 //        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
 //        [mainImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
-        mainImageView.sortIndex = 0;
+        self.masterImageView.sortIndex = 0;
 //        mainImageView.backgroundColor = color;//[UIColor darkGrayColor];
-        [_imageScroll addSubview:mainImageView];
 
-        _masterImageView = mainImageView;
+        //[_imageScroll addSubview:self.masterImageView];
         
 //        [_imageViews addObject:_masterImageView];
         
         NSString *rootPath = [paths firstObject];
-        
         NSURL *rootURL = [NSURL URLWithString:rootPath];
-
         [_masterImageView setImageWithURL:rootURL placeholderImage:[UIImage imageNamed:@"placeholder"]];
         
         _imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
@@ -77,21 +65,34 @@
     _expanded = YES;
     CGFloat currentX = 30;
     
-    self.frame = CGRectMake(0, 0, 320, height);
-    _imageScroll.frame = CGRectMake(0, 0, 320, height);
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        self.frame = CGRectMake(0, 0, 320, height);
+        self.masterImageView.frame = CGRectMake(0, 0, 320, height);
+    } completion:^(BOOL finished) {
+        // Empty.
+    }];
     
     // Add the like view.
     if (![[self subviews] containsObject:self.likeView]) {
         [self addSubview:_likeView];
     }
     
+    _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, height-kScrollHeight, 320, kScrollHeight)];
+    _imageScroll.delegate = self;
+    //        _imageScroll.backgroundColor = [UIColor greenColor];
+    //        _imageScroll.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    //        _imageScroll.userInteractionEnabled = NO;
+    _imageScroll.contentSize = CGSizeMake(900, kScrollHeight);
+    [self addSubview:_imageScroll];
+    _imageScroll.scrollEnabled = NO;
+
+    // Make the large image interactable.
+    self.imageScroll.scrollEnabled = YES;
     
     NSInteger index = 1;
     for (NSString *path in _imagePaths) {
         
-//        _masterImageView.frame.size.height + _masterImageView.frame.origin.y + (self.frame.size.height - (_masterImageView.frame.size.height + _masterImageView.frame.origin.y)) / 2
-        
-        IndexUIImageView *imageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(320, 200, 80, 80)];
+        IndexUIImageView *imageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(320, 0, 80, 80)];
         imageView.sortIndex = index;
         imageView.userInteractionEnabled = YES;
         [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
@@ -122,19 +123,29 @@
     
     _expanded = NO;
     [self.likeView removeFromSuperview];
+    self.imageScroll.scrollEnabled = NO;
     
-    self.frame = CGRectMake(0, 0, 320, _originalHeight);
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        self.frame = CGRectMake(0, 0, 320, _originalHeight);
+        self.masterImageView.frame = CGRectMake(0, 0, 320, _originalHeight);
+    } completion:^(BOOL finished) {
+        // Empty.
+    }];
+    
     
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
+/*- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     _masterImageView.frame = CGRectMake(scrollView.contentOffset.x, 0, _masterImageView.frame.size.width, _masterImageView.frame.size.height);
-}
+
+}*/
 
 - (void)swapImages:(UITapGestureRecognizer *)gesture {
 
-    if (gesture.view == _masterImageView) return;
+    if (gesture.view == _masterImageView) {
+        NSLog(@"master view click");
+        return;
+    }
     
     NSInteger index = [_imageViews indexOfObject:gesture.view];
     
@@ -145,6 +156,26 @@
     
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
         
+        
+        // Remove gesture recognizer on small image.
+        for (UIGestureRecognizer* recognizer in imageView.gestureRecognizers) {
+            [imageView removeGestureRecognizer:recognizer];
+        }
+        
+        // Take the images to be swapped out of their superviews.
+        [_masterImageView removeFromSuperview];
+        [imageView removeFromSuperview];
+        
+        // Add the images their new views.
+        [self insertSubview:imageView belowSubview:_likeView];
+        [_imageScroll addSubview:_masterImageView];
+        
+        // Attach tap handler for new thumb.
+        _masterImageView.userInteractionEnabled = YES;
+        [_masterImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                       action:@selector(swapImages:)]];
+
+        // Make new large image.
         imageView.frame = _masterImageView.frame;
         _masterImageView = imageView;
         
@@ -159,12 +190,12 @@
         CGFloat currentX = 30;
         for (UIImageView *view in _imageViews) {
         
-            view.frame = CGRectMake(currentX - 25, _originalHeight, 80, 80);
+            view.frame = CGRectMake(currentX - 25, 0, 80, 80);
             currentX += 100;
         }
         
     } completion:^(BOOL finished) {
-        
+        // Empty.
     }];
     
 }
@@ -176,7 +207,10 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
-    if (gestureRecognizer.view == _masterImageView) return NO;
+    if (gestureRecognizer.view == _masterImageView) {
+        NSLog(@"not recognizing tap");
+        return NO;
+    }
     return _expanded;
 }
 //

@@ -97,11 +97,9 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row], @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200", @"http://lorempixel.com/g/400/200" ]];
-    
-    cell.tag = indexPath.row;
-    [cell addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)]];
 
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    
     
 //    cell.imageView.frame= CGRectMake(3, 5, 314, 200);
 //    cell.frame = CGRectMake(3, 5, 314, 200);
@@ -127,11 +125,11 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     return cell;
 }
 
-- (void)cellTapped:(UITapGestureRecognizer*)tap {
+/*- (void)cellTapped:(UITapGestureRecognizer*)tap {
     
     NSInteger row = tap.view.tag;
 
-    NSLog(@"%@", tap.view.superview.superview.superview);
+    NSLog(@"tapped");
     
     ImageCell *cell = (ImageCell *)[self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
     
@@ -162,7 +160,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     [self.tableView reloadRowsAtIndexPaths:@[index] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView scrollToRowAtIndexPath:index atScrollPosition:UITableViewScrollPositionTop animated:YES];
     [self.tableView endUpdates];
-}
+}*/
 
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //    
@@ -174,10 +172,38 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 //}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //NSInteger row = tap.view.tag;
     
+    NSLog(@"tapped");
     
-
+    ImageCell *cell = (ImageCell *)[tableView cellForRowAtIndexPath:indexPath];
     
+    //    [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:1]];
+    
+    //Newly Selected Cell
+    if(_idx!=indexPath.row)
+    {
+        _idx=indexPath.row;
+        
+        [cell.container cellDidGrowToHeight:300];
+    }
+    //Cell Already Selected Once
+    else
+    {
+        _idx=-1;
+        
+        [cell.container cellDidShrink];
+    }
+    
+    //
+    //
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    [self.tableView endUpdates];
+    
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [cell setSelected:NO];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
