@@ -8,12 +8,16 @@ module.exports = function configure(app) {
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.json());
+    app.use(function(req, res, next) {
+        req.hash = req.headers["x-hash"];
+        next();
+    });
     app.use(express.urlencoded());
     app.use(express.methodOverride());
     app.use(app.router);
 
-    // development only
-    if ('development' == app.get('env')) {
-      app.use(express.errorHandler());
-    }
+    app.use(function(err, req, res, next){
+      console.error(err.stack);
+      res.send(500, {"Error": err.message});
+    });
 }

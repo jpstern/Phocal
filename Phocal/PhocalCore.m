@@ -32,6 +32,7 @@
 }
 
 - (void)postPhoto:(NSData *)imageData {
+    
     [self POST:@"photos" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"photo" fileName:@"file" mimeType:@"image/jpeg"];
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {

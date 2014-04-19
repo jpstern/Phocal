@@ -41,7 +41,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
       self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(goToCamera)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
-      self.title = @"Photos";
+      self.title = @"My Moments";
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     [self refreshPhotos];
@@ -129,6 +129,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         }];
 
     }
+    [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [cell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
     
     
     return cell;
