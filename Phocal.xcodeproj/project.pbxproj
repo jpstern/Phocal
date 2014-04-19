@@ -88,8 +88,8 @@
 		80EBE1A618F1CA1D0003620D /* DummyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DummyViewController.m; sourceTree = "<group>"; };
 		80EBE1A818F1DBB50003620D /* IndexUIImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexUIImageView.h; sourceTree = "<group>"; };
 		80EBE1A918F1DBB50003620D /* IndexUIImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexUIImageView.m; sourceTree = "<group>"; };
-		8B0FC728190319950030AB94 /* MomentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MomentCell.h; sourceTree = "<group>"; };
-		8B0FC729190319950030AB94 /* MomentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MomentCell.m; sourceTree = "<group>"; };
+		8B0FC728190319950030AB94 /* MomentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MomentCell.h; path = ../MomentCell.h; sourceTree = "<group>"; };
+		8B0FC729190319950030AB94 /* MomentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MomentCell.m; path = ../MomentCell.m; sourceTree = "<group>"; };
 		8B7CDE8918F27C97004CE666 /* LikeGestureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LikeGestureView.h; sourceTree = "<group>"; };
 		8B7CDE8A18F27C97004CE666 /* LikeGestureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeGestureView.m; sourceTree = "<group>"; };
 		A10B80E192C6433D8F741B0D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,8 +127,6 @@
 		80EA82E318E5D22D00981338 = {
 			isa = PBXGroup;
 			children = (
-				8B0FC728190319950030AB94 /* MomentCell.h */,
-				8B0FC729190319950030AB94 /* MomentCell.m */,
 				72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */,
 				80EA82F518E5D22D00981338 /* Phocal */,
 				80EA831418E5D22D00981338 /* PhocalTests */,
@@ -163,6 +161,8 @@
 		80EA82F518E5D22D00981338 /* Phocal */ = {
 			isa = PBXGroup;
 			children = (
+				8B0FC728190319950030AB94 /* MomentCell.h */,
+				8B0FC729190319950030AB94 /* MomentCell.m */,
 				808AAA711903011B00D5C511 /* UIViewController+Master.h */,
 				808AAA721903011B00D5C511 /* UIViewController+Master.m */,
 				8B7CDE8918F27C97004CE666 /* LikeGestureView.h */,
