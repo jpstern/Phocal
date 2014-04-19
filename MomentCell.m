@@ -56,7 +56,7 @@
     
     
     
-    [self.image setFrame:CGRectMake( 35,60, 250, 250)];
+    [self.image setFrame:CGRectMake( 0,60, 320, 320)];
     
     self.label2 = [[UILabel alloc] init];
     
