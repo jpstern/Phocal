@@ -34,6 +34,8 @@
 @property (nonatomic, strong) CLLocation *takenLocation;
 @property (nonatomic, strong) UIImage *takenPicture;
 
+@property (nonatomic, strong) UIImagePickerController *imagePicker;
+
 @end
 
 @implementation CameraViewController
@@ -104,7 +106,8 @@
     
         image = [UIImage imageWithCGImage:image.CGImage scale:scale orientation:UIImageOrientationRight];
         
-        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1080, 1280));
+        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1280, 1280));
+//        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1080, 1280));
         image = [UIImage imageWithCGImage:imageRef scale:1280/1080 orientation:UIImageOrientationRight];
         CGImageRelease(imageRef);
         
@@ -156,7 +159,7 @@
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
 //    session.sessionPreset = AVCaptureSessionPreset640x480; // TODO: should be full qual.
     _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
-    _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+//    _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 //    _previewLayer.frame = CGRectMake(0, 0, 320, 320 + 40);
     
     _previewLayer.frame = self.view.bounds;
@@ -196,9 +199,9 @@
     [_bottomContainer addSubview:_takePhoto];
     
     _listButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIImage *photoIcon = [UIImage imageNamed:@"list"];
+    UIImage *photoIcon = [UIImage imageNamed:@"back_arrow"];
     
-    _listButton.frame = CGRectMake(10, 0, 44, 44);
+    _listButton.frame = CGRectMake(30, 0, 44, 44);
     _listButton.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
     _listButton.tintColor = [UIColor whiteColor];
     
@@ -250,6 +253,15 @@
         NSLog(@"error: %@", error);
     }];
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+       
+        _imagePicker = [[UIImagePickerController alloc] init];
+        _imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+        _imagePicker.allowsEditing = YES;
+        _imagePicker.delegate = self;
+        _imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        
+    });
     
    // uploadViewButton.tintColor = [UIColor whiteColor];
     
@@ -265,13 +277,7 @@
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
     
-    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-    imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
-    imagePicker.allowsEditing = YES;
-    imagePicker.delegate = self;
-    imagePicker.sourceType = sourceType;
-    
-    [self presentViewController:imagePicker animated:YES completion:nil];
+    [self presentViewController:_imagePicker animated:YES completion:nil];
 }
 
 #pragma mark - UIImagePickerControllerDelegate
