@@ -26,10 +26,30 @@
         client.requestSerializer = [AFJSONRequestSerializer serializer];
         client.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions: NSJSONReadingMutableContainers];
         
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        
+        NSString *UUID = [userDefaults objectForKey:@"x-hash"];
+        if (!UUID) {
+            CFUUIDRef uuid = CFUUIDCreate(NULL);
+            UUID = (__bridge_transfer NSString *)CFUUIDCreateString(NULL, uuid);
+            CFRelease(uuid);
+            
+            [userDefaults setObject:UUID forKey:@"x-hash"];
+            [userDefaults synchronize];
+        }
+        
+
+        
+        [client.requestSerializer setValue:UUID forHTTPHeaderField:@"x-hash"];
+
+        
+        
     });
     
     return client;
 }
+
+
 
 - (void)postPhoto:(NSData *)imageData {
     

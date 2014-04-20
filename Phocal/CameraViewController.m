@@ -147,7 +147,15 @@
 
 #pragma mark - UIImagePickerControllerDelegate
 
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
     
@@ -168,10 +176,7 @@
     //do something with the image
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
+
 
 -(void)albumView
 {
