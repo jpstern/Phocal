@@ -73,7 +73,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         NSMutableArray *urls = [[NSMutableArray alloc] init];
         for (NSDictionary* photoDict in photos) {
             NSMutableDictionary *dummy = [[NSMutableDictionary alloc] init];
-            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"id"]] forKey:@"URL"];
+            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
+                      forKey:@"URL"];
             [urls addObject:dummy];
         }
         _photoURLs = urls;
@@ -106,7 +107,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     [cell.image setImageWithURL:[NSURL URLWithString:[_photoURLs[indexPath.row] objectForKey:@"URL"]]];
     //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     float latitude = 44.741802;
     float longitude = -85.662872;
@@ -115,7 +116,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     CLGeocoder *test = [[CLGeocoder alloc] init];
     if ([_photoURLs[indexPath.row] objectForKey:@"first"]!=nil){
         cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"first"];
-        cell.label2.text = [_photoURLs[indexPath.row] objectForKey:@"second"];
+        
     }else{
         [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
             NSLog(@"%@",placemarks);
@@ -125,15 +126,15 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
             NSString *first = address[0];
             NSString *second = address[1];
             cell.label.text = first;
-            cell.label2.text = second;
+            [NSString stringWithFormat:@"%@ \n %@",first,second];
+           
             [[_photoURLs objectAtIndex:indexPath.row] setObject:first forKey:@"first"];
             [[_photoURLs objectAtIndex:indexPath.row] setObject:second forKey:@"second"];
 
         }];
 
     }
-    [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
-    [cell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.6]];
     
     
     return cell;

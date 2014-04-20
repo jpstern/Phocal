@@ -44,12 +44,10 @@
     //self.frame = CGRectMake(0, 0, 320, 50);
     self.image = [[IndexUIImageView alloc] init];
     self.label = [[UILabel alloc] init];
-    [self.label setFrame:CGRectMake(0, 320-70, 320, 30)];
+    [self.label setFrame:CGRectMake(0, 320-70, 320, 60)];
     [self.label setTextAlignment:NSTextAlignmentCenter];
     [self.image setFrame:CGRectMake( 0,0, 320, 320)];
-    self.label2 = [[UILabel alloc] init];
-    [self.label2 setFrame:CGRectMake(0, 320-40, 320, 30)];
-    [self.label2 setTextAlignment:NSTextAlignmentCenter];
+    
     
     //[self.image setFrame:CGRectMake( 0,20, 320, 320)];
     
@@ -57,7 +55,6 @@
     [self.contentView addSubview:self.image];
     
     [self.image addSubview:self.label];
-    [self.image addSubview:self.label2];
 
     return self;
     

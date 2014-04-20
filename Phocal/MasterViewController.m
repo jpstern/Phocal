@@ -105,8 +105,7 @@
     
     [self.photoDisplayView addGestureRecognizer:swipeUp];
     
-    [self.selectedCell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
-    [self.selectedCell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    
     [_masterScroll setScrollEnabled:NO];
     [_masterScroll setUserInteractionEnabled:NO];
 }
