@@ -117,22 +117,32 @@
             [self.photoDisplayView removeGestureRecognizer:recognizer];
         }
         
+        // Replace the photo and the label.
+        IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
+        UILabel* returnLabel = self.photoDisplayView.momentLabel;
+        [_masterScroll addSubview:returnImage];
+        [_masterScroll addSubview:returnLabel];
         
-        [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
-        
-        // Replace the photo.
-        UIImageView* returnImage = self.photoDisplayView.masterImageView;
-        [_masterScroll insertSubview:returnImage atIndex:3];
         [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
             returnImage.frame = CGRectMake(0, -50, self.selectedRect.size.width, self.selectedRect.size.height);
-            //returnImage.frame = self.selectedRect;
+            returnLabel.frame = CGRectMake(0, -50 + kLabelOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
         } completion:^(BOOL finished) {
+            // Attach the label back to the actual image view.
+            [returnLabel removeFromSuperview];
+            returnLabel.frame = CGRectMake(0, kLabelOffset, 320, kLabelHeight);
+            [returnImage addSubview:returnLabel];
+            self.selectedCell.label = returnLabel;
+            
+            // Now animate the image back to it's place.
             [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
                 returnImage.frame = self.selectedRect;
             } completion:^(BOOL finished) {
                 [returnImage removeFromSuperview];
                 [self.selectedCell.contentView addSubview:returnImage];
+                self.selectedCell.image = returnImage;
                 returnImage.frame = CGRectMake(0, 0, 320, 320);
+                
+                [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
                 [_masterScroll setScrollEnabled:YES];
                 [_masterScroll setUserInteractionEnabled:YES];
             }];

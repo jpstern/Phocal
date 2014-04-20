@@ -11,6 +11,11 @@
 #import "PhotosContainerView.h"
 
 const int kScrollHeight = 100;
+const int kImagePaneOffset = 60;
+const int kMomentLabelOffset = 20;
+const int kImageSize = 320;
+const int kScrollMargin = 15;
+const int kThumbSize = 80;
 
 @interface PhotosContainerView ()
 
@@ -35,46 +40,69 @@ const int kScrollHeight = 100;
         }];
         
         _imageViews = [[NSMutableArray alloc] init];
-        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 50, self.frame.size.width, 300)];
+        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, kImagePaneOffset, self.frame.size.width, 300)];
 
         _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;
         
+        // Take the image out of the cell.
         self.masterImageView = imageView;
         self.masterImageView.sortIndex = 0;
         [self.masterImageView removeFromSuperview];
         self.masterImageView.frame = rect;
-        [self addSubview:self.masterImageView];
+        
+        // Take the label out of the cell.
+        for (UIView* subview in self.masterImageView.subviews) {
+            if ([subview isKindOfClass:[UILabel class]]) {
+                self.momentLabel = (UILabel *)subview;
+            }
+        }
+        [self.momentLabel removeFromSuperview];
+        self.momentLabel.frame = CGRectMake(0,
+                                            rect.origin.y + self.momentLabel.frame.origin.y,
+                                            self.momentLabel.frame.size.width,
+                                            self.momentLabel.frame.size.height);
+
         
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-            self.masterImageView.frame = CGRectMake(0, 50, 320, rect.size.height);
+            self.masterImageView.frame = CGRectMake(0, kImagePaneOffset, 320, rect.size.height);
+            self.momentLabel.frame = CGRectMake(0, kMomentLabelOffset, 320, self.momentLabel.frame.size.height);
         } completion:^(BOOL finished) {
             // Empty.
         }];
-        
-        // Now add the like view.
-        [self addSubview:_likeView];
+
         
         // Add the scroll view.
-        _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, window.bounds.size.height-kScrollHeight, 320, kScrollHeight)];
+        int imageBottom = kImagePaneOffset + kImageSize;
+        int scrollTop = (((window.bounds.size.height - imageBottom) / 2) + imageBottom) - (kScrollHeight / 2);
+        _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, scrollTop, kImageSize, kScrollHeight)];
         _imageScroll.delegate = self;
-        _imageScroll.contentSize = CGSizeMake(900, kScrollHeight);
-        [self addSubview:_imageScroll];
+        _imageScroll.contentSize = CGSizeMake(500, kScrollHeight);
+        [_imageScroll setShowsHorizontalScrollIndicator:NO];
+        [_imageScroll setShowsVerticalScrollIndicator:NO];
         
-        int begin = 30;
-        int size = 80;
         for (int i = 0; i < 4; i++) {
-            IndexUIImageView* thumb =
-                [[IndexUIImageView alloc] initWithFrame:CGRectMake(begin + i*size + i*begin, 0, size, size)];
-            imageView.sortIndex = i + 1;
+            int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
+            IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
+                                       CGRectMake(kScrollMargin + i*kThumbSize + i*kScrollMargin,
+                                                  thumbTop,
+                                                  kThumbSize,
+                                                  kThumbSize)];
+            thumb.sortIndex = i + 1;
             thumb.userInteractionEnabled = YES;
             [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
-            [thumb setImageWithURL:[NSURL URLWithString:@"https://u.ph.edim.co/1565433_0.jpg"]
+            [thumb setImageWithURL:[NSURL URLWithString:@"http://www.corwellphotography.net/image/2223982.jpeg"]
                   placeholderImage:[UIImage imageNamed:@"placeholder"]];
             thumb.contentMode = UIViewContentModeScaleAspectFill;
             [_imageScroll addSubview:thumb];
             [_imageViews addObject:thumb];
         }
+        
+        // Add the views in order.
+        [self addSubview:self.masterImageView];
+        [self addSubview:_likeView];
+        [self addSubview:self.momentLabel];
+        [self addSubview:_imageScroll];
         
         //_imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
     }
@@ -155,12 +183,16 @@ const int kScrollHeight = 100;
         return;
     }
     
-    NSInteger index = [_imageViews indexOfObject:gesture.view];
+    NSInteger removalIndex = [_imageViews indexOfObject:gesture.view];
     
-    IndexUIImageView *imageView = _imageViews[index];
+    IndexUIImageView *imageView = _imageViews[removalIndex];
     
-    [_imageViews removeObjectAtIndex:index];
-    [_imageViews insertObject:_masterImageView atIndex:_masterImageView.tag];
+    [_imageViews removeObjectAtIndex:removalIndex];
+    int insertIndex = _masterImageView.sortIndex;
+    if (insertIndex > removalIndex) {
+        insertIndex--;
+    }
+    [_imageViews insertObject:_masterImageView atIndex:insertIndex];
     
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
         
@@ -195,11 +227,12 @@ const int kScrollHeight = 100;
             return [tag1 compare:tag2];
         }];
         
-        CGFloat currentX = 30;
+        CGFloat currentX = 0;
+        int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
         for (UIImageView *view in _imageViews) {
         
-            view.frame = CGRectMake(currentX - 25, 0, 80, 80);
-            currentX += 100;
+            view.frame = CGRectMake(currentX + kScrollMargin, thumbTop, kThumbSize, kThumbSize);
+            currentX += kThumbSize + kScrollMargin;
         }
         
     } completion:^(BOOL finished) {

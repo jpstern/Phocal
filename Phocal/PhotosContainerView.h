@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) UIView* imageViewerPane;
 @property (nonatomic, strong) IndexUIImageView *masterImageView;
+@property (nonatomic, strong) UILabel* momentLabel;
 @property (nonatomic, strong) NSMutableArray *imageViews;
 
 @property (nonatomic, strong) NSArray *imagePaths;
