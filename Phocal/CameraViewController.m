@@ -16,6 +16,8 @@
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
+#import "UIImage+Resize.h"
+
 @interface CameraViewController ()
 
 @property (nonatomic, strong) AVCaptureStillImageOutput *output;
@@ -52,6 +54,7 @@
 - (void)cancelPhoto {
     
     _headerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+    _bottomContainer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
     [_photoPreview removeFromSuperview];
     _previewLayer.hidden = NO;
     
@@ -96,26 +99,32 @@
     
     [self takePhoto:^(UIImage *image, CLLocation *location) {
        
-        _headerView.backgroundColor = [UIColor blackColor];
+        
+        _headerView.backgroundColor = [UIColor colorWithRed:43.0/255 green:43.0/255 blue:43.0/255 alpha:1];
+        _bottomContainer.backgroundColor = [UIColor colorWithRed:43.0/255 green:43.0/255 blue:43.0/255 alpha:1];
 
         _previewLayer.hidden = YES;
 
         CGFloat width = image.size.width;
         
         CGFloat scale = width / self.view.frame.size.width;
-    
-        image = [UIImage imageWithCGImage:image.CGImage scale:scale orientation:UIImageOrientationRight];
         
-        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1280, 1280));
-//        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1080, 1280));
-        image = [UIImage imageWithCGImage:imageRef scale:1280/1080 orientation:UIImageOrientationRight];
-        CGImageRelease(imageRef);
+        image = [image imageCrop:image];
+//    
+//        image = [UIImage imageWithCGImage:image.CGImage scale:1 orientation:UIImageOrientationRight];
+//
+//        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1280, 1280));
+////        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1080, 1280));
+//        image = [UIImage imageWithCGImage:image.CGImage scale:1280/1080 orientation:UIImageOrientationRight];
+//        CGImageRelease(imageRef);
         
         _takenPicture = image;
         _takenLocation = location;
         
-        _photoPreview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
+        NSInteger yPos = (self.view.frame.size.height - 320) / 2;
+        _photoPreview = [[UIImageView alloc] initWithFrame:CGRectMake(0, yPos, 320, 320)];
         _photoPreview.image = image;
+        _photoPreview.clipsToBounds = YES;
         _photoPreview.contentMode = UIViewContentModeScaleAspectFill;
         [self.view addSubview:_photoPreview];
         
@@ -182,12 +191,15 @@
     
     
     
-    _headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+    NSInteger size = (self.view.frame.size.height - 320) / 2;
+    _headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, size)];
     _headerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
-//    [self.view addSubview:_headerView];
     
-    _bottomContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 320, 320, self.view.frame.size.height - 320)];
-    _bottomContainer.backgroundColor = [UIColor colorWithRed:43/255.0 green:43/255.0 blue:43/255.0 alpha:1];
+    [self.view addSubview:_headerView];
+    
+    _bottomContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 320 + size, 320, self.view.frame.size.height - (320 + size))];
+    _bottomContainer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+//    _bottomContainer.backgroundColor = [UIColor colorWithRed:43/255.0 green:43/255.0 blue:43/255.0 alpha:1];
     [self.view addSubview:_bottomContainer];
     
     _takePhoto = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -207,7 +219,7 @@
     
     [_listButton setImage:photoIcon forState:UIControlStateNormal];
     [_listButton addTarget:self action:@selector(photoView) forControlEvents:UIControlEventTouchUpInside];
-    [_bottomContainer addSubview:_listButton];
+    [_headerView addSubview:_listButton];
     
     ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
     [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop)
@@ -226,9 +238,10 @@
                         UIImage *uploadIcon = [UIImage imageWithCGImage:[repr fullResolutionImage]];
                         UIImage *rotated = [UIImage imageWithCGImage:uploadIcon.CGImage scale:1 orientation:UIImageOrientationRight];
                         _uploadThumb = [UIButton buttonWithType:UIButtonTypeCustom];
-                        [_uploadThumb setBackgroundImage:rotated forState:UIControlStateNormal];
+                        [_uploadThumb setImage:rotated forState:UIControlStateNormal];
                         [_uploadThumb addTarget:self action:@selector(albumView) forControlEvents:UIControlEventTouchUpInside];
-                        [_bottomContainer addSubview:_uploadThumb];
+                        [_headerView addSubview:_uploadThumb];
+                        _uploadThumb.contentMode = UIViewContentModeScaleAspectFit;
                         _uploadThumb.adjustsImageWhenHighlighted = NO;
                         _uploadThumb.frame = CGRectMake(240, 0, 60, 60);
                         _uploadThumb.layer.cornerRadius = 8.0f;
