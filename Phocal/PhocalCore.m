@@ -38,12 +38,7 @@
             [userDefaults synchronize];
         }
         
-
-        
         [client.requestSerializer setValue:UUID forHTTPHeaderField:@"x-hash"];
-
-        
-        
     });
     
     return client;

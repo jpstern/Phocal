@@ -288,13 +288,10 @@
     NSURL *referenceURL = [info objectForKey:UIImagePickerControllerReferenceURL];
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        
         CLLocation *loc = [asset valueForKey:ALAssetPropertyLocation];
         
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);
-        
-        NSLog(@"Found Location %@", loc);
         
         [[PhocalCore sharedClient] postPhoto:imageData withLocation:loc];
         
@@ -306,13 +303,9 @@
     //do something with the image
 }
 
-
-
 -(void)albumView
 {
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    
-    
 }
 
 - (UIImage *)crop:(UIImage *)image from:(CGSize)src to:(CGSize)dst
