@@ -40,13 +40,8 @@
     
     
     UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
-    //PhotosListViewController *viewController = [[PhotosListViewController alloc] initWithStyle:UITableViewStylePlain];
-//    DummyViewController *viewController = [[DummyViewController alloc] init];
-   
     
-    //UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-     self.navController = [self.storyboard instantiateViewControllerWithIdentifier:@"navController"];
-    
+    self.navController = [self.storyboard instantiateViewControllerWithIdentifier:@"navController"];
     self.navController.navigationBar.barTintColor = [UIColor colorWithRed:164/255.0 green:242/255.0 blue:217/255.0 alpha:1];
   
     [viewControllerView addSubview:self.navController.view];
@@ -64,6 +59,10 @@
    
     [self addChildViewController:camera];
     
+}
+
+- (void)displayCamera {
+    [_masterScroll setContentOffset:CGPointMake(320,0) animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -91,6 +90,13 @@
 
 - (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect {
     NSLog(@"Display photo.");
+    
+    // Throw up a transparent sheet in between.
+    /*[UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        self.view.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
+    } completion:^(BOOL finished) {
+        // Empty.
+    }];*/
     
     self.selectedCell = imageCell;
     self.selectedRect = rect;
@@ -142,6 +148,7 @@
                 self.selectedCell.image = returnImage;
                 returnImage.frame = CGRectMake(0, 0, 320, 320);
                 
+                //
                 [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
                 [_masterScroll setScrollEnabled:YES];
                 [_masterScroll setUserInteractionEnabled:YES];

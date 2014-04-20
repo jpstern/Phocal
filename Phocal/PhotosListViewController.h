@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class IndexUIImageView;
+
 @interface PhotosListViewController : UITableViewController
 
-@property (nonatomic,assign) NSInteger idx;
+@property (nonatomic,assign) NSInteger selectedIndex;
 @property (nonatomic,weak) id master;
+
+- (void)replaceSelectedPhotoWithPhoto:(IndexUIImageView *)photo;
 
 @end

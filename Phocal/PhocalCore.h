@@ -15,6 +15,9 @@
 
 - (void)postPhoto:(NSData *)imageData;
 - (void)getPhotos:(void (^)(NSArray *))completion;
-- (void)getLocationLabelForLat:(NSNumber *)lat andLng:(NSNumber *)lng completion:(void (^)(NSDictionary*))completion;
+- (void)getClosestPhotosForLat:(NSNumber *)lat andLng:(NSNumber *)lng completion:(void (^)(NSArray *))completion;
+- (void)getLocationLabelForLat:(NSNumber *)lat andLng:(NSNumber *)lng completion:(void (^)(NSDictionary *))completion;
+
+- (NSString *)photoURLForId:(NSString *)photoID;
 
 @end

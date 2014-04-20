@@ -8,6 +8,7 @@
 
 #import "ImageCell.h"
 #import "LikeGestureView.h"
+#import "PhocalCore.h"
 #import "PhotosContainerView.h"
 
 const int kScrollHeight = 100;
@@ -34,10 +35,10 @@ const int kThumbSize = 80;
         self.frame = window.frame;
         
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-            self.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
-        } completion:^(BOOL finished) {
-            // Empty.
-        }];
+           self.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
+         } completion:^(BOOL finished) {
+         // Empty.
+         }];
         
         _imageViews = [[NSMutableArray alloc] init];
         _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, kImagePaneOffset, self.frame.size.width, 300)];
@@ -81,30 +82,46 @@ const int kThumbSize = 80;
         [_imageScroll setShowsHorizontalScrollIndicator:NO];
         [_imageScroll setShowsVerticalScrollIndicator:NO];
         
-        for (int i = 0; i < 4; i++) {
-            int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
-            IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
-                                       CGRectMake(kScrollMargin + i*kThumbSize + i*kScrollMargin,
-                                                  thumbTop,
-                                                  kThumbSize,
-                                                  kThumbSize)];
-            thumb.sortIndex = i + 1;
-            thumb.userInteractionEnabled = YES;
-            [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
-            [thumb setImageWithURL:[NSURL URLWithString:@"http://www.corwellphotography.net/image/2223982.jpeg"]
-                  placeholderImage:[UIImage imageNamed:@"placeholder"]];
-            thumb.contentMode = UIViewContentModeScaleAspectFill;
-            [_imageScroll addSubview:thumb];
-            [_imageViews addObject:thumb];
-        }
-        
         // Add the views in order.
         [self addSubview:self.masterImageView];
         [self addSubview:_likeView];
         [self addSubview:self.momentLabel];
         [self addSubview:_imageScroll];
         
-        //_imagePaths = [_imagePaths subarrayWithRange:NSMakeRange(1, _imagePaths.count - 1)];
+        // Fetch the closest photos to this one.
+        [[PhocalCore sharedClient] getClosestPhotosForLat:self.masterImageView.lat andLng:self.masterImageView.lng completion:^(NSArray * photos) {
+            if (!photos) {
+                return;
+            }
+            
+            NSLog(@"Got %d closest photos", photos.count);
+            int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
+            for (int i = 0; i < photos.count; i++) {
+                IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
+                                           CGRectMake(kScrollMargin + i*kThumbSize + i*kScrollMargin,
+                                                      thumbTop,
+                                                      kThumbSize,
+                                                      kThumbSize)];
+                thumb.sortIndex = i + 1;
+                thumb.userInteractionEnabled = YES;
+                [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                    action:@selector(swapImages:)]];
+                thumb.contentMode = UIViewContentModeScaleAspectFill;
+                
+                // Set the image properties.
+                NSDictionary* photoDict = photos[i];
+                thumb.lat = photoDict[@"lat"];
+                thumb.lng = photoDict[@"lng"];
+                NSString* photoURL = [[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]];
+                thumb.URL = photoURL;
+                [thumb setImageWithURL:[NSURL URLWithString:photoURL] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                
+                // Add the image to the scroll view and our image views array.
+                [_imageScroll addSubview:thumb];
+                [_imageViews addObject:thumb];
+
+            }
+        }];
     }
     
     return self;
