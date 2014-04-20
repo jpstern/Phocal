@@ -37,12 +37,13 @@
     _masterScroll.pagingEnabled = YES;
     _masterScroll.bounces = NO;
     _masterScroll.delegate = self;
+    [_masterScroll setShowsHorizontalScrollIndicator:NO];
     
     
     UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
     
     self.navController = [self.storyboard instantiateViewControllerWithIdentifier:@"navController"];
-    self.navController.navigationBar.barTintColor = [UIColor colorWithRed:164/255.0 green:242/255.0 blue:217/255.0 alpha:1];
+    self.navController.navigationBar.barTintColor = [UIColor colorWithRed:22/255.0 green:135/255.0 blue:182/255.0 alpha:1];
   
     [viewControllerView addSubview:self.navController.view];
     
