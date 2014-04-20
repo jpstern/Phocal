@@ -184,7 +184,6 @@ const int kPhotoSize = 320;
     oldRect.origin.y += kImageOffsetFromTop;
     oldRect.size.height -= kImageOffsetFromTop;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
-    //newRect.size.height -= 60;
     
     self.tableView.scrollEnabled = NO;
     [self.masterViewController displayPhotoInCell:cell inRect:newRect];

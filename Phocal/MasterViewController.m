@@ -92,13 +92,6 @@
 - (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect {
     NSLog(@"Display photo.");
     
-    // Throw up a transparent sheet in between.
-    /*[UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-        self.view.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
-    } completion:^(BOOL finished) {
-        // Empty.
-    }];*/
-    
     self.selectedCell = imageCell;
     self.selectedRect = rect;
     self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window
