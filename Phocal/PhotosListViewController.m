@@ -46,10 +46,22 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
     [self refreshPhotos];
     
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
-    {
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        
         self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.extendedLayoutIncludesOpaqueBars = YES;
+        
     }
+}
+
+-(NSString *) URLEncodeString:(NSString *) str
+{
+    
+    NSMutableString *tempStr = [NSMutableString stringWithString:str];
+    [tempStr replaceOccurrencesOfString:@" " withString:@"+" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [tempStr length])];
+    
+    
+    return [[NSString stringWithFormat:@"%@",tempStr] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (void)goToCamera
@@ -67,14 +79,14 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
             NSLog(@"no photos");
             return;
         }
-        NSMutableArray *urls = [[NSMutableArray alloc] init];
         for (NSDictionary* photoDict in photos) {
-            NSMutableDictionary *dummy = [[NSMutableDictionary alloc] init];
-            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            [dict setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
                       forKey:@"URL"];
-            [urls addObject:dummy];
+            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lat"] doubleValue]] forKey:@"lat"];
+            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lng"] doubleValue]] forKey:@"lng"];
+            [_photoURLs addObject:dict];
         }
-        _photoURLs = urls;
 
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
@@ -96,43 +108,46 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 {
 
     MomentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];
-    //ImageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];// forIndexPath:indexPath];
-    if (!cell)
-        
-        //cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
+    if (!cell) {
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
-    [cell.image setImageWithURL:[NSURL URLWithString:[_photoURLs[indexPath.row] objectForKey:@"URL"]]];
-    //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
+    }
+    
+    NSDictionary* photoDict = _photoURLs[indexPath.row];
+    [cell.image setImageWithURL:[NSURL URLWithString:photoDict[@"URL"]]
+               placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    cell.image.lat = photoDict[@"lat"];
+    cell.image.lng = photoDict[@"lng"];
+    
+    // Fake 'em if we don't got 'em.
+    if ([cell.image.lat floatValue] == 0.0f) {
+        cell.image.lat = [NSNumber numberWithFloat:44.741802];
+        cell.image.lng = [NSNumber numberWithFloat:-85.662872];
+    }
+
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-    float latitude = 44.741802;
-    float longitude = -85.662872;
     
-    CLLocation *location = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
-    CLGeocoder *test = [[CLGeocoder alloc] init];
-    if ([_photoURLs[indexPath.row] objectForKey:@"first"]!=nil){
-        cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"first"];
+    // If we've already fetched the label for this geopoint, don't fetch it again.
+    if ([_photoURLs[indexPath.row] objectForKey:@"label"]!=nil){
+        cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"label"];
         
-    }else{
-        [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
-            NSLog(@"%@",placemarks);
-            CLPlacemark *placemark = placemarks[0];
-            NSDictionary *dic = placemark.addressDictionary;
-            NSArray *address = dic[@"FormattedAddressLines"];
-            NSString *first = address[0];
-            NSString *second = address[1];
-            cell.label.text = first;
-            [NSString stringWithFormat:@"%@ \n %@",first,second];
-           
-            [[_photoURLs objectAtIndex:indexPath.row] setObject:first forKey:@"first"];
-            [[_photoURLs objectAtIndex:indexPath.row] setObject:second forKey:@"second"];
-
+    } else {
+        // Set the placeholder while we asynchronously fetch the label.
+        cell.label.text = @"Getting location...";
+        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
+                                                   andLng:cell.image.lng
+                                               completion:^(NSDictionary *dict) {
+            if (!dict) {
+                return;
+            }
+               
+            NSString* bestGuessLabel = dict[@"results"][0][@"name"];
+            [_photoURLs[indexPath.row] setObject:bestGuessLabel forKey:@"label"];
+            cell.label.text = bestGuessLabel;
         }];
-
+        
     }
     [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.6]];
-    
     
     return cell;
     
