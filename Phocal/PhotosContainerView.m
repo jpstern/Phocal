@@ -112,6 +112,7 @@ const int kThumbSize = 80;
                 NSDictionary* photoDict = photos[i];
                 thumb.lat = photoDict[@"lat"];
                 thumb.lng = photoDict[@"lng"];
+                
                 NSString* photoURL = [[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]];
                 thumb.URL = photoURL;
                 [thumb setImageWithURL:[NSURL URLWithString:photoURL] placeholderImage:[UIImage imageNamed:@"placeholder"]];

@@ -130,6 +130,9 @@
         [_masterScroll addSubview:returnImage];
         [_masterScroll addSubview:returnLabel];
         
+        // Tell the table view the data source has changed.
+        [(PhotosListViewController *)self.navController.viewControllers[0] replaceSelectedPhotoWithPhoto:returnImage];
+        
         [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
             returnImage.frame = CGRectMake(0, -50, self.selectedRect.size.width, self.selectedRect.size.height);
             returnLabel.frame = CGRectMake(0, -50 + kLabelOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);

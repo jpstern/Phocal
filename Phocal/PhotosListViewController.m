@@ -129,6 +129,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
     [cell.image setImageWithURL:[NSURL URLWithString:photoDict[@"URL"]]
                placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    cell.image.URL = photoDict[@"URL"];
     cell.image.lat = photoDict[@"lat"];
     cell.image.lng = photoDict[@"lng"];
     
