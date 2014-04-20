@@ -8,8 +8,8 @@
 
 #import "CameraViewController.h"
 
-#import "DatabaseDelegate.h"
 #import "MasterViewController.h"
+#import "LocationDelegate.h"
 
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
@@ -51,19 +51,19 @@
 
         _previewLayer.hidden = YES;
 
+        CGFloat width = image.size.width;
         
+        CGFloat scale = width / self.view.frame.size.width;
+    
+        image = [UIImage imageWithCGImage:image.CGImage scale:scale orientation:UIImageOrientationRight];
         
+        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1080, 1280));
+        image = [UIImage imageWithCGImage:imageRef scale:1280/1080 orientation:UIImageOrientationRight];
+        CGImageRelease(imageRef);
         
-        image = [UIImage imageWithCGImage:image.CGImage scale:4 orientation:UIImageOrientationRight];
-        
-        NSLog(@"%f", image.size.height);
-        NSLog(@"%f", image.size.width);
-        
-        _photoPreview = [[UIImageView alloc] initWithImage:image];
-//        _photoPreview.contentMode = UIViewContentModeScaleAspectFill;
-        CGRect rect = _photoPreview.frame;
-//        rect.origin.y = 40;
-        _photoPreview.frame = rect;
+        _photoPreview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
+        _photoPreview.image = image;
+        _photoPreview.contentMode = UIViewContentModeScaleAspectFill;
         [self.view addSubview:_photoPreview];
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -71,6 +71,13 @@
         [button setTitle:@"Cancel" forState:UIControlStateNormal];
         [button addTarget:self action:@selector(cancelPhoto) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:button];
+        
+//        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+//        button.frame = CGRectMake(0, 0, 100, 40);
+//        [button setTitle:@"Cancel" forState:UIControlStateNormal];
+//        [button addTarget:self action:@selector(cancelPhoto) forControlEvents:UIControlEventTouchUpInside];
+//        [self.view addSubview:button];
+        
     }];
 }
 
@@ -109,9 +116,9 @@
     _headerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
 //    [self.view addSubview:_headerView];
     
-    UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 360, 320, self.view.frame.size.height - 360)];
+    UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 320, 320, self.view.frame.size.height - 320)];
     container.backgroundColor = [UIColor blackColor];
-//    [self.view addSubview:container];
+    [self.view addSubview:container];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
      UIImage *cameraIcon = [UIImage imageNamed:@"cameraButton"];
@@ -127,6 +134,7 @@
     photoViewButton.frame = CGRectMake(10, 0, 44, 44);
     photoViewButton.center = CGPointMake(photoViewButton.center.x, container.frame.size.height / 2);
     photoViewButton.tintColor = [UIColor whiteColor];
+    
     [photoViewButton setImage:photoIcon forState:UIControlStateNormal];
     [photoViewButton addTarget:self action:@selector(photoView) forControlEvents:UIControlEventTouchUpInside];
     [container addSubview:photoViewButton];
@@ -160,7 +168,7 @@
             }
             else
             {
-//                uploadViewButton.hidden=YES;
+                //uploadViewButton.hidden=YES;
             }
         
                                      
@@ -182,15 +190,13 @@
 - (void)photoView
 {
     [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(0,0) animated:YES];
-    
-    
-    
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
     
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+    imagePicker.allowsEditing = YES;
     imagePicker.delegate = self;
     imagePicker.sourceType = sourceType;
     
@@ -201,8 +207,9 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    NSData *imageData = UIImageJPEGRepresentation(image, 0.3);
+    UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
+    
+    NSData *imageData = UIImageJPEGRepresentation(image,1.0);
     [[PhocalCore sharedClient] postPhoto:imageData];
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -236,58 +243,47 @@
         
     AVCaptureConnection *connection = [_output connectionWithMediaType:AVMediaTypeVideo];
     
-    [_output captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+    [[LocationDelegate sharedInstance] refresh:^(CLLocation *loc) {
         
-//        UIImage *croppedImage = [self crop:<#(UIImage *)#> from:<#(CGSize)#> to:<#(CGSize)#>]
-        
-        
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        
+        [_output captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+            
+            // violently stolen from here:
+            // http://stackoverflow.com/questions/5125323/problem-setting-exif-data-for-an-image
+            CFDictionaryRef metaDict = CMCopyDictionaryOfAttachments(NULL, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
+            CFMutableDictionaryRef mutable = CFDictionaryCreateMutableCopy(NULL, 0, metaDict);
+            
+            NSMutableDictionary * mutableGPS = [self getGPSDictionaryForLocation:loc];
+            CFDictionarySetValue(mutable, kCGImagePropertyGPSDictionary, (__bridge const void *)(mutableGPS));
+            
+            // set the dictionary back to the buffer
+            CMSetAttachments(imageDataSampleBuffer, mutable, kCMAttachmentMode_ShouldPropagate);
+            
+            // trivial simple JPEG case
             NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-            UIImage *image = [UIImage imageWithData:jpegData];
-        
-        
-
-//        UIImage *cropImage = [CameraViewController cropImage:image toRect:CGRectMake(0, 80, 320, 320)];
-        
-//            CGImageRef cropRef = CGImageCreateWithImageInRect(image.CGImage, CGRectMake(0, 40, 320, 320));
-//            UIImage* cropImage = [UIImage imageWithCGImage:cropRef];
-//            CGImageRelease(cropRef);
-        
-//            NSData *imageData = UIImageJPEGRepresentation(cropImage, 1);
-        
-//            [[PhocalCore sharedClient] postPhoto:imageData];
-        
-//            dispatch_async(dispatch_get_main_queue(), ^{
-        
+            CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
+                                                                        imageDataSampleBuffer,
+                                                                        kCMAttachmentMode_ShouldPropagate);
+            ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+            [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
+                if (error) {
+                    //                    [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
+                    return;
+                }
+                
+                NSLog(@"Took picture");
+                
+                UIImage *image = [UIImage imageWithData:jpegData];
                 done(image);
                 
-//            });
-//        });
-        
-//        CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
-//                                                                    imageDataSampleBuffer,
-//                                                                    kCMAttachmentMode_ShouldPropagate);
-//        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-//        [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-//            if (error) {
-//                //                    [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
-//              return;
-//            }
-//            
-//            NSLog(@"Took picture");
-//            
-//            
-//        }];
-        
-        
-        
-        
-        
-//        if (attachments)
-//            CFRelease(attachments);
-//        
+//                [[PhocalCore sharedClient] postPhoto:jpegData];
+            }];
+            
+            if (attachments)
+                CFRelease(attachments);
+            
+        }];
     }];
+    
 }
 
 static inline double radians (double degrees) {return degrees * M_PI/180;}
@@ -332,15 +328,73 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+//http://stackoverflow.com/questions/3884060/saving-geotag-info-with-photo-on-ios4-1/5314634#5314634
+- (NSMutableDictionary *)getGPSDictionaryForLocation:(CLLocation *)location {
+    NSMutableDictionary *gps = [NSMutableDictionary dictionary];
+    
+    // GPS tag version
+    [gps setObject:@"2.2.0.0" forKey:(NSString *)kCGImagePropertyGPSVersion];
+    
+    // Time and date must be provided as strings, not as an NSDate object
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss.SSSSSS"];
+    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSTimeStamp];
+    [formatter setDateFormat:@"yyyy:MM:dd"];
+    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSDateStamp];
+    
+    // Latitude
+    CGFloat latitude = location.coordinate.latitude;
+    if (latitude < 0) {
+        latitude = -latitude;
+        [gps setObject:@"S" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
+    } else {
+        [gps setObject:@"N" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
+    }
+    [gps setObject:[NSNumber numberWithFloat:latitude] forKey:(NSString *)kCGImagePropertyGPSLatitude];
+    
+    // Longitude
+    CGFloat longitude = location.coordinate.longitude;
+    if (longitude < 0) {
+        longitude = -longitude;
+        [gps setObject:@"W" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
+    } else {
+        [gps setObject:@"E" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
+    }
+    [gps setObject:[NSNumber numberWithFloat:longitude] forKey:(NSString *)kCGImagePropertyGPSLongitude];
+    
+    // Altitude
+    CGFloat altitude = location.altitude;
+    if (!isnan(altitude)){
+        if (altitude < 0) {
+            altitude = -altitude;
+            [gps setObject:@"1" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+        } else {
+            [gps setObject:@"0" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+        }
+        [gps setObject:[NSNumber numberWithFloat:altitude] forKey:(NSString *)kCGImagePropertyGPSAltitude];
+    }
+    
+    // Speed, must be converted from m/s to km/h
+    if (location.speed >= 0){
+        [gps setObject:@"K" forKey:(NSString *)kCGImagePropertyGPSSpeedRef];
+        [gps setObject:[NSNumber numberWithFloat:location.speed*3.6] forKey:(NSString *)kCGImagePropertyGPSSpeed];
+    }
+    
+    // Heading
+    if (location.course >= 0){
+        [gps setObject:@"T" forKey:(NSString *)kCGImagePropertyGPSTrackRef];
+        [gps setObject:[NSNumber numberWithFloat:location.course] forKey:(NSString *)kCGImagePropertyGPSTrack];
+    }
+    
+    return gps;
 }
-*/
+
+/*
+ 
+ 
+ 
+ */
 
 @end

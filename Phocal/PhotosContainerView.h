@@ -11,6 +11,8 @@
 #import "IndexUIImageView.h"
 
 @class LikeGestureView;
+@class ImageCell;
+@class IndexUIImageView;
 
 @interface PhotosContainerView : UIView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -24,7 +26,7 @@
 
 @property (nonatomic, assign) BOOL expanded;
 
-- (id)initWithFrame:(CGRect)frame andImageView:(UIImageView *)imageView;
+- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView inRect:(CGRect)rect;
 
 - (void)cellDidGrowToHeight:(CGFloat)height;
 - (void)cellDidShrink;

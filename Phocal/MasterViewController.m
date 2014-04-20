@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
+#import "MomentCell.h"
 #import "MasterViewController.h"
 #import "PhotosContainerView.h"
 #import "PhotosListViewController.h"
@@ -57,7 +58,7 @@
     
     UIView *cameraViewControllerView = [[UIView alloc] initWithFrame:CGRectMake(320, 0, 320, self.view.frame.size.height)];
     CameraViewController *camera = [[CameraViewController alloc] init];
-    
+    camera.master=self;
     [cameraViewControllerView addSubview:camera.view];
     [_masterScroll addSubview:cameraViewControllerView];
    
@@ -88,18 +89,24 @@
     }
 }
 
-- (void)displayPhoto:(UIImageView *)imageView {
+- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect {
     NSLog(@"Display photo.");
     
-    self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:self.view.window.frame
-                                                                     andImageView:imageView];
+    self.selectedCell = imageCell;
+    self.selectedRect = rect;
+    self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window
+                                                           andImageView:imageCell.image
+                                                                 inRect:rect];
     [self.view addSubview:self.photoDisplayView];
-
+    
     UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                   action:@selector(takeDownViewer:)];
     swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
     
     [self.photoDisplayView addGestureRecognizer:swipeUp];
+    
+    [self.selectedCell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
+    [self.selectedCell.label2 setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.5]];
     [_masterScroll setScrollEnabled:NO];
     [_masterScroll setUserInteractionEnabled:NO];
 }
@@ -110,10 +117,27 @@
         for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
             [self.photoDisplayView removeGestureRecognizer:recognizer];
         }
-        [_masterScroll setScrollEnabled:YES];
-        [_masterScroll setUserInteractionEnabled:YES];
+        
         
         [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
+        
+        // Replace the photo.
+        UIImageView* returnImage = self.photoDisplayView.masterImageView;
+        [_masterScroll insertSubview:returnImage atIndex:3];
+        [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
+            returnImage.frame = CGRectMake(0, -50, self.selectedRect.size.width, self.selectedRect.size.height);
+            //returnImage.frame = self.selectedRect;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+                returnImage.frame = self.selectedRect;
+            } completion:^(BOOL finished) {
+                [returnImage removeFromSuperview];
+                [self.selectedCell.contentView addSubview:returnImage];
+                returnImage.frame = CGRectMake(0, 0, 320, 320);
+                [_masterScroll setScrollEnabled:YES];
+                [_masterScroll setUserInteractionEnabled:YES];
+            }];
+        }];
     }
 }
 

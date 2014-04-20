@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class IndexUIImageView;
 
 @interface MomentCell : UITableViewCell
-@property (nonatomic,strong) UIImageView *image;
+@property (nonatomic,strong) IndexUIImageView *image;
 @property (nonatomic,strong) UILabel *label;
 @property (nonatomic,strong) UILabel *label2;
 
