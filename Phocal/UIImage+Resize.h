@@ -40,4 +40,6 @@
 - (UIImage *)thumbnailWithWidth:(int)twidth height:(int)theight;
 
 - (UIImage *)crop:(CGRect)rect;
+
+-(UIImage*)imageCrop:(UIImage*)original;
 @end
