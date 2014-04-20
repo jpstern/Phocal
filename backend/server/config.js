@@ -17,7 +17,7 @@ module.exports = function configure(app) {
     app.use(app.router);
 
     app.use(function(err, req, res, next){
-      console.error(err.stack);
-      res.send(500, {"Error": err.message});
+        console.error(err.stack);
+        res.send(500, {"Error": err.message});
     });
 }
