@@ -55,6 +55,13 @@
     
     [self POST:@"photos" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"photo" fileName:@"file" mimeType:@"image/jpeg"];
+        
+        [formData appendPartWithFormData: [[@([location.timestamp timeIntervalSince1970]*1000) stringValue] dataUsingEncoding:NSUTF8StringEncoding] name:@"time"];
+        
+        [formData appendPartWithFormData: [[@(location.coordinate.latitude) stringValue] dataUsingEncoding:NSUTF8StringEncoding] name:@"lat"];
+        
+        [formData appendPartWithFormData: [[@(location.coordinate.longitude) stringValue] dataUsingEncoding:NSUTF8StringEncoding] name:@"lng"];
+        
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"Success uploading photo! %@", responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

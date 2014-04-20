@@ -1,7 +1,6 @@
 var  mongo         = require("./database.js"),
      multiparty    = require('multiparty'),
      path          = require('path'),
-     async         = require('async'),
      fs            = require('fs'),
      exif          = require('exif-parser');
 
@@ -65,7 +64,7 @@ module.exports = function() {
                 res.json(502, {error: err || "No Upload"});
                 return;
             }
-            async.map(files.photo, saveFile, db_response(req, res, next));
+            saveFile(files.photo[0], fields, db_response(req, res, next));
         });
     }
 
@@ -76,62 +75,66 @@ module.exports = function() {
     }
 
     // saves file to s3 and returns the hash
-    function saveFile(file, callback) {
+    function saveFile(file, fields, callback) {
 
-        if (file.size == 0) {
-            callback("Invalid File");
+        if (file.size === 0) {
+            return callback(new Error("Invalid File"));
         }
 
-        fs.readFile(file.path, function (err, data) {
-            var parser = require('exif-parser').create(data);
-            var exif = parser.parse();
+        try {
+            var time_int = parseInt(fields.time[0]);
+            var time = new Date(time_int);
+            var lat = parseFloat(fields.lat[0]);
+            var lng = parseFloat(fields.lng[0]);
 
-            var metadata = {
-                _id: file.hash,
-                size: file.size,
-                type: file.headers["content-type"],
-                loc: {
-                    type: "Point",
-                    coordinates: [
-                        // TODO: figure out how to do file location...
-                        parseFloat(exif.tags.GPSLongitude) || 0,
-                        parseFloat(exif.tags.GPSLatitude) || 0
-                    ]
-                },
-                time: new Date()
+            if (!lat || !lng || !time) {
+                throw -1;
             }
+        } catch (err) {
+            return callback(new Error("All 'time', 'lat', or 'lng' fields required."));
+        }
 
-            var put = s3.putBuffer(data, metadata._id, {
-                'Content-Length': metadata.size,
-                'Content-Type': metadata.type,
-                'x-amz-acl': 'public-read' // ensure public
-            }, function(err, res) {
-                if (!err && 200 == res.statusCode) {
-                    photos.insert(metadata, function(err, docs){
-                        if (err) callback(err);
-                        else callback(null, docs[0]);
-                    });
-                } else {
-                    callback({"error": "Can't Save to S3"});
-                }
-            });
+        var metadata = {
+            _id: file.hash,
+            size: file.size,
+            type: file.headers["content-type"],
+            loc: {
+                type: "Point",
+                coordinates: [
+                    lng || 0,
+                    lat || 0
+                ]
+            },
+            time: time || new Date()
+        }
 
-            console.log("Posted Image URL:", put.url);
-
+        var put = s3.put(metadata._id, {
+            'Content-Length': metadata.size,
+            'Content-Type': metadata.type,
+            'x-amz-acl': 'public-read' // ensure public
         });
 
+        console.log("Posted Image URL:", put.url);
 
+        // TODO: see if we can use putStream.. don't use tmp file save.
+        fs.createReadStream(file.path).pipe(put);
 
+        put.on('error', function(err) {
+            callback(err);
+        });
 
+        put.on('response', function(res){
+            if (200 == res.statusCode) {
+                photos.insert(metadata, callback);
+            } else {
+                callback({"error": "Can't Save to S3"});
+            }
+        });
     }
 
     function db_response(req, res, next) {
         return function(err, docs) {
             if (err) next(err);
-
-
-                            console.log(docs);
-
             for (var i in docs) {
                 var doc = docs[i];
 
