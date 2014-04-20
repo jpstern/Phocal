@@ -139,7 +139,7 @@
         } completion:^(BOOL finished) {
             // Attach the label back to the actual image view.
             [returnLabel removeFromSuperview];
-            returnLabel.frame = CGRectMake(0, kLabelOffset, 320, kLabelHeight);
+            returnLabel.frame = CGRectMake(0, kLabelOffset, kPhotoSize, kLabelHeight);
             [returnImage addSubview:returnLabel];
             self.selectedCell.label = returnLabel;
             
@@ -150,7 +150,7 @@
                 [returnImage removeFromSuperview];
                 [self.selectedCell.contentView addSubview:returnImage];
                 self.selectedCell.image = returnImage;
-                returnImage.frame = CGRectMake(0, 0, 320, 320);
+                returnImage.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
                 
                 //
                 [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];

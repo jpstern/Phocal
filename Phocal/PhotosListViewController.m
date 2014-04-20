@@ -18,6 +18,9 @@
 
 NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
+const int kImageOffsetFromTop = 10;
+const int kPhotoSize = 320;
+
 @interface PhotosListViewController ()
 
 @property (nonatomic, strong) NSMutableArray* photoURLs;
@@ -44,11 +47,9 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
     self.title = @"My Moments";
     
-	// Do any additional setup after loading the view, typically from a nib.
-    _selectedIndex = -1;
-   // [self.tableView registerClass:[ImageCell class] forCellReuseIdentifier:@"CellID"];
-
+    // Set up our table view style.
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.backgroundColor = [UIColor lightGrayColor];
 
     [self refreshPhotos];
     
@@ -125,8 +126,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     }
     
-    NSMutableDictionary* photoDict = _photoURLs[indexPath.row];
+    // Configure the cell.
+    cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.backgroundColor = [UIColor lightGrayColor];
     
+    NSMutableDictionary* photoDict = _photoURLs[indexPath.row];
+    cell.image.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
     [cell.image setImageWithURL:[NSURL URLWithString:photoDict[@"URL"]]
                placeholderImage:[UIImage imageNamed:@"placeholder"]];
     cell.image.URL = photoDict[@"URL"];
@@ -141,9 +147,6 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         photoDict[@"lng"] = [NSNumber numberWithFloat:-85.662872];
     }
 
-    cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
     // If we've already fetched the label for this geopoint, don't fetch it again.
     if ([_photoURLs[indexPath.row] objectForKey:@"label"]!=nil){
         cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"label"];
@@ -170,16 +173,6 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     
 }
 
-
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    
-//    NSInteger index = _idx;
-//    
-//    _idx = -1;
-//    
-//    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-//}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -188,9 +181,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     MomentCell *cell = (MomentCell *)[tableView cellForRowAtIndexPath:indexPath];
 
     CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
-    //CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
-    //oldRect.size.height -= labelHeight;
-    //oldRect.origin.y += labelHeight;
+    oldRect.origin.y += kImageOffsetFromTop;
+    oldRect.size.height -= kImageOffsetFromTop;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     //newRect.size.height -= 60;
     
@@ -210,7 +202,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         return 300.0;
     }*/
     
-    return 320;
+    return kPhotoSize + kImageOffsetFromTop;
 }
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(ImageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

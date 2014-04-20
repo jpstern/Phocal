@@ -10,6 +10,9 @@
 
 @class IndexUIImageView;
 
+extern const int kImageOffsetFromTop;
+extern const int kPhotoSize;
+
 @interface PhotosListViewController : UITableViewController
 
 @property (nonatomic,assign) NSInteger selectedIndex;
