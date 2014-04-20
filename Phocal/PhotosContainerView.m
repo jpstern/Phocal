@@ -96,31 +96,37 @@ const int kThumbSize = 80;
             
             NSLog(@"Got %d closest photos", photos.count);
             int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
-            for (int i = 0; i < photos.count; i++) {
+            int index = 0;
+            for (NSDictionary* photoDict in photos) {
+                // If this photo is the one we're currently looking at, don't add it.
+                NSString* newPhotoURL = [[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]];
+                if ([newPhotoURL isEqualToString:self.masterImageView.URL]) {
+                    continue;
+                }
+                
                 IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
-                                           CGRectMake(kScrollMargin + i*kThumbSize + i*kScrollMargin,
+                                           CGRectMake(kScrollMargin + index*kThumbSize + index*kScrollMargin,
                                                       thumbTop,
                                                       kThumbSize,
                                                       kThumbSize)];
-                thumb.sortIndex = i + 1;
+                thumb.sortIndex = index + 1;
                 thumb.userInteractionEnabled = YES;
                 [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(swapImages:)]];
                 thumb.contentMode = UIViewContentModeScaleAspectFill;
                 
                 // Set the image properties.
-                NSDictionary* photoDict = photos[i];
                 thumb.lat = photoDict[@"lat"];
                 thumb.lng = photoDict[@"lng"];
-                
-                NSString* photoURL = [[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]];
-                thumb.URL = photoURL;
-                [thumb setImageWithURL:[NSURL URLWithString:photoURL] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+                thumb.URL = newPhotoURL;
+                [thumb setImageWithURL:[NSURL URLWithString:newPhotoURL]
+                      placeholderImage:[UIImage imageNamed:@"placeholder"]];
                 
                 // Add the image to the scroll view and our image views array.
                 [_imageScroll addSubview:thumb];
                 [_imageViews addObject:thumb];
 
+                index++;
             }
         }];
     }
