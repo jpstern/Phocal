@@ -31,6 +31,7 @@
 @property (nonatomic, strong) UIButton *retake;
 @property (nonatomic, strong) UIButton *save;
 
+@property (nonatomic, strong) CLLocation *takenLocation;
 @property (nonatomic, strong) UIImage *takenPicture;
 
 @end
@@ -86,7 +87,7 @@
     
     NSData *data = UIImageJPEGRepresentation(_takenPicture, 0.3);
     
-    [[PhocalCore sharedClient] postPhoto:data];
+    [[PhocalCore sharedClient] postPhoto:data withLocation:_takenLocation];
 }
 
 - (void)takeImageHandler {
@@ -108,6 +109,7 @@
         CGImageRelease(imageRef);
         
         _takenPicture = image;
+        _takenLocation = location;
         
         _photoPreview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
         _photoPreview.image = image;
@@ -331,7 +333,7 @@
             NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
             UIImage *image = [UIImage imageWithData:jpegData];
             
-            [[PhocalCore sharedClient] postPhoto:jpegData withLocation:loc];
+//            [[PhocalCore sharedClient] postPhoto:jpegData withLocation:loc];
             
             done (image, loc);
         
