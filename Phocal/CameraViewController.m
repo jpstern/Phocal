@@ -266,6 +266,7 @@
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
     
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
     imagePicker.allowsEditing = YES;
     imagePicker.delegate = self;
@@ -276,13 +277,19 @@
 
 #pragma mark - UIImagePickerControllerDelegate
 
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+     [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     NSURL *referenceURL = [info objectForKey:UIImagePickerControllerReferenceURL];
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        CLLocation *loc = [asset valueForProperty:ALAssetPropertyLocation];
+        
+        CLLocation *loc = [asset valueForKey:ALAssetPropertyLocation];
         
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);
@@ -296,16 +303,16 @@
     } failureBlock:^(NSError *error) {
         // error handling
     }];
+    //do something with the image
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
+
 
 -(void)albumView
 {
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+    
 }
 
 - (UIImage *)crop:(UIImage *)image from:(CGSize)src to:(CGSize)dst
