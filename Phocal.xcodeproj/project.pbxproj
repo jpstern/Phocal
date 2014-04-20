@@ -289,7 +289,7 @@
 				ORGANIZATIONNAME = Josh;
 				TargetAttributes = {
 					80EA82EB18E5D22D00981338 = {
-						DevelopmentTeam = XM9FUD8J48;
+						DevelopmentTeam = 22993U86TR;
 					};
 					80EA830C18E5D22D00981338 = {
 						TestTargetID = 80EA82EB18E5D22D00981338;
