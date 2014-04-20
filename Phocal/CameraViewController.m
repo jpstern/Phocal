@@ -43,6 +43,11 @@
     _previewLayer.hidden = NO;
 }
 
+- (void)savePhoto {
+    
+    
+}
+
 - (void)takeImageHandler {
     
     [self takePhoto:^(UIImage *image) {
@@ -67,16 +72,16 @@
         [self.view addSubview:_photoPreview];
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(0, 0, 100, 40);
-        [button setTitle:@"Cancel" forState:UIControlStateNormal];
+        button.frame = CGRectMake(10, 10, 50, 50);
+        [button setTitle:@"X" forState:UIControlStateNormal];
         [button addTarget:self action:@selector(cancelPhoto) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:button];
         
-//        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-//        button.frame = CGRectMake(0, 0, 100, 40);
-//        [button setTitle:@"Cancel" forState:UIControlStateNormal];
-//        [button addTarget:self action:@selector(cancelPhoto) forControlEvents:UIControlEventTouchUpInside];
-//        [self.view addSubview:button];
+        UIButton *button1 = [UIButton buttonWithType:UIButtonTypeCustom];
+        button1.frame = CGRectMake(260, 10, 50, 50);
+        [button1 setTitle:@"Save" forState:UIControlStateNormal];
+        [button1 addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:button1];
         
     }];
 }
