@@ -23,6 +23,8 @@
 @property (nonatomic, strong) UIImageView *photoPreview;
 @property (nonatomic, strong) UIView *headerView;
 
+@property (nonatomic, strong) UIButton *uploadThumb;
+
 @end
 
 @implementation CameraViewController
@@ -122,16 +124,16 @@
 //    [self.view addSubview:_headerView];
     
     UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 320, 320, self.view.frame.size.height - 320)];
-    container.backgroundColor = [UIColor blackColor];
+    container.backgroundColor = [UIColor colorWithRed:43/255.0 green:43/255.0 blue:43/255.0 alpha:1];
     [self.view addSubview:container];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
      UIImage *cameraIcon = [UIImage imageNamed:@"cameraButton"];
     [button setImage:cameraIcon forState:UIControlStateNormal];
-    button.frame = CGRectMake(130, 350, 60, 60);
-//    button.center = CGPointMake(container.frame.size.width / 2, container.frame.size.height / 2);
+    button.frame = CGRectMake(0, 0, 85, 85);
+    button.center = CGPointMake(container.frame.size.width / 2, container.frame.size.height / 2);
     [button addTarget:self action:@selector(takeImageHandler) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button];
+    [container addSubview:button];
     
     UIButton *photoViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage *photoIcon = [UIImage imageNamed:@"list"];
@@ -143,8 +145,6 @@
     [photoViewButton setImage:photoIcon forState:UIControlStateNormal];
     [photoViewButton addTarget:self action:@selector(photoView) forControlEvents:UIControlEventTouchUpInside];
     [container addSubview:photoViewButton];
-    
-    UIButton *uploadViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
     ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
     [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop)
@@ -161,11 +161,13 @@
                     {
                         ALAssetRepresentation *repr = [result defaultRepresentation];
                         UIImage *uploadIcon = [UIImage imageWithCGImage:[repr fullResolutionImage]];
-                        [uploadViewButton setImage:uploadIcon forState:UIControlStateNormal];
-                        [uploadViewButton addTarget:self action:@selector(albumView) forControlEvents:UIControlEventTouchUpInside];
-                        [container addSubview:uploadViewButton];
-                        uploadViewButton.frame = CGRectMake(270, 0, 44, 44);
-                        uploadViewButton.center = CGPointMake(uploadViewButton.center.x, container.frame.size.height / 2);
+                        uploadIcon = [UIImage imageWithCGImage:uploadIcon.CGImage scale:1 orientation:UIImageOrientationRight];
+                        _uploadThumb = [UIButton buttonWithType:UIButtonTypeCustom];
+                        [_uploadThumb setImage:uploadIcon forState:UIControlStateNormal];
+                        [_uploadThumb addTarget:self action:@selector(albumView) forControlEvents:UIControlEventTouchUpInside];
+                        [container addSubview:_uploadThumb];
+                        _uploadThumb.frame = CGRectMake(240, 0, 60, 60);
+                        _uploadThumb.center = CGPointMake(_uploadThumb.center.x, container.frame.size.height / 2);
 
                         *stop = YES;
                         }
