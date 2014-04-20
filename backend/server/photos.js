@@ -42,6 +42,9 @@ module.exports = function() {
         // TODO: REMOVE THIS SHIT LATER
         if(!req.query.lng || !req.query.lat) {
             query = {};
+            if (req.hash) {
+                query.hash = req.hash;
+            }
         }
         photos.find(query).limit(20).sort({time:-1}).toArray(
             db_response(req, res, next));
@@ -54,17 +57,12 @@ module.exports = function() {
             hash: "sha1"
         });
 
-        // form.parse(req);
-        // form.on("part", function(part){
-        //     console.log(part.name);
-        // });
-
         form.parse(req, function(err, fields, files) {
             if (err && !files.photo) {
                 res.json(502, {error: err || "No Upload"});
                 return;
             }
-            saveFile(files.photo[0], fields, db_response(req, res, next));
+            saveFile(files.photo[0], fields, req.hash, db_response(req, res, next));
         });
     }
 
@@ -75,7 +73,7 @@ module.exports = function() {
     }
 
     // saves file to s3 and returns the hash
-    function saveFile(file, fields, callback) {
+    function saveFile(file, fields, hash, callback) {
 
         if (file.size === 0) {
             return callback(new Error("Invalid File"));
@@ -105,6 +103,7 @@ module.exports = function() {
                     lat || 0
                 ]
             },
+            hash: hash,
             time: time || new Date()
         }
 

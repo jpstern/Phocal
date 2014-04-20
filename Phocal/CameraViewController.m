@@ -295,32 +295,30 @@
 
 #pragma mark - UIImagePickerControllerDelegate
 
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+     [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     NSURL *referenceURL = [info objectForKey:UIImagePickerControllerReferenceURL];
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        ALAssetRepresentation *rep = [asset defaultRepresentation];
-        NSDictionary *metadata = rep.metadata;
+        CLLocation *loc = [asset valueForKey:ALAssetPropertyLocation];
         
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
-        
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);
         
-        NSLog(@"METADATA %@", metadata);
+        [[PhocalCore sharedClient] postPhoto:imageData withLocation:loc];
         
-        //[[PhocalCore sharedClient] postPhoto:imageData];
         [self dismissViewControllerAnimated:YES completion:nil];
         
     } failureBlock:^(NSError *error) {
         // error handling
     }];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
+    //do something with the image
 }
 
 -(void)albumView

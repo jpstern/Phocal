@@ -28,7 +28,6 @@ const int kLabelHeight = 60;
 @implementation MomentCell
 
 
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 
 {
@@ -41,20 +40,14 @@ const int kLabelHeight = 60;
         
     }
     
-    //self.frame = CGRectMake(0, 0, 320, 50);
     self.image = [[IndexUIImageView alloc] init];
     self.label = [[UILabel alloc] init];
     [self.label setFrame:CGRectMake(0, kLabelOffset, 320, kLabelHeight)];
     [self.label setTextAlignment:NSTextAlignmentCenter];
-    [self.image setFrame:CGRectMake( 0,0, 320, 320)];
     
-    
-    //[self.image setFrame:CGRectMake( 0,20, 320, 320)];
-    
-    
-    [self.contentView addSubview:self.image];
-    
+    // Add the views.
     [self.image addSubview:self.label];
+    [self.contentView addSubview:self.image];
 
     return self;
     

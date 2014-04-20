@@ -21,5 +21,6 @@
 @property (nonatomic, strong) UINavigationController* navController;
 
 - (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect;
+- (void)displayCamera;
 
 @end

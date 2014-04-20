@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		72A3BB5218F1BE6400B06A0F /* PhotosListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */; };
 		72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3BB5118F1BE6400B06A0F /* ImageCell.m */; };
-		72A3BB5518F1C2C700B06A0F /* Portofino-wallpapers.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */; };
 		808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA721903011B00D5C511 /* UIViewController+Master.m */; };
 		808AAA79190456B300D5C511 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA78190456B300D5C511 /* UIImage+Resize.m */; };
 		808AAA9519047BC700D5C511 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808AAA9419047BC700D5C511 /* Accelerate.framework */; };
@@ -57,7 +56,6 @@
 		72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosListViewController.m; sourceTree = "<group>"; };
 		72A3BB5018F1BE6400B06A0F /* ImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCell.h; sourceTree = "<group>"; };
 		72A3BB5118F1BE6400B06A0F /* ImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCell.m; sourceTree = "<group>"; };
-		72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Portofino-wallpapers.jpg"; sourceTree = "<group>"; };
 		808AAA711903011B00D5C511 /* UIViewController+Master.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Master.h"; sourceTree = "<group>"; };
 		808AAA721903011B00D5C511 /* UIViewController+Master.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Master.m"; sourceTree = "<group>"; };
 		808AAA77190456B300D5C511 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
@@ -137,7 +135,6 @@
 		80EA82E318E5D22D00981338 = {
 			isa = PBXGroup;
 			children = (
-				72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */,
 				80EA82F518E5D22D00981338 /* Phocal */,
 				80EA831418E5D22D00981338 /* PhocalTests */,
 				80EA82EE18E5D22D00981338 /* Frameworks */,
@@ -298,7 +295,7 @@
 				ORGANIZATIONNAME = Josh;
 				TargetAttributes = {
 					80EA82EB18E5D22D00981338 = {
-						DevelopmentTeam = 22993U86TR;
+						DevelopmentTeam = WK4AXX367F;
 					};
 					80EA830C18E5D22D00981338 = {
 						TestTargetID = 80EA82EB18E5D22D00981338;
@@ -332,7 +329,6 @@
 				80EA830818E5D22D00981338 /* Images.xcassets in Resources */,
 				80EA82FA18E5D22D00981338 /* InfoPlist.strings in Resources */,
 				80EA830318E5D22D00981338 /* Main.storyboard in Resources */,
-				72A3BB5518F1C2C700B06A0F /* Portofino-wallpapers.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
