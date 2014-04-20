@@ -53,6 +53,26 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         
     }
     
+    float latitude = 44.741802;
+    float longitude = -85.662872;
+    
+    
+    
+    
+    
+ 
+
+    
+}
+
+-(NSString *) URLEncodeString:(NSString *) str
+{
+    
+    NSMutableString *tempStr = [NSMutableString stringWithString:str];
+    [tempStr replaceOccurrencesOfString:@" " withString:@"+" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [tempStr length])];
+    
+    
+    return [[NSString stringWithFormat:@"%@",tempStr] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (void)goToCamera
@@ -112,26 +132,27 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     float latitude = 44.741802;
     float longitude = -85.662872;
     
-    CLLocation *location = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
-    CLGeocoder *test = [[CLGeocoder alloc] init];
+    
     if ([_photoURLs[indexPath.row] objectForKey:@"first"]!=nil){
         cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"first"];
         
     }else{
-        [test reverseGeocodeLocation: location completionHandler: ^(NSArray *placemarks, NSError *error) {
-            NSLog(@"%@",placemarks);
-            CLPlacemark *placemark = placemarks[0];
-            NSDictionary *dic = placemark.addressDictionary;
-            NSArray *address = dic[@"FormattedAddressLines"];
-            NSString *first = address[0];
-            NSString *second = address[1];
-            cell.label.text = first;
-            [NSString stringWithFormat:@"%@ \n %@",first,second];
-           
-            [[_photoURLs objectAtIndex:indexPath.row] setObject:first forKey:@"first"];
-            [[_photoURLs objectAtIndex:indexPath.row] setObject:second forKey:@"second"];
-
-        }];
+        
+        
+        NSString * bang =[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&rankby=distance&types=accounting|airport|amusement_park|aquarium|art_gallery|atm|bakery|bank|bar|beauty_salon|bicycle_store|book_store|bowling_alley|bus_station|cafe|campground|car_dealer|car_rental|car_repair|car_wash|casino|cemetery|church|city_hall|clothing_store|convenience_store|courthouse|dentist|department_store|doctor|electrician|electronics_store|embassy|establishment|finance|fire_station|florist|food|funeral_home|furniture_store|gas_station|general_contractor|grocery_or_supermarket|gym|hair_care|hardware_store|health|hindu_temple|home_goods_store|hospital|insurance_agency|jewelry_store|laundry|lawyer|library|liquor_store|local_government_office|locksmith|lodging|meal_delivery|meal_takeaway|mosque|movie_rental|movie_theater|moving_company|museum|night_club|painter|park|parking|pet_store|pharmacy|physiotherapist|place_of_worship|plumber|police|post_office|real_estate_agency|restaurant|roofing_contractor|rv_park|school|shoe_store|shopping_mall|spa|stadium|storage|store|subway_station|synagogue|taxi_stand|train_station|travel_agency|university|veterinary_care|zoo&sensor=false&rankby=distance&key=AIzaSyD242pkuyIkgiaDl_6zfCNBFyUta9sUCZ0",latitude,longitude];
+        
+        NSString *hey = [self URLEncodeString:bang];
+        NSURL *urlcustom=[NSURL URLWithString:hey];
+        NSData *swagdata = [NSData dataWithContentsOfURL:urlcustom];
+        NSError *error=nil;
+        id response=[NSJSONSerialization JSONObjectWithData:swagdata options:
+                     NSJSONReadingMutableContainers error:&error];
+        
+        NSArray *results = [response objectForKey:@"results"];
+        NSDictionary *number1 = results[0];
+        NSString *name = [number1 objectForKey:@"name"];
+        [[_photoURLs objectAtIndex:indexPath.row] setObject:name forKey:@"first"];
+        cell.label.text = name;
 
     }
     [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.6]];
