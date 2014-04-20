@@ -22,8 +22,8 @@
 
 //
 
-
-
+const int kLabelOffset = 250;
+const int kLabelHeight = 60;
 
 @implementation MomentCell
 
@@ -44,7 +44,7 @@
     //self.frame = CGRectMake(0, 0, 320, 50);
     self.image = [[IndexUIImageView alloc] init];
     self.label = [[UILabel alloc] init];
-    [self.label setFrame:CGRectMake(0, 320-70, 320, 60)];
+    [self.label setFrame:CGRectMake(0, kLabelOffset, 320, kLabelHeight)];
     [self.label setTextAlignment:NSTextAlignmentCenter];
     [self.image setFrame:CGRectMake( 0,0, 320, 320)];
     

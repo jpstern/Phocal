@@ -17,6 +17,6 @@
 
 - (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location;
 - (void)getPhotos:(void (^)(NSArray *))completion;
-
+- (void)getLocationLabelForLat:(NSNumber *)lat andLng:(NSNumber *)lng completion:(void (^)(NSDictionary*))completion;
 
 @end

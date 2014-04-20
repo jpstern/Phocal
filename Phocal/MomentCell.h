@@ -7,6 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+
+extern const int kLabelOffset;
+extern const int kLabelHeight;
+
+
 @class IndexUIImageView;
 
 @interface MomentCell : UITableViewCell
