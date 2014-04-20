@@ -263,7 +263,10 @@
             
             NSLog(@"Took picture");
             
-            [[PhocalCore sharedClient] postPhoto:jpegData];
+            UIImage *image = [UIImage imageWithData:jpegData];
+            done (image);
+            
+//            [[PhocalCore sharedClient] postPhoto:jpegData];
             
         }];
     }];
