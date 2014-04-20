@@ -278,8 +278,9 @@
 //                [[PhocalCore sharedClient] postPhoto:jpegData];
             }];
             
-            if (attachments)
-                CFRelease(attachments);
+            NSLog(@"Took picture");
+            
+            [[PhocalCore sharedClient] postPhoto:jpegData];
             
         }];
     }];
