@@ -59,6 +59,16 @@
     }];
 }
 
+- (void)getClosestPhotosForLat:(NSNumber *)lat andLng:(NSNumber *)lng completion:(void (^)(NSArray *))completion {
+    NSDictionary* params = @{ @"lat": lat, @"lng": lng };
+    [self GET:@"photos" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"Success! Response: %@", responseObject);
+        completion(responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failure! Error: %@", error);
+    }];
+}
+
 - (void)getLocationLabelForLat:(NSNumber *)lat andLng:(NSNumber *)lng completion:(void (^)(NSDictionary*))completion {
     NSString * path = @"maps/api/place/nearbysearch/json";
     NSDictionary* params = @{ @"location":[NSString stringWithFormat:@"%f,%f", [lat floatValue], [lng floatValue]],
@@ -82,5 +92,10 @@
         completion(nil);
     }];
 }
+
+- (NSString *)photoURLForId:(NSString *)photoID {
+    return [NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoID];
+}
+
 
 @end

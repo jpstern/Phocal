@@ -33,15 +33,21 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
     
-	// Do any additional setup after loading the view, typically from a nib.
-    _idx=-1;
-   // [self.tableView registerClass:[ImageCell class] forCellReuseIdentifier:@"CellID"];
+    // Do our nav bar set up.
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     
-        self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+    self.navigationItem.rightBarButtonItem =
+    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
+                                                  target:self
+                                                  action:@selector(goToCamera)];
     
-      self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(goToCamera)];
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
-      self.title = @"My Moments";
+    self.title = @"My Moments";
+    
+	// Do any additional setup after loading the view, typically from a nib.
+    _selectedIndex = -1;
+   // [self.tableView registerClass:[ImageCell class] forCellReuseIdentifier:@"CellID"];
+
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     [self refreshPhotos];
@@ -54,6 +60,12 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     }
 }
 
+- (void)goToCamera
+{
+    [self.masterViewController displayCamera];
+    
+}
+
 -(NSString *) URLEncodeString:(NSString *) str
 {
     
@@ -64,15 +76,10 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     return [[NSString stringWithFormat:@"%@",tempStr] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
-- (void)goToCamera
-{
-    [[self.masterViewController masterScroll] setContentOffset:CGPointMake(320,0) animated:YES];
-    
-}
-
 - (void)refreshPhotos {
     NSLog(@"refresh");
     [self.refreshControl beginRefreshing];
+    [_photoURLs removeAllObjects];
     
     [[PhocalCore sharedClient] getPhotos:^(NSArray * photos) {
         if (!photos) {
@@ -81,8 +88,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         }
         for (NSDictionary* photoDict in photos) {
             NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-            [dict setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
-                      forKey:@"URL"];
+            [dict setObject:[[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]] forKey:@"URL"];
             [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lat"] doubleValue]] forKey:@"lat"];
             [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lng"] doubleValue]] forKey:@"lng"];
             [_photoURLs addObject:dict];
@@ -91,6 +97,13 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
     }];
+}
+
+- (void)replaceSelectedPhotoWithPhoto:(IndexUIImageView *)photo {
+    NSMutableDictionary* replacedPhotoDict = _photoURLs[self.selectedIndex];
+    replacedPhotoDict[@"URL"] = photo.URL;
+    replacedPhotoDict[@"lat"] = photo.lat;
+    replacedPhotoDict[@"lng"] = photo.lng;
 }
 
 - (void)didReceiveMemoryWarning
@@ -112,16 +125,20 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     }
     
-    NSDictionary* photoDict = _photoURLs[indexPath.row];
+    NSMutableDictionary* photoDict = _photoURLs[indexPath.row];
+    
     [cell.image setImageWithURL:[NSURL URLWithString:photoDict[@"URL"]]
                placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    cell.image.URL = photoDict[@"URL"];
     cell.image.lat = photoDict[@"lat"];
     cell.image.lng = photoDict[@"lng"];
     
     // Fake 'em if we don't got 'em.
-    if ([cell.image.lat floatValue] == 0.0f) {
+    if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {
         cell.image.lat = [NSNumber numberWithFloat:44.741802];
         cell.image.lng = [NSNumber numberWithFloat:-85.662872];
+        photoDict[@"lat"] = [NSNumber numberWithFloat:44.741802];
+        photoDict[@"lng"] = [NSNumber numberWithFloat:-85.662872];
     }
 
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -166,8 +183,9 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.selectedIndex = indexPath.row;
+    
     MomentCell *cell = (MomentCell *)[tableView cellForRowAtIndexPath:indexPath];
-    self.tableView.scrollEnabled = NO;
 
     CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
     //CGFloat labelHeight = (cell.label.frame.size.height + cell.label2.frame.size.height);
@@ -175,6 +193,8 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
     //oldRect.origin.y += labelHeight;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     //newRect.size.height -= 60;
+    
+    self.tableView.scrollEnabled = NO;
     [self.masterViewController displayPhotoInCell:cell inRect:newRect];
 
 }
@@ -195,11 +215,11 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(ImageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (_idx == indexPath.row) {
+    //if (_idx == indexPath.row) {
         
 //        _idx = -1;
 //        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:indexPath.row inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-    }
+    //}
 //    else if(_idx!=-1&&indexPath.row==_idx)
 //    {
 //        [tableView scrollToRowAtIndexPath:indexPath
