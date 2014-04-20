@@ -49,9 +49,7 @@
     return client;
 }
 
-
-
-- (void)postPhoto:(NSData *)imageData {
+- (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location {
     
     [self POST:@"photos" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"photo" fileName:@"file" mimeType:@"image/jpeg"];

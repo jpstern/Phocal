@@ -41,6 +41,7 @@ const int kThumbSize = 80;
         
         _imageViews = [[NSMutableArray alloc] init];
         _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, kImagePaneOffset, self.frame.size.width, 300)];
+       // _likeView.image=imageView;
 
         _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;

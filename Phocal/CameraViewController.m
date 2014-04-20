@@ -219,20 +219,21 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
-    UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
-    
-    NSData *imageData = UIImageJPEGRepresentation(image,1.0);
-    [[PhocalCore sharedClient] postPhoto:imageData];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    NSURL *referenceURL = [info valueForKey:UIImagePickerControllerReferenceURL];
+    NSURL *referenceURL = [info objectForKey:UIImagePickerControllerReferenceURL];
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
         ALAssetRepresentation *rep = [asset defaultRepresentation];
         NSDictionary *metadata = rep.metadata;
         NSLog(@"%@", metadata);
+        
+        UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
+        
+        NSData *imageData = UIImageJPEGRepresentation(image,1.0);
+        
+        NSLog(@"METADATA %@", metadata);
+        
+        //[[PhocalCore sharedClient] postPhoto:imageData];
+        [self dismissViewControllerAnimated:YES completion:nil];
         
     } failureBlock:^(NSError *error) {
         // error handling
