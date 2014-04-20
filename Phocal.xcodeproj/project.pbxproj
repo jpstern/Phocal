@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		72A3BB5218F1BE6400B06A0F /* PhotosListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */; };
 		72A3BB5318F1BE6400B06A0F /* ImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3BB5118F1BE6400B06A0F /* ImageCell.m */; };
-		72A3BB5518F1C2C700B06A0F /* Portofino-wallpapers.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */; };
 		808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA721903011B00D5C511 /* UIViewController+Master.m */; };
+		808AAA79190456B300D5C511 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA78190456B300D5C511 /* UIImage+Resize.m */; };
 		80EA82F018E5D22D00981338 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82EF18E5D22D00981338 /* Foundation.framework */; };
 		80EA82F218E5D22D00981338 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82F118E5D22D00981338 /* CoreGraphics.framework */; };
 		80EA82F418E5D22D00981338 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82F318E5D22D00981338 /* UIKit.framework */; };
@@ -55,9 +55,10 @@
 		72A3BB4F18F1BE6400B06A0F /* PhotosListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosListViewController.m; sourceTree = "<group>"; };
 		72A3BB5018F1BE6400B06A0F /* ImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCell.h; sourceTree = "<group>"; };
 		72A3BB5118F1BE6400B06A0F /* ImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCell.m; sourceTree = "<group>"; };
-		72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Portofino-wallpapers.jpg"; sourceTree = "<group>"; };
 		808AAA711903011B00D5C511 /* UIViewController+Master.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Master.h"; sourceTree = "<group>"; };
 		808AAA721903011B00D5C511 /* UIViewController+Master.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Master.m"; sourceTree = "<group>"; };
+		808AAA77190456B300D5C511 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		808AAA78190456B300D5C511 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		80EA82EC18E5D22D00981338 /* Phocal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phocal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		80EA82EF18E5D22D00981338 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		80EA82F118E5D22D00981338 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -131,7 +132,6 @@
 		80EA82E318E5D22D00981338 = {
 			isa = PBXGroup;
 			children = (
-				72A3BB5418F1C2C700B06A0F /* Portofino-wallpapers.jpg */,
 				80EA82F518E5D22D00981338 /* Phocal */,
 				80EA831418E5D22D00981338 /* PhocalTests */,
 				80EA82EE18E5D22D00981338 /* Frameworks */,
@@ -194,6 +194,8 @@
 				80EA832918E7220800981338 /* MasterViewController.m */,
 				80EA833018E727CD00981338 /* CameraViewController.h */,
 				80EA833118E727CD00981338 /* CameraViewController.m */,
+				808AAA77190456B300D5C511 /* UIImage+Resize.h */,
+				808AAA78190456B300D5C511 /* UIImage+Resize.m */,
 				80EA832718E612C000981338 /* Model */,
 				80EA830718E5D22D00981338 /* Images.xcassets */,
 				80EA82F618E5D22D00981338 /* Supporting Files */,
@@ -323,7 +325,6 @@
 				80EA830818E5D22D00981338 /* Images.xcassets in Resources */,
 				80EA82FA18E5D22D00981338 /* InfoPlist.strings in Resources */,
 				80EA830318E5D22D00981338 /* Main.storyboard in Resources */,
-				72A3BB5518F1C2C700B06A0F /* Portofino-wallpapers.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,6 +381,7 @@
 				80EA832A18E7220800981338 /* MasterViewController.m in Sources */,
 				80EBE1A418F1C2CE0003620D /* PhotosContainerView.m in Sources */,
 				F542BFA81903219000DFB2BE /* LocationDelegate.m in Sources */,
+				808AAA79190456B300D5C511 /* UIImage+Resize.m in Sources */,
 				80EBE1AA18F1DBB50003620D /* IndexUIImageView.m in Sources */,
 				F542BFAE1903382100DFB2BE /* MomentCell.m in Sources */,
 				80EA833218E727CD00981338 /* CameraViewController.m in Sources */,

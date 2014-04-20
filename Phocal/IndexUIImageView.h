@@ -11,8 +11,8 @@
 @interface IndexUIImageView : UIImageView
 
 @property (nonatomic, assign) NSInteger sortIndex;
-@property (nonatomic, assign) NSNumber* lat;
-@property (nonatomic, assign) NSNumber* lng;
+@property (nonatomic, retain) NSNumber* lat;
+@property (nonatomic, retain) NSNumber* lng;
 @property (nonatomic, retain) NSString* URL;
 
 @end
