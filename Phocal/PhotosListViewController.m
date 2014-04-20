@@ -52,17 +52,6 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
         self.extendedLayoutIncludesOpaqueBars = YES;
         
     }
-    
-    float latitude = 44.741802;
-    float longitude = -85.662872;
-    
-    
-    
-    
-    
- 
-
-    
 }
 
 -(NSString *) URLEncodeString:(NSString *) str
@@ -90,14 +79,14 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
             NSLog(@"no photos");
             return;
         }
-        NSMutableArray *urls = [[NSMutableArray alloc] init];
         for (NSDictionary* photoDict in photos) {
-            NSMutableDictionary *dummy = [[NSMutableDictionary alloc] init];
-            [dummy setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            [dict setObject:[NSString stringWithFormat:@"http://s3.amazonaws.com/Phocal/%@", photoDict[@"_id"]]
                       forKey:@"URL"];
-            [urls addObject:dummy];
+            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lat"] doubleValue]] forKey:@"lat"];
+            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lng"] doubleValue]] forKey:@"lng"];
+            [_photoURLs addObject:dict];
         }
-        _photoURLs = urls;
 
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
@@ -119,46 +108,46 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 {
 
     MomentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];
-    //ImageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainCell"];// forIndexPath:indexPath];
-    if (!cell)
-        
-        //cell=[[ImageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
+    if (!cell) {
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
+    }
     
-    NSLog(@"setting url to %@", _photoURLs[indexPath.row]);
-    [cell.image setImageWithURL:[NSURL URLWithString:[_photoURLs[indexPath.row] objectForKey:@"URL"]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    //[cell addPhotosWithFrame:CGRectMake(0, 0, 320, 200) AndPaths:@[_photoURLs[indexPath.row]]];
+    NSDictionary* photoDict = _photoURLs[indexPath.row];
+    [cell.image setImageWithURL:[NSURL URLWithString:photoDict[@"URL"]]
+               placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    cell.image.lat = photoDict[@"lat"];
+    cell.image.lng = photoDict[@"lng"];
+    
+    // Fake 'em if we don't got 'em.
+    if ([cell.image.lat floatValue] == 0.0f) {
+        cell.image.lat = [NSNumber numberWithFloat:44.741802];
+        cell.image.lng = [NSNumber numberWithFloat:-85.662872];
+    }
+
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-    float latitude = 44.741802;
-    float longitude = -85.662872;
     
-    
-    if ([_photoURLs[indexPath.row] objectForKey:@"first"]!=nil){
-        cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"first"];
+    // If we've already fetched the label for this geopoint, don't fetch it again.
+    if ([_photoURLs[indexPath.row] objectForKey:@"label"]!=nil){
+        cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"label"];
         
-    }else{
+    } else {
+        // Set the placeholder while we asynchronously fetch the label.
+        cell.label.text = @"Getting location...";
+        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
+                                                   andLng:cell.image.lng
+                                               completion:^(NSDictionary *dict) {
+            if (!dict) {
+                return;
+            }
+               
+            NSString* bestGuessLabel = dict[@"results"][0][@"name"];
+            [_photoURLs[indexPath.row] setObject:bestGuessLabel forKey:@"label"];
+            cell.label.text = bestGuessLabel;
+        }];
         
-        
-        NSString * bang =[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&rankby=distance&types=accounting|airport|amusement_park|aquarium|art_gallery|atm|bakery|bank|bar|beauty_salon|bicycle_store|book_store|bowling_alley|bus_station|cafe|campground|car_dealer|car_rental|car_repair|car_wash|casino|cemetery|church|city_hall|clothing_store|convenience_store|courthouse|dentist|department_store|doctor|electrician|electronics_store|embassy|establishment|finance|fire_station|florist|food|funeral_home|furniture_store|gas_station|general_contractor|grocery_or_supermarket|gym|hair_care|hardware_store|health|hindu_temple|home_goods_store|hospital|insurance_agency|jewelry_store|laundry|lawyer|library|liquor_store|local_government_office|locksmith|lodging|meal_delivery|meal_takeaway|mosque|movie_rental|movie_theater|moving_company|museum|night_club|painter|park|parking|pet_store|pharmacy|physiotherapist|place_of_worship|plumber|police|post_office|real_estate_agency|restaurant|roofing_contractor|rv_park|school|shoe_store|shopping_mall|spa|stadium|storage|store|subway_station|synagogue|taxi_stand|train_station|travel_agency|university|veterinary_care|zoo&sensor=false&rankby=distance&key=AIzaSyD242pkuyIkgiaDl_6zfCNBFyUta9sUCZ0",latitude,longitude];
-        
-        NSString *hey = [self URLEncodeString:bang];
-        NSURL *urlcustom=[NSURL URLWithString:hey];
-        NSData *swagdata = [NSData dataWithContentsOfURL:urlcustom];
-        NSError *error=nil;
-        id response=[NSJSONSerialization JSONObjectWithData:swagdata options:
-                     NSJSONReadingMutableContainers error:&error];
-        
-        NSArray *results = [response objectForKey:@"results"];
-        NSDictionary *number1 = results[0];
-        NSString *name = [number1 objectForKey:@"name"];
-        [[_photoURLs objectAtIndex:indexPath.row] setObject:name forKey:@"first"];
-        cell.label.text = name;
-
     }
     [cell.label setBackgroundColor:[UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.6]];
-    
     
     return cell;
     
