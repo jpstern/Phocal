@@ -288,9 +288,8 @@
     NSURL *referenceURL = [info objectForKey:UIImagePickerControllerReferenceURL];
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        ALAssetRepresentation *rep = [asset defaultRepresentation];
-        NSDictionary *metadata = rep.metadata;
-        NSLog(@"%@", metadata);
+        
+        CLLocation *loc = [asset valueForKey:ALAssetPropertyLocation];
         
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);

@@ -61,15 +61,15 @@
 
 -(void)afterAnimationStops{
     if (self.gestreg.state==UIGestureRecognizerStateBegan | self.gestreg.state==UIGestureRecognizerStateChanged) {
-      /*
+      
         UIImage *heart = [UIImage imageNamed:@"heart.png"];
-        CGSize size = _image.size;
+        CGSize size = _currectImgView.image.size;
         UIGraphicsBeginImageContext(size);
         [heart drawInRect:CGRectMake(0,0,20,20)];
-        [self.image drawInRect:CGRectMake(0,0,320,320)];
+        [_currectImgView.image drawInRect:CGRectMake(0,0,320,320)];
         
         UIImage *destImage = UIGraphicsGetImageFromCurrentImageContext();
-        [self.imgview setImage:destImage];*/
+        [self.imgview setImage:destImage];
         
         NSLog(@"you got it");
         [self completeani];
