@@ -58,6 +58,7 @@
     [_photoPreview removeFromSuperview];
     _previewLayer.hidden = NO;
     
+    
     [UIView animateWithDuration:0.25 animations:^{
         
         _retake.alpha = 0;
