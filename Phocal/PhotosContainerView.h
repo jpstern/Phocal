@@ -27,9 +27,8 @@
 
 @property (nonatomic, assign) BOOL expanded;
 
-- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView inRect:(CGRect)rect;
-
-- (void)cellDidGrowToHeight:(CGFloat)height;
-- (void)cellDidShrink;
+- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)photo;
+- (void)animateFromCellinRect:(CGRect)rect;
+- (void)animateFromScratchWithLabel:(UILabel *)label;
 
 @end

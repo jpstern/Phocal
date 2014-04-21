@@ -89,15 +89,10 @@
     }
 }
 
-- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect {
-    NSLog(@"Display photo.");
-    
+- (void)displayPhotoFromCell:(MomentCell *)imageCell inRect:(CGRect)rect {
     self.selectedCell = imageCell;
     self.selectedRect = rect;
-    self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window
-                                                           andImageView:imageCell.image
-                                                                 inRect:rect];
-    [self.view addSubview:self.photoDisplayView];
+    self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window andImageView:imageCell.image];
     
     UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                   action:@selector(takeDownViewer:)];
@@ -105,9 +100,31 @@
     
     [self.photoDisplayView addGestureRecognizer:swipeUp];
     
-    
     [_masterScroll setScrollEnabled:NO];
     [_masterScroll setUserInteractionEnabled:NO];
+    
+    [self.view addSubview:self.photoDisplayView];
+    [self.photoDisplayView animateFromCellinRect:rect];
+}
+
+- (void)displayPhotoFromUpload:(IndexUIImageView *)photo {
+    self.selectedCell = nil;
+    
+    self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window andImageView:photo];
+    
+    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                  action:@selector(takeDownViewer:)];
+    swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
+    
+    [self.photoDisplayView addGestureRecognizer:swipeUp];
+    
+    // This is a test label.
+    UILabel* label = [[UILabel alloc] init];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.text = @"Fake Label";
+    
+    [self.view addSubview:self.photoDisplayView];
+    [self.photoDisplayView animateFromScratchWithLabel:label];
 }
 
 - (void)takeDownViewer:(UISwipeGestureRecognizer *)gesture {
@@ -127,16 +144,16 @@
         [(PhotosListViewController *)self.navController.viewControllers[0] replaceSelectedPhotoWithPhoto:returnImage];
         
         [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
-            returnImage.frame = CGRectMake(0, -50, self.selectedRect.size.width, self.selectedRect.size.height);
-            returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, -50 + kLabelOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
+            returnImage.frame = CGRectMake(0, 0, self.selectedRect.size.width, self.selectedRect.size.height);
+            returnLabel.frame = CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
         } completion:^(BOOL finished) {
             // Attach the label back to the actual image view.
             [returnLabel removeFromSuperview];
-            returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, kLabelOffset, returnLabel.frame.size.width, kLabelHeight);
+            returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, kLabelVerticalOffset, kLabelWidth, kLabelHeight);
             [returnImage addSubview:returnLabel];
             self.selectedCell.label = returnLabel;
             
-            // Now animate the image back to it's place.
+            // Now animate the image back to its place.
             [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
                 returnImage.frame = self.selectedRect;
             } completion:^(BOOL finished) {
@@ -145,7 +162,7 @@
                 self.selectedCell.image = returnImage;
                 returnImage.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
                 
-                //
+                // Re-enable scrolling.
                 [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
                 [_masterScroll setScrollEnabled:YES];
                 [_masterScroll setUserInteractionEnabled:YES];

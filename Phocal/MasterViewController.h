@@ -10,6 +10,7 @@
 
 @class MomentCell;
 @class PhotosContainerView;
+@class IndexUIImageView;
 
 @interface MasterViewController : UIViewController <UIScrollViewDelegate>
 
@@ -20,7 +21,8 @@
 @property (nonatomic, assign) CGRect selectedRect;
 @property (nonatomic, strong) UINavigationController* navController;
 
-- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect;
+- (void)displayPhotoFromCell:(MomentCell *)imageCell inRect:(CGRect)rect;
+- (void)displayPhotoFromUpload:(IndexUIImageView *)photo;
 - (void)displayCamera;
 
 @end

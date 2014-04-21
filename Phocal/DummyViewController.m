@@ -40,13 +40,6 @@
     [self.view addSubview:_container];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
-    
-    [_container cellDidGrowToHeight:250];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

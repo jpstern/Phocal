@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-extern const int kLabelOffset;
-extern const int kLabelHeight;
 
+extern const int kLabelHorizontalOffset;
+extern const int kLabelVerticalOffset;
+extern const int kLabelHeight;
+extern const int kLabelWidth;
 
 @class IndexUIImageView;
 
