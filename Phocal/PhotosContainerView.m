@@ -142,7 +142,7 @@ const int kThumbSize = 80;
     [[PhocalCore sharedClient] likePhotoForID:_masterImageView._id];
     NSLog(@"Voted");
     _masterImageView.voted=YES;
-    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
+    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]forState:UIControlStateNormal];
 }
 
 - (void)download{
