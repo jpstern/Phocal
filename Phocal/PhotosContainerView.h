@@ -25,11 +25,13 @@
 @property (nonatomic, strong) UIScrollView *imageScroll;
 @property (nonatomic, strong) LikeGestureView* likeView;
 
+@property (nonatomic, strong) NSMutableDictionary *photoDict;
+
 @property (nonatomic,strong) UIAlertView *alert;
 
 @property (nonatomic, assign) BOOL expanded;
 
-- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView inRect:(CGRect)rect;
+- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView andDictionary:(NSMutableDictionary*)photoDict inRect:(CGRect)rect;
 
 - (void)cellDidGrowToHeight:(CGFloat)height;
 - (void)cellDidShrink;

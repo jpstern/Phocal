@@ -89,13 +89,13 @@
     }
 }
 
-- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect {
+- (void)displayPhotoInCell:(MomentCell *)imageCell andDictionary:(NSMutableDictionary *)dict inRect:(CGRect)rect {
     NSLog(@"Display photo.");
     
     self.selectedCell = imageCell;
     self.selectedRect = rect;
     self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window
-                                                           andImageView:imageCell.image
+                                                           andImageView:imageCell.image andDictionary:dict
                                                                  inRect:rect];
     [self.view addSubview:self.photoDisplayView];
     
@@ -119,6 +119,7 @@
         
         // Replace the photo and the label.
         IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
+        returnImage.votedView.hidden=YES;
         UILabel* returnLabel = self.photoDisplayView.momentLabel;
         [_masterScroll addSubview:returnImage];
         [_masterScroll addSubview:returnLabel];

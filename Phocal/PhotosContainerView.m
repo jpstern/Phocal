@@ -23,11 +23,13 @@ const int kThumbSize = 80;
 @property (nonatomic, assign) CGFloat originalHeight;
 @property (nonatomic, retain) UIGestureRecognizer* tapRecognizer;
 
+@property (nonatomic, strong) IndexUIImageView *initialMaster;
+
 @end
 
 @implementation PhotosContainerView
 
-- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView inRect:(CGRect)rect {
+- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView andDictionary:(NSMutableDictionary *)photoDict inRect:(CGRect)rect {
     
     self = [super initWithFrame:window.frame];
     
@@ -48,8 +50,9 @@ const int kThumbSize = 80;
         _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;
         
+        _photoDict = photoDict;
        
-        
+        _initialMaster = imageView;
         // Take the image out of the cell.
         self.masterImageView = imageView;
         self.masterImageView.sortIndex = 0;
@@ -77,14 +80,9 @@ const int kThumbSize = 80;
         }];
 
         _masterImageView.votedView.hidden=NO;
-       /* if(_masterImageView.voted)
-        {
-            [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
-        }
-        else
-        {
-            [_heartView setImage:nil];
-        }*/
+        
+        if (_masterImageView.voted) [self voted];
+    
         
         // Add the scroll view.
         int imageBottom = kImagePaneOffset + kImageSize;
@@ -162,10 +160,16 @@ const int kThumbSize = 80;
 
 -(void) voted
 {
+    if (_masterImageView == _initialMaster) {
+        
+        _photoDict[@"voted"] = @(YES);
+    }
+    
     NSLog(@"Voted");
     _masterImageView.voted=YES;
     [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
 }
+
 - (void)download{
     self.alert = [[UIAlertView alloc] initWithTitle:nil
                                                     message:@"Saved to camera roll!"
@@ -185,16 +189,18 @@ const int kThumbSize = 80;
 }
 -(void)timedAlert
 {
+    
     [self performSelector:@selector(dismissAlert:) withObject:self.alert afterDelay:1.5];
 }
 
 -(void)dismissAlert:(UIAlertView *) alertView
 {
+    
     [alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
 
 - (void)cellDidGrowToHeight:(CGFloat)height {
-    
+   
     _expanded = YES;
     CGFloat currentX = 30;
     
@@ -240,11 +246,15 @@ const int kThumbSize = 80;
 
 - (void)cellDidShrink {
     
+
     _expanded = NO;
     [self.likeView removeFromSuperview];
     self.imageScroll.scrollEnabled = NO;
     
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        
+        self.masterImageView.votedView.hidden=YES;
+        
         self.frame = CGRectMake(0, 0, 320, _originalHeight);
         self.masterImageView.frame = CGRectMake(0, 0, 320, _originalHeight);
         
@@ -331,16 +341,15 @@ const int kThumbSize = 80;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+  
     return YES;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    
     if (gestureRecognizer.view == _masterImageView) {
         NSLog(@"not recognizing tap");
         return NO;
     }
-    
     return _expanded;
 }
 //
