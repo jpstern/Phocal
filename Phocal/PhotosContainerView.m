@@ -12,7 +12,6 @@
 #import "PhotosContainerView.h"
 
 const int kScrollHeight = 100;
-const int kImagePaneOffset = 60;
 const int kMomentLabelOffset = 20;
 const int kImageSize = 320;
 const int kScrollMargin = 15;
@@ -28,12 +27,12 @@ const int kThumbSize = 80;
 
 @implementation PhotosContainerView
 
-- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView {
-    
-    self = [super initWithFrame:window.frame];
+- (id)initWithFrame:(CGRect)frame andImageView:(IndexUIImageView *)imageView {
+
+    self = [super initWithFrame:frame];
     
     if (self) {
-        self.frame = window.frame;
+        self.frame = frame;
         
         // Set our main image view.
         self.masterImageView = imageView;
@@ -47,15 +46,14 @@ const int kThumbSize = 80;
          }];
         
         _imageViews = [[NSMutableArray alloc] init];
-        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, kImagePaneOffset, self.frame.size.width, 300)];
+        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 300)];
 
         //_likeView.currectImgView=imageView;
         _likeView.target = self;
         _likeView.selector = @selector(voted);
         
         // Add the scroll view.
-        int imageBottom = kImagePaneOffset + kImageSize;
-        int scrollTop = (((window.bounds.size.height - imageBottom) / 2) + imageBottom) - (kScrollHeight / 2);
+        int scrollTop = (((frame.size.height - kImageSize) / 2) + kImageSize) - (kScrollHeight / 2);
         _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, scrollTop, kImageSize, kScrollHeight)];
         _imageScroll.delegate = self;
         _imageScroll.contentSize = CGSizeMake(0, kScrollHeight);
@@ -80,7 +78,7 @@ const int kThumbSize = 80;
             return;
         }
         
-        NSLog(@"Got %d closest photos", photos.count);
+        NSLog(@"Got %lu closest photos", (unsigned long)photos.count);
         int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
         int index = 0;
         for (NSDictionary* photoDict in photos) {
@@ -115,7 +113,7 @@ const int kThumbSize = 80;
             [_imageViews addObject:thumb];
             
             UIButton *test = [UIButton buttonWithType:UIButtonTypeCustom];
-            test.frame = CGRectMake(15, 335, 30, 30);
+            test.frame = CGRectMake(15, 275, 30, 30);
             //test.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
             [test setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
             [test addTarget:self action:@selector(download) forControlEvents:UIControlEventTouchUpInside];
@@ -170,7 +168,7 @@ const int kThumbSize = 80;
     [alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
 
-- (void)animateFromCellinRect:(CGRect)rect {
+- (void)animateFromCellinRect:(CGRect)rect withCompletion:(void (^)())completion {
 
     // Take the image out of the cell.
     [self.masterImageView removeFromSuperview];
@@ -190,12 +188,13 @@ const int kThumbSize = 80;
                                         kLabelWidth,
                                         kLabelHeight);
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, kMomentLabelOffset, kLabelWidth, kLabelHeight);
-        self.masterImageView.frame = CGRectMake(0, kImagePaneOffset, kImageSize, kImageSize);
+        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, -47, kLabelWidth, kLabelHeight);
+        self.momentLabel.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:0.0];
+        self.masterImageView.frame = CGRectMake(0, 0, kImageSize, kImageSize);
         
     } completion:^(BOOL finished) {
         // Empty.
-        
+        completion();
     }];
 }
 
@@ -207,7 +206,7 @@ const int kThumbSize = 80;
     self.masterImageView.frame = CGRectMake(0, self.frame.size.height, kImageSize, kImageSize);
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
         self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, kMomentLabelOffset, kLabelWidth, kLabelHeight);
-        self.masterImageView.frame = CGRectMake(0, kImagePaneOffset, kImageSize, kImageSize);
+        self.masterImageView.frame = CGRectMake(0, 0, kImageSize, kImageSize);
 
     } completion:^(BOOL finished) {
         // Empty.

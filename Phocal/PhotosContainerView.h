@@ -31,8 +31,8 @@
 
 @property (nonatomic, assign) BOOL expanded;
 
-- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView;
-- (void)animateFromCellinRect:(CGRect)rect;
+- (id)initWithFrame:(CGRect)frame andImageView:(IndexUIImageView *)imageView;
+- (void)animateFromCellinRect:(CGRect)rect withCompletion:(void (^)())completion;
 - (void)animateFromScratchWithLabel:(UILabel *)label;
 
 

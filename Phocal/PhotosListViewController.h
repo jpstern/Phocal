@@ -9,14 +9,20 @@
 #import <UIKit/UIKit.h>
 
 @class IndexUIImageView;
+@class MomentCell;
+@class PhotosContainerView;
 
 extern const int kImageOffsetFromTop;
 extern const int kPhotoSize;
 
 @interface PhotosListViewController : UITableViewController
 
-@property (nonatomic,assign) NSInteger selectedIndex;
-@property (nonatomic,weak) id master;
+@property (nonatomic, assign) NSInteger selectedIndex;
+@property (nonatomic, strong) MomentCell* selectedCell;
+@property (nonatomic, assign) CGRect selectedRect;
+@property (nonatomic, weak) id master;
+
+@property (nonatomic, strong) PhotosContainerView* photoDisplayView;
 
 - (void)replaceSelectedPhotoWithPhoto:(IndexUIImageView *)photo;
 

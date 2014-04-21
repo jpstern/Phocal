@@ -21,8 +21,10 @@
 @property (nonatomic, assign) CGRect selectedRect;
 @property (nonatomic, strong) UINavigationController* navController;
 
-- (void)displayPhotoFromCell:(MomentCell *)imageCell inRect:(CGRect)rect;
-- (void)displayPhotoFromUpload:(IndexUIImageView *)photo;
+- (void)disableScroll;
+- (void)enableScroll;
+
+- (void)addViewToTop:(UIView *)view;
 - (void)displayCamera;
 
 @end
