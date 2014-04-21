@@ -95,15 +95,8 @@ const int kPhotoSize = 320;
             NSLog(@"no photos");
             return;
         }
-        for (NSDictionary* photoDict in photos) {
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-            [dict setObject:[[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]] forKey:@"URL"];
-            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lat"] doubleValue]] forKey:@"lat"];
-            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lng"] doubleValue]] forKey:@"lng"];
-            dict[@"_id"] = photoDict[@"_id"];
-            dict[@"didVote"] = photoDict[@"didVote"];
-            [_photoURLs addObject:dict];
-        }
+
+        _photoURLs = [NSMutableArray arrayWithArray:photos];
 
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
@@ -230,17 +223,17 @@ const int kPhotoSize = 320;
     } else {
         // Set the placeholder while we asynchronously fetch the label.
         cell.label.text = @"Getting location...";
-        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
-                                                   andLng:cell.image.lng
-                                               completion:^(NSDictionary *dict) {
-            if (!dict) {
-                return;
-            }
-               
-            NSString* bestGuessLabel = dict[@"results"][0][@"name"];
-            [_photoURLs[indexPath.row] setObject:bestGuessLabel forKey:@"label"];
-            cell.label.text = bestGuessLabel;
-        }];
+//        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
+//                                                   andLng:cell.image.lng
+//                                               completion:^(NSDictionary *dict) {
+//            if (!dict) {
+//                return;
+//            }
+//               
+//            NSString* bestGuessLabel = dict[@"results"][0][@"name"];
+//            [_photoURLs[indexPath.row] setObject:bestGuessLabel forKey:@"label"];
+//            cell.label.text = bestGuessLabel;
+//        }];
         
     }
     
