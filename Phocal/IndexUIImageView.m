@@ -34,7 +34,10 @@
     [self.layer setBorderColor:[[UIColor colorWithWhite:1.0 alpha:.95] CGColor]];
     [self.layer setBorderWidth:5.0];
     [self.layer setShadowRadius:3.0];
+    [self.layer setShadowOffset:CGSizeMake(0.0, 3.0)];
     [self.layer setShadowOpacity:1.0];
+    
+    self.clipsToBounds = NO;
 }
 
 @end
