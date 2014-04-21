@@ -11,7 +11,6 @@
 #import "PhotosContainerView.h"
 #import "PhotosListViewController.h"
 #import "CameraViewController.h"
-#import "DummyViewController.h"
 
 @interface MasterViewController ()
 

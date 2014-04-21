@@ -8,7 +8,6 @@
 
 #import "PhotosListViewController.h"
 
-#import "ImageCell.h"
 #import "MasterViewController.h"
 #import "PhotosContainerView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
