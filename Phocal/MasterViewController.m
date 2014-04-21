@@ -73,7 +73,7 @@
 }
 
 - (void)displayMoments {
-    [_masterScroll setContentOffset:CGPointMake(0, 0)];
+    [_masterScroll setContentOffset:CGPointMake(0, 0) animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

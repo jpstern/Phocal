@@ -115,6 +115,14 @@
     [self.alertView show];
 }
 
+- (void)showNoGeoModal {
+    NSString* msg = @"Sorry, the photo you selected does not have a location. Without a location, we can't make a Moment! Check that your Camera has Location Services turned on in Settings > Privacy > Location Services";
+    self.alertView = [[UIAlertView alloc] initWithTitle:@"No Location"
+                                                message:msg delegate:nil
+                                      cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [self.alertView show];
+}
+
 -(void)dismissModal {
     [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
@@ -160,7 +168,6 @@
         [_retake removeFromSuperview];
         
     }];
-    
 
 }
 
@@ -173,13 +180,8 @@
         _bottomContainer.backgroundColor = [UIColor colorWithRed:43.0/255 green:43.0/255 blue:43.0/255 alpha:1];
 
         _previewLayer.hidden = YES;
-
-        CGFloat width = image.size.width;
-        
-        CGFloat scale = width / self.view.frame.size.width;
         
         image = [image imageCrop:image];
-
         
         _takenPicture = image;
         _takenLocation = location;
@@ -406,7 +408,7 @@
     _listButton.frame = CGRectMake(30, 0, 44, 44);
     _listButton.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
     [_listButton setImage:[UIImage imageNamed:@"stackedPhoto"] forState:UIControlStateNormal];
-    [_listButton addTarget:self action:@selector(photoView) forControlEvents:UIControlEventTouchUpInside];
+    [_listButton addTarget:self action:@selector(showPhotoView) forControlEvents:UIControlEventTouchUpInside];
     [_bottomContainer addSubview:_listButton];
     
     ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
@@ -427,7 +429,7 @@
                         UIImage *rotated = [UIImage imageWithCGImage:uploadIcon.CGImage scale:1 orientation:UIImageOrientationRight];
                         _uploadThumb = [UIButton buttonWithType:UIButtonTypeCustom];
                         [_uploadThumb setImage:rotated forState:UIControlStateNormal];
-                        [_uploadThumb addTarget:self action:@selector(albumView) forControlEvents:UIControlEventTouchUpInside];
+                        [_uploadThumb addTarget:self action:@selector(showAlbumView) forControlEvents:UIControlEventTouchUpInside];
                         [_bottomContainer addSubview:_uploadThumb];
                         _uploadThumb.contentMode = UIViewContentModeScaleAspectFit;
                         _uploadThumb.adjustsImageWhenHighlighted = NO;
@@ -471,7 +473,7 @@
     
 }
 
-- (void)photoView
+- (void)showPhotoView
 {
     [self.masterViewController displayMoments];
 }
@@ -495,6 +497,12 @@
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
         CLLocation *loc = [asset valueForProperty:ALAssetPropertyLocation];
+        
+        if (!loc) {
+            [self showNoGeoModal];
+            [self dismissViewControllerAnimated:YES completion:nil];
+            return;
+        }
         
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);
@@ -525,7 +533,7 @@
     //do something with the image
 }
 
--(void)albumView
+-(void)showAlbumView
 {
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 }
