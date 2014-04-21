@@ -227,7 +227,7 @@ const int kPhotoSize = 320;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     
     self.tableView.scrollEnabled = NO;
-    [self.masterViewController displayPhotoInCell:cell andDictionary:_photoURLs[indexPath.row]inRect:newRect];
+    [self.masterViewController displayPhotoFromCell:cell inRect:newRect];
 
 }
 
