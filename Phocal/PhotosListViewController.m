@@ -18,12 +18,14 @@
 
 NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 
-const int kImageOffsetFromTop = 10;
+const int kImageOffsetFromTop = 0;
+const int kImageOffsetFromBottom = 10;
 const int kPhotoSize = 320;
 
 @interface PhotosListViewController ()
 
 @property (nonatomic, strong) NSMutableArray* photoURLs;
+@property (nonatomic, assign) BOOL isShowingEmptyView;
 
 @end
 
@@ -33,6 +35,7 @@ const int kPhotoSize = 320;
 {
     [super viewDidLoad];
     _photoURLs = [[NSMutableArray alloc] init];
+    _isShowingEmptyView = NO;
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
     
@@ -97,7 +100,44 @@ const int kPhotoSize = 320;
 
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
+        
+        if (photos.count == 0 && !self.isShowingEmptyView) {
+            [self showNoPhotosView];
+        } else if (photos.count > 0 && self.isShowingEmptyView) {
+            [self hideNoPhotosView];
+        }
     }];
+}
+
+- (void)showNoPhotosView {
+    self.tableView.backgroundView = [[UIView alloc] initWithFrame:self.tableView.frame];
+    UILabel* noPhotosLabel = [[UILabel alloc] init];
+    noPhotosLabel.numberOfLines = 0;
+    noPhotosLabel.frame = CGRectMake(0, 100, self.tableView.frame.size.width, 100);
+    noPhotosLabel.textAlignment = NSTextAlignmentCenter;
+    noPhotosLabel.text = @"You don't have any Moments!\n\nSwipe left to take or upload a photo.";
+    
+    UIImageView* swipeButton = [[UIImageView alloc] initWithFrame:CGRectMake(200, 250, 75, 75)];
+    [swipeButton setImage:[UIImage imageNamed:@"cameraButton"]];
+    
+    // Animate the button to swipe left.
+    [UIView animateWithDuration:1.5 delay:0.0 usingSpringWithDamping:.75 initialSpringVelocity:.75 options:UIViewAnimationOptionRepeat animations:^{
+        swipeButton.frame = CGRectMake(50, 250, 75, 75);
+    } completion:^(BOOL finished) {
+        // Empty.
+    }];
+    
+    [self.tableView.backgroundView addSubview:swipeButton];
+    [self.tableView.backgroundView addSubview:noPhotosLabel];
+    
+    self.isShowingEmptyView = YES;
+}
+
+- (void)hideNoPhotosView {
+    for (UIView* subview in self.tableView.backgroundView.subviews) {
+        [subview removeFromSuperview];
+    }
+    self.isShowingEmptyView = NO;
 }
 
 - (void)replaceSelectedPhotoWithPhoto:(IndexUIImageView *)photo {
@@ -129,7 +169,7 @@ const int kPhotoSize = 320;
     // Configure the cell.
     cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.backgroundColor = [UIColor lightGrayColor];
+    cell.backgroundColor = [UIColor clearColor];
     
     NSMutableDictionary* photoDict = _photoURLs[indexPath.row];
     cell.image.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
@@ -181,8 +221,8 @@ const int kPhotoSize = 320;
     MomentCell *cell = (MomentCell *)[tableView cellForRowAtIndexPath:indexPath];
 
     CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
-    oldRect.origin.y += kImageOffsetFromTop;
-    oldRect.size.height -= kImageOffsetFromTop;
+    oldRect.origin.y += (kImageOffsetFromTop);
+    oldRect.size.height -= (kImageOffsetFromTop + kImageOffsetFromBottom);
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     
     self.tableView.scrollEnabled = NO;
@@ -201,7 +241,7 @@ const int kPhotoSize = 320;
         return 300.0;
     }*/
     
-    return kPhotoSize + kImageOffsetFromTop;
+    return kPhotoSize + kImageOffsetFromTop + kImageOffsetFromBottom;
 }
 
 -(void)tableView:(UITableView *)tableView didEndDisplayingCell:(ImageCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
