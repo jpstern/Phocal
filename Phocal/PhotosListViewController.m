@@ -178,6 +178,7 @@ const int kPhotoSize = 320;
     cell.image.URL = photoDict[@"URL"];
     cell.image.lat = photoDict[@"lat"];
     cell.image.lng = photoDict[@"lng"];
+    cell.image.voted = [photoDict[@"didVote"] boolValue];
     
     // Fake 'em if we don't got 'em.
     if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {

@@ -136,6 +136,7 @@
         
         // Replace the photo and the label.
         IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
+        returnImage.votedView.hidden=YES;
         UILabel* returnLabel = self.photoDisplayView.momentLabel;
         [_masterScroll addSubview:returnImage];
         [_masterScroll addSubview:returnLabel];
