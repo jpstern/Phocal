@@ -75,6 +75,8 @@
     
     [UIView commitAnimations];
     
+    [self.target performSelector:self.selector];
+    
 }
 
 - (void)hideHeart {
