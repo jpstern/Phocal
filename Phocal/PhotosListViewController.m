@@ -149,6 +149,9 @@ const int kNavBarHeight = 64;
     replacedPhotoDict[@"URL"] = photo.URL;
     replacedPhotoDict[@"lat"] = photo.lat;
     replacedPhotoDict[@"lng"] = photo.lng;
+    replacedPhotoDict[@"didVote"] = (photo.voted) ? @(1) : @(0);
+    replacedPhotoDict[@"_id"] = photo._id;
+    replacedPhotoDict[@"label"] = photo.label;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -206,6 +209,7 @@ const int kNavBarHeight = 64;
     cell.image.lng = photoDict[@"lng"];
     cell.image.voted = [photoDict[@"didVote"] boolValue];
     cell.image._id = photoDict[@"_id"];
+    cell.image.label = photoDict[@"label"];
     
     // Fake 'em if we don't got 'em.
     if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {
@@ -260,15 +264,6 @@ const int kNavBarHeight = 64;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    /*if(_idx!=-1 && indexPath.row==_idx)
-    {
-        
-        CGRect screenRect = [[UIScreen mainScreen]bounds];
-        CGFloat screenHeight = screenRect.size.height;
-        return 300.0;
-    }*/
-    
     return kPhotoSize + kImageOffsetFromTop + kImageOffsetFromBottom;
 }
 

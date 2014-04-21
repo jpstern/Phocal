@@ -18,7 +18,6 @@
         [self addBorderAndShadow];
     }
     
-    
     return self;
 }
 
@@ -27,8 +26,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self addBorderAndShadow];
-        
-        
     }
     
     return self;
@@ -41,16 +38,23 @@
     [self.layer setShadowOffset:CGSizeMake(0.0, 3.0)];
     [self.layer setShadowOpacity:1.0];
     
-    _votedView = [UIButton buttonWithType:UIButtonTypeCustom];
-    _votedView.frame= CGRectMake(270, 270, 30, 30);
-    [_votedView setImage:[UIImage imageNamed:@"emptyHeart"] forState:UIControlStateNormal];
-   
-   // [_votedView setImage:[UIImage imageNamed:@"emptyHeart"]];
-    [self addSubview:_votedView];
-    _votedView.hidden=YES;
-    self.voted= NO;
-    
     self.clipsToBounds = NO;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    id copy = [[[self class] alloc] init];
+    
+    if (copy) {
+        [copy set_id:[self._id copyWithZone:zone]];
+        [copy setVoted:self.voted];
+        [copy setLat:[self.lat copyWithZone:zone]];
+        [copy setLng:[self.lng copyWithZone:zone]];
+        [copy setURL:[self.URL copyWithZone:zone]];
+        [copy setLabel:[self.label copyWithZone:zone]];
+        [copy setIndex:self.index];
+    }
+    
+    return copy;
 }
 
 @end
