@@ -25,6 +25,7 @@
         client = [[PhocalCore alloc] initWithBaseURL:API_BASE_URL];
         client.requestSerializer = [AFJSONRequestSerializer serializer];
         client.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions: NSJSONReadingMutableContainers];
+
         
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         
@@ -44,7 +45,20 @@
     return client;
 }
 
-- (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location completion:(void (^)(NSDictionary*))completion {
+- (void)likePhotoForID:(NSString *)photoID {
+    
+    NSString *path = [NSString stringWithFormat:@"photo/%@/vote", photoID];
+    
+    [self POST:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSLog(@"%@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+       
+        NSLog(@"%@", error);
+    }];
+}
+
+- (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location completion:(void (^)(NSDictionary *))completion  {
     
     [self POST:@"photos" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"photo" fileName:@"file" mimeType:@"image/jpeg"];

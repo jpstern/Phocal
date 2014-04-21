@@ -66,6 +66,11 @@ const int kThumbSize = 80;
         
         // Fetch the nearest photos.
         [self getClosestPhotos];
+        
+        if (_masterImageView.voted) {
+            
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
+        }
     }
     
     return self;
@@ -93,6 +98,8 @@ const int kThumbSize = 80;
                                                   thumbTop,
                                                   kThumbSize,
                                                   kThumbSize)];
+            thumb.voted = [photoDict[@"didVote"] boolValue];
+            thumb._id = photoDict[@"_id"];
             thumb.sortIndex = index + 1;
             thumb.userInteractionEnabled = YES;
             [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
@@ -129,14 +136,11 @@ const int kThumbSize = 80;
 
 - (void)voted
 {
-    if (_masterImageView == _initialMaster) {
-        
-        _photoDict[@"voted"] = @(YES);
-    }
-    
+
+    [[PhocalCore sharedClient] likePhotoForID:_masterImageView._id];
     NSLog(@"Voted");
     _masterImageView.voted=YES;
-    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
+    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]forState:UIControlStateNormal];
 }
 
 - (void)download{
@@ -228,7 +232,7 @@ const int kThumbSize = 80;
     IndexUIImageView *imageView = _imageViews[removalIndex];
     
     [_imageViews removeObjectAtIndex:removalIndex];
-    int insertIndex = _masterImageView.sortIndex;
+    NSInteger insertIndex = _masterImageView.sortIndex;
     if (insertIndex > removalIndex) {
         insertIndex--;
     }
@@ -258,6 +262,13 @@ const int kThumbSize = 80;
         // Make new large image.
         imageView.frame = _masterImageView.frame;
         _masterImageView = imageView;
+        
+        if (_masterImageView.voted)
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
+        else {
+            
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"emptyHeart"] forState:UIControlStateNormal];
+        }
         
         self.masterImageView.votedView.hidden=NO;
         

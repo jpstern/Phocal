@@ -22,10 +22,15 @@ const int kImageOffsetFromTop = 0;
 const int kImageOffsetFromBottom = 10;
 const int kPhotoSize = 320;
 
-@interface PhotosListViewController ()
+@interface PhotosListViewController () {
+    
+    BOOL justShowedTutorial;
+}
 
 @property (nonatomic, strong) NSMutableArray* photoURLs;
 @property (nonatomic, assign) BOOL isShowingEmptyView;
+
+
 
 @end
 
@@ -95,6 +100,8 @@ const int kPhotoSize = 320;
             [dict setObject:[[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]] forKey:@"URL"];
             [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lat"] doubleValue]] forKey:@"lat"];
             [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lng"] doubleValue]] forKey:@"lng"];
+            dict[@"_id"] = photoDict[@"_id"];
+            dict[@"didVote"] = photoDict[@"didVote"];
             [_photoURLs addObject:dict];
         }
 
@@ -147,6 +154,32 @@ const int kPhotoSize = 320;
     replacedPhotoDict[@"lng"] = photo.lng;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    BOOL showedTutorial = [def boolForKey:@"showedTutorial"];
+    
+    if (!showedTutorial) {
+        
+        [def setBool:YES forKey:@"showedTutorial"];
+        UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"tutorialViewController"];
+        
+        [self.navigationController presentViewController:controller animated:YES completion:nil];
+        justShowedTutorial = YES;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (justShowedTutorial) {
+        
+        [self.masterViewController displayCamera];
+        justShowedTutorial = NO;
+    }
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -180,6 +213,7 @@ const int kPhotoSize = 320;
     cell.image.lat = photoDict[@"lat"];
     cell.image.lng = photoDict[@"lng"];
     cell.image.voted = [photoDict[@"didVote"] boolValue];
+    cell.image._id = photoDict[@"_id"];
     
     // Fake 'em if we don't got 'em.
     if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {

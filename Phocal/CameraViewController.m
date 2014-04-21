@@ -164,7 +164,7 @@
         
         
         _retake = [UIButton buttonWithType:UIButtonTypeCustom];
-        _retake.frame = CGRectMake(30, 0, 44, 44);
+        _retake.frame = CGRectMake(0, 0, 100, _bottomContainer.frame.size.height);
         _retake.center = CGPointMake(_retake.center.x, _bottomContainer.frame.size.height / 2);
         [_retake setImage:[UIImage imageNamed:@"trash"] forState:UIControlStateNormal];
 //        [_retake setTitle:@"Retake" forState:UIControlStateNormal];
@@ -173,7 +173,7 @@
         [_bottomContainer addSubview:_retake];
         
         _save = [UIButton buttonWithType:UIButtonTypeCustom];
-        _save.frame = CGRectMake(234, 0, 44, 44);
+        _save.frame = CGRectMake(200, 0, 100, _bottomContainer.frame.size.height);
         _save.center = CGPointMake(_save.center.x, _bottomContainer.frame.size.height / 2);
         [_save setImage:[UIImage imageNamed:@"sendPhoto"] forState:UIControlStateNormal];
 //        [_save setTitle:@"Save" forState:UIControlStateNormal];
@@ -341,7 +341,7 @@
     [self.view addSubview:_titleLabel];
     
     _flash = [UIButton buttonWithType:UIButtonTypeCustom];
-    _flash.frame = CGRectMake(220, 0, 80, 44);
+    _flash.frame = CGRectMake(200, 0, 100, _headerView.frame.size.height);
     _flash.center = CGPointMake(_flash.center.x, _headerView.frame.size.height / 2);
     [_flash setImage:[UIImage imageNamed:@"flash"] forState:UIControlStateNormal];
     [_flash setTitle:@"   Auto" forState:UIControlStateNormal];
@@ -350,7 +350,7 @@
     [_headerView addSubview:_flash];
     
     _flip = [UIButton buttonWithType:UIButtonTypeCustom];
-    _flip.frame = CGRectMake(30, 0, 44, 44);
+    _flip.frame = CGRectMake(0, 0, 100, _headerView.frame.size.height);
     _flip.center = CGPointMake(_flip.center.x, _headerView.frame.size.height / 2);
     [_flip setImage:[UIImage imageNamed:@"flipCamera"] forState:UIControlStateNormal];
     [_flip addTarget:self action:@selector(flipView) forControlEvents:UIControlEventTouchUpInside];

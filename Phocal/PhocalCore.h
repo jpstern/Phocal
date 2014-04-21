@@ -15,6 +15,8 @@
 
 + (instancetype)sharedClient;
 
+- (void)likePhotoForID:(NSString *)photoID;
+
 - (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location completion:(void (^)(NSDictionary*))completion;
 - (void)getPhotos:(void (^)(NSArray *))completion;
 - (void)getClosestPhotosForLat:(NSNumber *)lat andLng:(NSNumber *)lng completion:(void (^)(NSArray *))completion;
