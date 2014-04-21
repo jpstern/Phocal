@@ -39,8 +39,7 @@
             [userDefaults synchronize];
         }
         
-        [client.requestSerializer setValue:UUID forHTTPHeaderField:@"x-hash"];
-        
+        [client.requestSerializer setValue:UUID forHTTPHeaderField:@"x-hash"];        
     });
     
     return client;
@@ -70,12 +69,15 @@
         
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"Success uploading photo! %@", responseObject);
+        completion(responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Failure uploading photo! %@", error);
+        completion(nil);
     }];
 }
 
 - (void)getPhotos:(void (^)(NSArray *))completion {
+    NSLog(@"request header for x-hash: %@", [self.requestSerializer HTTPRequestHeaders][@"x-hash"]);
     [self GET:@"photos" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"response object %@", responseObject);
         completion(responseObject);

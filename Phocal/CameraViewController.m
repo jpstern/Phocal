@@ -10,6 +10,7 @@
 
 #import "MasterViewController.h"
 #import "LocationDelegate.h"
+#import "UIViewController+Master.h"
 
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
@@ -96,6 +97,12 @@
 
 - (void)savePhoto {
     
+    // Post the photo to the DB right away.
+    NSData *data = UIImageJPEGRepresentation(_takenPicture, 0.3);
+    [[PhocalCore sharedClient] postPhoto:data withLocation:_takenLocation completion:^(NSDictionary *dict) {
+        //[self.masterViewController displ
+    }];
+    
     [_photoPreview removeFromSuperview];
     _previewLayer.hidden = NO;
 
@@ -119,9 +126,7 @@
         
     }];
     
-    NSData *data = UIImageJPEGRepresentation(_takenPicture, 0.3);
-    
-    [[PhocalCore sharedClient] postPhoto:data withLocation:_takenLocation];
+
 }
 
 - (void)takeImageHandler {
@@ -459,7 +464,7 @@
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);
         
-        [[PhocalCore sharedClient] postPhoto:imageData withLocation:loc];
+        [[PhocalCore sharedClient] postPhoto:imageData withLocation:loc completion:nil];
         
         [self dismissViewControllerAnimated:YES completion:nil];
         
