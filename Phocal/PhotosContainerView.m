@@ -46,7 +46,11 @@ const int kThumbSize = 80;
         _imageViews = [[NSMutableArray alloc] init];
         _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, kImagePaneOffset, self.frame.size.width, 300)];
 
-        _imagePaths = [[NSMutableArray alloc] init];
+        //_likeView.currectImgView=imageView;
+        _likeView.target = self;
+        _likeView.selector = @selector(voted);
+
+        _masterImageView.votedView.hidden=NO;
         
         // Add the scroll view.
         int imageBottom = kImagePaneOffset + kImageSize;
@@ -122,7 +126,39 @@ const int kThumbSize = 80;
         // Add a margin to the right side of the scroll.
         _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin, kScrollHeight);
     }];
+}
 
+- (void)voted
+{
+    NSLog(@"Voted");
+    _masterImageView.voted=YES;
+    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
+}
+- (void)download{
+    self.alert = [[UIAlertView alloc] initWithTitle:nil
+                                                    message:@"Saved to camera roll!"
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:nil];
+    
+    [self.alert show];
+    
+    [self timedAlert];
+    
+    
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImageWriteToSavedPhotosAlbum(self.masterImageView.image, nil, nil, nil);
+    });
+}
+-(void)timedAlert
+{
+    [self performSelector:@selector(dismissAlert:) withObject:self.alert afterDelay:1.5];
+}
+
+-(void)dismissAlert:(UIAlertView *) alertView
+{
+    [alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
 
 - (void)animateFromCellinRect:(CGRect)rect {
@@ -164,8 +200,10 @@ const int kThumbSize = 80;
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
         self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, kMomentLabelOffset, kLabelWidth, kLabelHeight);
         self.masterImageView.frame = CGRectMake(0, kImagePaneOffset, kImageSize, kImageSize);
+
     } completion:^(BOOL finished) {
         // Empty.
+        
     }];
 }
 
@@ -177,6 +215,8 @@ const int kThumbSize = 80;
     }
     
     NSInteger removalIndex = [_imageViews indexOfObject:gesture.view];
+    
+    self.masterImageView.votedView.hidden=YES;
     
     IndexUIImageView *imageView = _imageViews[removalIndex];
     
@@ -212,6 +252,8 @@ const int kThumbSize = 80;
         imageView.frame = _masterImageView.frame;
         _masterImageView = imageView;
         
+        self.masterImageView.votedView.hidden=NO;
+        
         [_imageViews sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
            
             NSNumber *tag1 = @([obj1 sortIndex]);
@@ -234,12 +276,7 @@ const int kThumbSize = 80;
     
 }
 
-- (void)download {
-
-}
-
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    
     return YES;
 }
 
@@ -249,6 +286,7 @@ const int kThumbSize = 80;
         NSLog(@"not recognizing tap");
         return NO;
     }
+    
     return _expanded;
 }
 
