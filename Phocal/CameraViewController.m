@@ -307,7 +307,7 @@
     NSURL *referenceURL = [info objectForKey:UIImagePickerControllerReferenceURL];
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        CLLocation *loc = [asset valueForKey:ALAssetPropertyLocation];
+        CLLocation *loc = [asset valueForProperty:ALAssetPropertyLocation];
         
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);
