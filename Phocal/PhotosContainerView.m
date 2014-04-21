@@ -192,7 +192,7 @@ const int kThumbSize = 80;
                                         kLabelWidth,
                                         kLabelHeight);
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, -47, kLabelWidth, kLabelHeight);
+        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, -37, kLabelWidth, kLabelHeight);
         self.momentLabel.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:0.0];
         self.masterImageView.frame = CGRectMake(0, 0, kImageSize, kImageSize);
         

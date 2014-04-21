@@ -195,11 +195,6 @@ const int kPhotoSize = 320;
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     }
     
-    // Configure the cell.
-    cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.backgroundColor = [UIColor clearColor];
-    [cell.label setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.6]];
     
     NSMutableDictionary* photoDict = _photoURLs[indexPath.row];
     cell.image.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
@@ -225,7 +220,7 @@ const int kPhotoSize = 320;
         
     } else {
         // Set the placeholder while we asynchronously fetch the label.
-        cell.label.text = @"Getting location...";
+//        cell.label.text = @"Getting location...";
 //        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
 //                                                   andLng:cell.image.lng
 //                                               completion:^(NSDictionary *dict) {
