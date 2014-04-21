@@ -244,6 +244,7 @@ const int kThumbSize = 80;
         
     } completion:^(BOOL finished) {
         // Empty.
+        [self.momentLabel removeFromSuperview];
         completion();
     }];
 }
@@ -264,6 +265,7 @@ const int kThumbSize = 80;
 
     } completion:^(BOOL finished) {
         // Empty.
+        [self.momentLabel removeFromSuperview];
         completion();
     }];
 }

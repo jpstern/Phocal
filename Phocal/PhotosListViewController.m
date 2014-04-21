@@ -93,11 +93,6 @@ const int kNavBarHeight = 64;
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor whiteColor]];
 }
 
-- (void)hideViewer {
-    NSLog(@"HIDE THE VIEWER");
-    //[self takeDownViewer:nil];
-}
-
 - (void)goToCamera
 {
     [self.masterViewController displayCamera];

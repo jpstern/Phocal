@@ -106,11 +106,9 @@
 
 - (void)disableScroll {
     [_masterScroll setScrollEnabled:NO];
-    [_masterScroll setUserInteractionEnabled:NO];
 }
 - (void)enableScroll {
     [_masterScroll setScrollEnabled:YES];
-    [_masterScroll setUserInteractionEnabled:YES];
 }
 
 - (void)didReceiveMemoryWarning
