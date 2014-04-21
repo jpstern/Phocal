@@ -1,22 +1,18 @@
 //
-//  DummyViewController.m
+//  TutorialViewController.m
 //  Phocal
 //
-//  Created by Josh Stern on 4/6/14.
+//  Created by Josh Stern on 4/20/14.
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
-#import "DummyViewController.h"
+#import "TutorialViewController.h"
 
-#import "PhotosContainerView.h"
-
-@interface DummyViewController ()
-
-@property (nonatomic, strong) PhotosContainerView *container;
+@interface TutorialViewController ()
 
 @end
 
-@implementation DummyViewController
+@implementation TutorialViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -27,17 +23,17 @@
     return self;
 }
 
+- (void)closeView {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-}
-
-- (void)viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];
-    
-    [self.view addSubview:_container];
+    [_close addTarget:self action:@selector(closeView) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning
@@ -45,8 +41,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-
 
 /*
 #pragma mark - Navigation

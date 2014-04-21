@@ -12,6 +12,7 @@
 		808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA721903011B00D5C511 /* UIViewController+Master.m */; };
 		808AAA79190456B300D5C511 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA78190456B300D5C511 /* UIImage+Resize.m */; };
 		808AAA9519047BC700D5C511 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808AAA9419047BC700D5C511 /* Accelerate.framework */; };
+		808AAA981904C60100D5C511 /* TutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 808AAA971904C60100D5C511 /* TutorialViewController.m */; };
 		80EA82F018E5D22D00981338 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82EF18E5D22D00981338 /* Foundation.framework */; };
 		80EA82F218E5D22D00981338 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82F118E5D22D00981338 /* CoreGraphics.framework */; };
 		80EA82F418E5D22D00981338 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EA82F318E5D22D00981338 /* UIKit.framework */; };
@@ -61,6 +62,8 @@
 		808AAA77190456B300D5C511 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
 		808AAA78190456B300D5C511 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		808AAA9419047BC700D5C511 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		808AAA961904C60100D5C511 /* TutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialViewController.h; sourceTree = "<group>"; };
+		808AAA971904C60100D5C511 /* TutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialViewController.m; sourceTree = "<group>"; };
 		80EA82EC18E5D22D00981338 /* Phocal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phocal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		80EA82EF18E5D22D00981338 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		80EA82F118E5D22D00981338 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -200,6 +203,8 @@
 				80EA833118E727CD00981338 /* CameraViewController.m */,
 				808AAA77190456B300D5C511 /* UIImage+Resize.h */,
 				808AAA78190456B300D5C511 /* UIImage+Resize.m */,
+				808AAA961904C60100D5C511 /* TutorialViewController.h */,
+				808AAA971904C60100D5C511 /* TutorialViewController.m */,
 				80EA832718E612C000981338 /* Model */,
 				80EA830718E5D22D00981338 /* Images.xcassets */,
 				80EA82F618E5D22D00981338 /* Supporting Files */,
@@ -400,6 +405,7 @@
 				80EA832618E60FAC00981338 /* PhocalCore.m in Sources */,
 				F542BFAB190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m in Sources */,
 				808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */,
+				808AAA981904C60100D5C511 /* TutorialViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
