@@ -42,8 +42,10 @@ const int kLabelHeight = 60;
     
     self.image = [[IndexUIImageView alloc] init];
     self.label = [[UILabel alloc] init];
-    [self.label setFrame:CGRectMake(0, kLabelOffset, 320, kLabelHeight)];
+    [self.label setFrame:CGRectMake(10, kLabelOffset, 300, kLabelHeight)];
     [self.label setTextAlignment:NSTextAlignmentCenter];
+    [self.label setAdjustsFontSizeToFitWidth:YES];
+    
     
     // Add the views.
     [self.image addSubview:self.label];

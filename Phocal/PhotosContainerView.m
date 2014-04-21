@@ -93,7 +93,7 @@ const int kThumbSize = 80;
         int scrollTop = (((window.bounds.size.height - imageBottom) / 2) + imageBottom) - (kScrollHeight / 2);
         _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, scrollTop, kImageSize, kScrollHeight)];
         _imageScroll.delegate = self;
-        _imageScroll.contentSize = CGSizeMake(500, kScrollHeight);
+        _imageScroll.contentSize = CGSizeMake(0, kScrollHeight);
         [_imageScroll setShowsHorizontalScrollIndicator:NO];
         [_imageScroll setShowsVerticalScrollIndicator:NO];
         
@@ -140,10 +140,15 @@ const int kThumbSize = 80;
                 
                 // Add the image to the scroll view and our image views array.
                 [_imageScroll addSubview:thumb];
+                _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin + kThumbSize,
+                                                      kScrollHeight);
                 [_imageViews addObject:thumb];
 
                 index++;
             }
+            
+            // Add a margin to the right side of the scroll.
+            _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin, kScrollHeight);
         }];
     }
     
