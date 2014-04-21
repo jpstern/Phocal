@@ -174,6 +174,7 @@
     
     _previewLayer.frame = self.view.bounds;
     
+    
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     if (device) {
