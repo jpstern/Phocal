@@ -2,7 +2,7 @@ var  mongo         = require("./database.js"),
      multiparty    = require('multiparty'),
      path          = require('path'),
      fs            = require('fs'),
-     exif          = require('exif-parser');
+     request       = require('request');
 
      var s3 = require("knox").createClient({
          key: process.env.AWS_KEY,
@@ -46,6 +46,10 @@ module.exports = function() {
                 query.hash = req.hash;
             }
         }
+        console.log(query);
+
+		res.setHeader('Cache-Control', 'private, max-age=1');
+		res.setHeader('Expires', new Date().toUTCString());
         photos.find(query).limit(20).sort({time:-1}).toArray(
             db_response(req, res, next));
     };
@@ -58,7 +62,7 @@ module.exports = function() {
         });
 
         form.parse(req, function(err, fields, files) {
-            if (err && !files.photo) {
+            if (err || !files.photo) {
                 res.json(502, {error: err || "No Upload"});
                 return;
             }
@@ -69,6 +73,7 @@ module.exports = function() {
     // POST /photo/:id/hash (pass hash in body)
     this.post_vote = function(req, res, next) {
         if (!req.hash) throw new Error("Invalid Hash");
+
         photos.update({_id:req.params.id}, {$addToSet:{votes:req.hash}}, db_response(req, res, next));
     }
 
@@ -107,27 +112,33 @@ module.exports = function() {
             time: time || new Date()
         }
 
-        var put = s3.put(metadata._id, {
-            'Content-Length': metadata.size,
-            'Content-Type': metadata.type,
-            'x-amz-acl': 'public-read' // ensure public
-        });
+        getGeocodeDescription(lat, lng, function(err, geo_name) {
 
-        console.log("Posted Image URL:", put.url);
+            metadata.label = geo_name;
 
-        // TODO: see if we can use putStream.. don't use tmp file save.
-        fs.createReadStream(file.path).pipe(put);
+            var put = s3.put(metadata._id, {
+                'Content-Length': metadata.size,
+                'Content-Type': metadata.type,
+                'x-amz-acl': 'public-read' // ensure public
+            });
 
-        put.on('error', function(err) {
-            callback(err);
-        });
+            console.log("Posted Image URL:", put.url);
 
-        put.on('response', function(res){
-            if (200 == res.statusCode) {
-                photos.insert(metadata, callback);
-            } else {
-                callback({"error": "Can't Save to S3"});
-            }
+            // TODO: see if we can use putStream.. don't use tmp file save.
+            fs.createReadStream(file.path).pipe(put);
+
+            put.on('error', function(err) {
+                callback(err);
+            });
+
+            put.on('response', function(res){
+                if (200 == res.statusCode) {
+                    photos.insert(metadata, callback);
+                } else {
+                    callback({"error": "Can't Save to S3"});
+                }
+            });
+
         });
     }
 
@@ -141,6 +152,30 @@ module.exports = function() {
             }
             res.send(docs);
         }
+    }
+}
+
+function getGeocodeDescription(lat, lng, callback) {
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
+    url += lat + "," + lng
+    url += "&result_type=point_of_interest|neighborhood|political&sensor=false&key="
+    url += process.env.GEOCODE_KEY
+
+    request({url:url , json:true}, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body);
+            callback(null, parseGeocodeData(body.results));
+        } else {
+            callback(new Error("Geocode Error"));
+        }
+    })
+}
+
+function parseGeocodeData(results) {
+    try {
+        return results[0]["address_components"][0]["long_name"];
+    } catch (err) {
+        return null;
     }
 }
 
@@ -159,7 +194,6 @@ function parsePhoto(photo, req) {
     return photo
 }
 
-// TODO: move to util...
 function contains(a, obj) {
     var i = a.length;
     while (i--) {

@@ -10,6 +10,7 @@
     "express": "3.5.1",
     "knox": "^0.8.9",
     "mongodb": "^1.4.0",
-    "multiparty": "^3.2.4"
+    "multiparty": "^3.2.4",
+    "request": "^2.34.0"
   }
 }

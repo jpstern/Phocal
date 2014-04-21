@@ -97,12 +97,8 @@ const int kNavBarHeight = 64;
             return;
         }
         for (NSDictionary* photoDict in photos) {
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:photoDict];
             [dict setObject:[[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]] forKey:@"URL"];
-            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lat"] doubleValue]] forKey:@"lat"];
-            [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lng"] doubleValue]] forKey:@"lng"];
-            dict[@"_id"] = photoDict[@"_id"];
-            dict[@"didVote"] = photoDict[@"didVote"];
             [_photoURLs addObject:dict];
         }
 
@@ -200,11 +196,6 @@ const int kNavBarHeight = 64;
         cell = [[MomentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MainCell"];
     }
     
-    // Configure the cell.
-    cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.backgroundColor = [UIColor clearColor];
-    [cell.label setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.6]];
     
     NSMutableDictionary* photoDict = _photoURLs[indexPath.row];
     cell.image.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
@@ -230,18 +221,18 @@ const int kNavBarHeight = 64;
         
     } else {
         // Set the placeholder while we asynchronously fetch the label.
-        cell.label.text = @"Getting location...";
-        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
-                                                   andLng:cell.image.lng
-                                               completion:^(NSDictionary *dict) {
-            if (!dict) {
-                return;
-            }
-               
-            NSString* bestGuessLabel = dict[@"results"][0][@"name"];
-            [_photoURLs[indexPath.row] setObject:bestGuessLabel forKey:@"label"];
-            cell.label.text = bestGuessLabel;
-        }];
+//        cell.label.text = @"Getting location...";
+//        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
+//                                                   andLng:cell.image.lng
+//                                               completion:^(NSDictionary *dict) {
+//            if (!dict) {
+//                return;
+//            }
+//               
+//            NSString* bestGuessLabel = dict[@"results"][0][@"name"];
+//            [_photoURLs[indexPath.row] setObject:bestGuessLabel forKey:@"label"];
+//            cell.label.text = bestGuessLabel;
+//        }];
         
     }
     
