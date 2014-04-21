@@ -100,6 +100,8 @@ const int kPhotoSize = 320;
             [dict setObject:[[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]] forKey:@"URL"];
             [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lat"] doubleValue]] forKey:@"lat"];
             [dict setObject:[NSNumber numberWithDouble:[photoDict[@"lng"] doubleValue]] forKey:@"lng"];
+            dict[@"_id"] = photoDict[@"_id"];
+            dict[@"didVote"] = photoDict[@"didVote"];
             [_photoURLs addObject:dict];
         }
 
@@ -210,6 +212,7 @@ const int kPhotoSize = 320;
     cell.image.lat = photoDict[@"lat"];
     cell.image.lng = photoDict[@"lng"];
     cell.image.voted = [photoDict[@"didVote"] boolValue];
+    cell.image._id = photoDict[@"_id"];
     
     // Fake 'em if we don't got 'em.
     if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {
