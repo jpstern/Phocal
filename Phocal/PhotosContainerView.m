@@ -71,7 +71,7 @@ const int kThumbSize = 80;
         
         if (_masterImageView.voted) {
             
-            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
         }
     }
     
@@ -265,10 +265,10 @@ const int kThumbSize = 80;
         _masterImageView = imageView;
         
         if (_masterImageView.voted)
-            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
         else {
             
-            [_masterImageView.votedView setImage:[UIImage imageNamed:@"emptyHeart"]];
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"emptyHeart"] forState:UIControlStateNormal];
         }
         
         self.masterImageView.votedView.hidden=NO;
