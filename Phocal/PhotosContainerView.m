@@ -63,7 +63,7 @@ const int kThumbSize = 80;
             }
         }
         [self.momentLabel removeFromSuperview];
-        self.momentLabel.frame = CGRectMake(0,
+        self.momentLabel.frame = CGRectMake(self.momentLabel.frame.origin.x,
                                             rect.origin.y + self.momentLabel.frame.origin.y,
                                             self.momentLabel.frame.size.width,
                                             self.momentLabel.frame.size.height);
@@ -71,7 +71,7 @@ const int kThumbSize = 80;
         
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
             self.masterImageView.frame = CGRectMake(0, kImagePaneOffset, 320, rect.size.height);
-            self.momentLabel.frame = CGRectMake(0, kMomentLabelOffset, 320, self.momentLabel.frame.size.height);
+            self.momentLabel.frame = CGRectMake(self.momentLabel.frame.origin.x, kMomentLabelOffset, self.momentLabel.frame.size.width, self.momentLabel.frame.size.height);
         } completion:^(BOOL finished) {
             // Empty.
         }];
@@ -143,6 +143,13 @@ const int kThumbSize = 80;
                 _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin + kThumbSize,
                                                       kScrollHeight);
                 [_imageViews addObject:thumb];
+                
+                UIButton *test = [UIButton buttonWithType:UIButtonTypeCustom];
+                test.frame = CGRectMake(15, 335, 30, 30);
+                //test.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
+                [test setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
+                [test addTarget:self action:@selector(download) forControlEvents:UIControlEventTouchUpInside];
+                [self addSubview:test];
 
                 index++;
             }
