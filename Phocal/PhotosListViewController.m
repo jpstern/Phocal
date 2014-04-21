@@ -209,6 +209,7 @@ const int kPhotoSize = 320;
     cell.image.URL = photoDict[@"URL"];
     cell.image.lat = photoDict[@"lat"];
     cell.image.lng = photoDict[@"lng"];
+    cell.image.voted = [photoDict[@"didVote"] boolValue];
     
     // Fake 'em if we don't got 'em.
     if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {
@@ -257,7 +258,7 @@ const int kPhotoSize = 320;
     CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
     
     self.tableView.scrollEnabled = NO;
-    [self.masterViewController displayPhotoInCell:cell inRect:newRect];
+    [self.masterViewController displayPhotoInCell:cell andDictionary:_photoURLs[indexPath.row]inRect:newRect];
 
 }
 

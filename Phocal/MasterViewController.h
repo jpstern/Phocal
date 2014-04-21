@@ -20,7 +20,7 @@
 @property (nonatomic, assign) CGRect selectedRect;
 @property (nonatomic, strong) UINavigationController* navController;
 
-- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect;
+- (void)displayPhotoInCell:(MomentCell *)imageCell andDictionary:(NSMutableDictionary*)photoDict inRect:(CGRect)rect;
 - (void)displayCamera;
 
 @end
