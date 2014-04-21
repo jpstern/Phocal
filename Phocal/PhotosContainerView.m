@@ -36,8 +36,6 @@ const int kThumbSize = 80;
         self.masterImageView = imageView;
         self.masterImageView.index = 0;
         
-        _masterImageView.votedView.hidden = NO;
-        
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
            self.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
          } completion:^(BOOL finished) {
@@ -92,11 +90,6 @@ const int kThumbSize = 80;
         
         // Fetch the nearest photos.
         [self getClosestPhotos];
-        
-        if (_masterImageView.voted) {
-            
-            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
-        }
     }
     
     return self;
@@ -255,19 +248,23 @@ const int kThumbSize = 80;
     }];
 }
 
-- (void)animateFromScratchWithLabel:(UILabel *)label {
+- (void)animateFromScratchToCompletion:(void (^)())completion {
     // Animate from off screen.
-    self.momentLabel = label;
+    self.momentLabel = [MomentCell labelWithText:self.masterImageView.label];
     self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, self.frame.size.height + kMomentLabelOffset,
                                         kLabelWidth, kLabelHeight);
     self.masterImageView.frame = CGRectMake(0, self.frame.size.height, kImageSize, kImageSize);
+    
+    [self insertSubview:self.masterImageView belowSubview:self.likeView];
+    [self insertSubview:self.momentLabel aboveSubview:self.likeView];
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, kMomentLabelOffset, kLabelWidth, kLabelHeight);
+        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, -37, kLabelWidth, kLabelHeight);
+        self.momentLabel.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:0.0];
         self.masterImageView.frame = CGRectMake(0, 0, kImageSize, kImageSize);
 
     } completion:^(BOOL finished) {
         // Empty.
-        
+        completion();
     }];
 }
 
@@ -334,9 +331,7 @@ const int kThumbSize = 80;
     }
     
     IndexUIImageView* imageView = (IndexUIImageView *)gesture.view;
-    
-    self.masterImageView.votedView.hidden=YES;
-    
+        
     IndexUIImageView* newMaster = [imageView copy];
     newMaster.frame = self.masterImageView.frame;
     [newMaster setImageWithURL:[NSURL URLWithString:newMaster.URL] placeholderImage:[UIImage imageNamed:@"placeholder"]];

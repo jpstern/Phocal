@@ -25,5 +25,6 @@ extern const int kPhotoSize;
 @property (nonatomic, strong) PhotosContainerView* photoDisplayView;
 
 - (void)replaceSelectedPhotoWithPhoto:(IndexUIImageView *)photo;
+- (void)addPhotoFromUpload:(NSDictionary *)photo;
 
 @end

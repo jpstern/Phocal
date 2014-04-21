@@ -58,7 +58,7 @@
     }];
 }
 
-- (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location completion:(void (^)(NSDictionary *))completion  {
+- (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location completion:(void (^)(NSArray *))completion  {
     
     [self POST:@"photos" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:@"photo" fileName:@"file" mimeType:@"image/jpeg"];

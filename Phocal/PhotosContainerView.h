@@ -33,7 +33,7 @@
 
 - (id)initWithFrame:(CGRect)frame andImageView:(IndexUIImageView *)imageView;
 - (void)animateFromCellinRect:(CGRect)rect withCompletion:(void (^)())completion;
-- (void)animateFromScratchWithLabel:(UILabel *)label;
+- (void)animateFromScratchToCompletion:(void (^)())completion;
 
 
 @end

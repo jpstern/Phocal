@@ -10,6 +10,7 @@
 
 #import "MasterViewController.h"
 #import "LocationDelegate.h"
+#import "PhotosListViewController.h"
 #import "UIViewController+Master.h"
 
 #import <CoreImage/CoreImage.h>
@@ -54,6 +55,8 @@
 
 @property (nonatomic, strong) NSArray *titles;
 @property (nonatomic, strong) UILabel *titleLabel;
+
+@property (nonatomic, retain) UIAlertView* alertView;
 @end
 
 @implementation CameraViewController
@@ -95,12 +98,28 @@
     }];
 }
 
+- (void)showSaveModal {
+    self.alertView = [[UIAlertView alloc] initWithTitle:nil
+                                            message:@"Creating moment..."
+                                           delegate:nil
+                                  cancelButtonTitle:nil
+                                  otherButtonTitles:nil];
+    [self.alertView show];
+}
+
+-(void)dismissModal {
+    [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
+}
+
 - (void)savePhoto {
     
     // Post the photo to the DB right away.
     NSData *data = UIImageJPEGRepresentation(_takenPicture, 0.3);
-    [[PhocalCore sharedClient] postPhoto:data withLocation:_takenLocation completion:^(NSDictionary *dict) {
-        //[self.masterViewController displ
+    [self showSaveModal];
+    [[PhocalCore sharedClient] postPhoto:data withLocation:_takenLocation completion:^(NSArray *dict) {
+        [self.masterViewController displayMoments];
+        [self.masterViewController.photosListController addPhotoFromUpload:dict[0]];
+        [self dismissModal];
     }];
     
     [_photoPreview removeFromSuperview];
@@ -438,7 +457,7 @@
 
 - (void)photoView
 {
-    [[(MasterViewController*)_master masterScroll] setContentOffset:CGPointMake(0,0) animated:YES];
+    [self.masterViewController displayMoments];
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType {
