@@ -13,7 +13,7 @@
 @property (nonatomic,strong) NSString * status;
 @property (nonatomic,strong) UIImageView *imgview;
 @property (nonatomic,strong) UILongPressGestureRecognizer *gestreg;
-@property (nonatomic,weak) UIImageView *currectImgView;
+@property (nonatomic,weak) UIImageView *heartView;
 @property (nonatomic,weak) id target;
 @property (nonatomic,assign) SEL selector;
 

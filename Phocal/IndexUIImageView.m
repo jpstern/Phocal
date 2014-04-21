@@ -18,6 +18,7 @@
         [self addBorderAndShadow];
     }
     
+    
     return self;
 }
 
@@ -26,7 +27,10 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self addBorderAndShadow];
+        
+        
     }
+    
     return self;
 }
 
@@ -36,6 +40,13 @@
     [self.layer setShadowRadius:3.0];
     [self.layer setShadowOffset:CGSizeMake(0.0, 3.0)];
     [self.layer setShadowOpacity:1.0];
+    
+    _votedView=[[UIImageView alloc] initWithFrame:CGRectMake(270,270,30,30)];
+    
+    [_votedView setImage:[UIImage imageNamed:@"emptyHeart"]];
+    [self addSubview:_votedView];
+    _votedView.hidden=YES;
+    self.voted= NO;
     
     self.clipsToBounds = NO;
 }
