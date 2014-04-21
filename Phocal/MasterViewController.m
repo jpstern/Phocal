@@ -62,6 +62,12 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+}
+
 - (void)displayCamera {
     [_masterScroll setContentOffset:CGPointMake(320,0) animated:YES];
 }

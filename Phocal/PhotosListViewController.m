@@ -22,10 +22,15 @@ const int kImageOffsetFromTop = 0;
 const int kImageOffsetFromBottom = 10;
 const int kPhotoSize = 320;
 
-@interface PhotosListViewController ()
+@interface PhotosListViewController () {
+    
+    BOOL justShowedTutorial;
+}
 
 @property (nonatomic, strong) NSMutableArray* photoURLs;
 @property (nonatomic, assign) BOOL isShowingEmptyView;
+
+
 
 @end
 
@@ -145,6 +150,32 @@ const int kPhotoSize = 320;
     replacedPhotoDict[@"URL"] = photo.URL;
     replacedPhotoDict[@"lat"] = photo.lat;
     replacedPhotoDict[@"lng"] = photo.lng;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    BOOL showedTutorial = [def boolForKey:@"showedTutorial"];
+    
+    if (!showedTutorial) {
+        
+        [def setBool:YES forKey:@"showedTutorial"];
+        UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"tutorialViewController"];
+        
+        [self.navigationController presentViewController:controller animated:YES completion:nil];
+        justShowedTutorial = YES;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (justShowedTutorial) {
+        
+        [self.masterViewController displayCamera];
+        justShowedTutorial = NO;
+    }
 }
 
 - (void)didReceiveMemoryWarning

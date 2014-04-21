@@ -25,6 +25,7 @@
         client = [[PhocalCore alloc] initWithBaseURL:API_BASE_URL];
         client.requestSerializer = [AFJSONRequestSerializer serializer];
         client.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions: NSJSONReadingMutableContainers];
+
         
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         
