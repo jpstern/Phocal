@@ -6,13 +6,12 @@
 //  Copyright (c) 2014 Josh. All rights reserved.
 //
 
-#import "ImageCell.h"
 #import "LikeGestureView.h"
+#import "MomentCell.h"
 #import "PhocalCore.h"
 #import "PhotosContainerView.h"
 
 const int kScrollHeight = 100;
-const int kImagePaneOffset = 60;
 const int kMomentLabelOffset = 20;
 const int kImageSize = 320;
 const int kScrollMargin = 15;
@@ -20,19 +19,25 @@ const int kThumbSize = 80;
 
 @interface PhotosContainerView ()
 
-@property (nonatomic, assign) CGFloat originalHeight;
 @property (nonatomic, retain) UIGestureRecognizer* tapRecognizer;
+
+@property (nonatomic, strong) IndexUIImageView *initialMaster;
 
 @end
 
 @implementation PhotosContainerView
 
-- (id)initWithWindow:(UIWindow *)window andImageView:(IndexUIImageView *)imageView inRect:(CGRect)rect {
-    
-    self = [super initWithFrame:window.frame];
+- (id)initWithFrame:(CGRect)frame andImageView:(IndexUIImageView *)imageView {
+
+    self = [super initWithFrame:frame];
     
     if (self) {
-        self.frame = window.frame;
+        self.frame = frame;
+        
+        // Set our main image view.
+        self.masterImageView = imageView;
+        self.masterImageView.sortIndex = 0;
+        _masterImageView.votedView.hidden=NO;
         
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
            self.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
@@ -41,54 +46,14 @@ const int kThumbSize = 80;
          }];
         
         _imageViews = [[NSMutableArray alloc] init];
-        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, kImagePaneOffset, self.frame.size.width, 300)];
+        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 300)];
+
         //_likeView.currectImgView=imageView;
         _likeView.target = self;
         _likeView.selector = @selector(voted);
-        _imagePaths = [[NSMutableArray alloc] init];
-        _originalHeight = 200;
-        
-       
-        
-        // Take the image out of the cell.
-        self.masterImageView = imageView;
-        self.masterImageView.sortIndex = 0;
-        [self.masterImageView removeFromSuperview];
-        self.masterImageView.frame = rect;
-        
-        // Take the label out of the cell.
-        for (UIView* subview in self.masterImageView.subviews) {
-            if ([subview isKindOfClass:[UILabel class]]) {
-                self.momentLabel = (UILabel *)subview;
-            }
-        }
-        [self.momentLabel removeFromSuperview];
-        self.momentLabel.frame = CGRectMake(self.momentLabel.frame.origin.x,
-                                            rect.origin.y + self.momentLabel.frame.origin.y,
-                                            self.momentLabel.frame.size.width,
-                                            self.momentLabel.frame.size.height);
-
-        
-        [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-            self.masterImageView.frame = CGRectMake(0, kImagePaneOffset, 320, rect.size.height);
-            self.momentLabel.frame = CGRectMake(self.momentLabel.frame.origin.x, kMomentLabelOffset, self.momentLabel.frame.size.width, self.momentLabel.frame.size.height);
-        } completion:^(BOOL finished) {
-            // Empty.
-        }];
-
-        _masterImageView.votedView.hidden=NO;
-       /* if(_masterImageView.voted)
-        {
-            [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
-        }
-        else
-        {
-            [_heartView setImage:nil];
-        }*/
         
         // Add the scroll view.
-        int imageBottom = kImagePaneOffset + kImageSize;
-        int scrollTop = (((window.bounds.size.height - imageBottom) / 2) + imageBottom) - (kScrollHeight / 2);
+        int scrollTop = (((frame.size.height - kImageSize) / 2) + kImageSize) - (kScrollHeight / 2);
         _imageScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, scrollTop, kImageSize, kScrollHeight)];
         _imageScroll.delegate = self;
         _imageScroll.contentSize = CGSizeMake(0, kScrollHeight);
@@ -96,76 +61,88 @@ const int kThumbSize = 80;
         [_imageScroll setShowsVerticalScrollIndicator:NO];
         
         // Add the views in order.
-        [self addSubview:self.masterImageView];
-        //[self addSubview:self.heartView];
         [self addSubview:_likeView];
-        [self addSubview:self.momentLabel];
         [self addSubview:_imageScroll];
         
-        // Fetch the closest photos to this one.
-        [[PhocalCore sharedClient] getClosestPhotosForLat:self.masterImageView.lat andLng:self.masterImageView.lng completion:^(NSArray * photos) {
-            if (!photos) {
-                return;
-            }
+        // Fetch the nearest photos.
+        [self getClosestPhotos];
+        
+        if (_masterImageView.voted) {
             
-            NSLog(@"Got %d closest photos", photos.count);
-            int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
-            int index = 0;
-            for (NSDictionary* photoDict in photos) {
-                // If this photo is the one we're currently looking at, don't add it.
-                NSString* newPhotoURL = [[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]];
-                if ([newPhotoURL isEqualToString:self.masterImageView.URL]) {
-                    continue;
-                }
-                
-                IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
-                                           CGRectMake(kScrollMargin + index*kThumbSize + index*kScrollMargin,
-                                                      thumbTop,
-                                                      kThumbSize,
-                                                      kThumbSize)];
-                thumb.sortIndex = index + 1;
-                thumb.userInteractionEnabled = YES;
-                [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                    action:@selector(swapImages:)]];
-                thumb.contentMode = UIViewContentModeScaleAspectFill;
-                
-                // Set the image properties.
-                thumb.lat = photoDict[@"lat"];
-                thumb.lng = photoDict[@"lng"];
-                thumb.URL = newPhotoURL;
-                [thumb setImageWithURL:[NSURL URLWithString:newPhotoURL]
-                      placeholderImage:[UIImage imageNamed:@"placeholder"]];
-                
-                // Add the image to the scroll view and our image views array.
-                [_imageScroll addSubview:thumb];
-                _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin + kThumbSize,
-                                                      kScrollHeight);
-                [_imageViews addObject:thumb];
-                
-                UIButton *test = [UIButton buttonWithType:UIButtonTypeCustom];
-                test.frame = CGRectMake(15, 335, 30, 30);
-                //test.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
-                [test setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
-                [test addTarget:self action:@selector(download) forControlEvents:UIControlEventTouchUpInside];
-                [self addSubview:test];
-
-                index++;
-            }
-            
-            // Add a margin to the right side of the scroll.
-            _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin, kScrollHeight);
-        }];
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
+        }
     }
     
     return self;
 }
 
--(void) voted
+- (void)getClosestPhotos {
+    // Fetch the closest photos to this one.
+    [[PhocalCore sharedClient] getClosestPhotosForLat:self.masterImageView.lat andLng:self.masterImageView.lng completion:^(NSArray * photos) {
+        if (!photos) {
+            return;
+        }
+        
+        NSLog(@"Got %lu closest photos", (unsigned long)photos.count);
+        int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
+        int index = 0;
+        for (NSDictionary* photoDict in photos) {
+            // If this photo is the one we're currently looking at, don't add it.
+            NSString* newPhotoURL = [[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]];
+            if ([newPhotoURL isEqualToString:self.masterImageView.URL]) {
+                continue;
+            }
+            
+            IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
+                                       CGRectMake(kScrollMargin + index*kThumbSize + index*kScrollMargin,
+                                                  thumbTop,
+                                                  kThumbSize,
+                                                  kThumbSize)];
+            thumb.voted = [photoDict[@"didVote"] boolValue];
+            thumb._id = photoDict[@"_id"];
+            thumb.sortIndex = index + 1;
+            thumb.userInteractionEnabled = YES;
+            [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(swapImages:)]];
+            thumb.contentMode = UIViewContentModeScaleAspectFill;
+            
+            // Set the image properties.
+            thumb.lat = photoDict[@"lat"];
+            thumb.lng = photoDict[@"lng"];
+            thumb.URL = newPhotoURL;
+            [thumb setImageWithURL:[NSURL URLWithString:newPhotoURL]
+                  placeholderImage:[UIImage imageNamed:@"placeholder"]];
+            
+            // Add the image to the scroll view and our image views array.
+            [_imageScroll addSubview:thumb];
+            _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin + kThumbSize,
+                                                  kScrollHeight);
+            [_imageViews addObject:thumb];
+            
+            UIButton *test = [UIButton buttonWithType:UIButtonTypeCustom];
+            test.frame = CGRectMake(15, 275, 30, 30);
+            //test.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
+            [test setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
+            [test addTarget:self action:@selector(download) forControlEvents:UIControlEventTouchUpInside];
+            [self addSubview:test];
+            
+            index++;
+        }
+        
+        // Add a margin to the right side of the scroll.
+        _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin, kScrollHeight);
+    }];
+}
+
+- (void)voted
 {
+
+    [[PhocalCore sharedClient] likePhotoForID:_masterImageView._id];
     NSLog(@"Voted");
     _masterImageView.voted=YES;
-    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
+    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]forState:UIControlStateNormal];
 }
+
 - (void)download{
     self.alert = [[UIAlertView alloc] initWithTitle:nil
                                                     message:@"Saved to camera roll!"
@@ -185,81 +162,61 @@ const int kThumbSize = 80;
 }
 -(void)timedAlert
 {
+    
     [self performSelector:@selector(dismissAlert:) withObject:self.alert afterDelay:1.5];
 }
 
 -(void)dismissAlert:(UIAlertView *) alertView
 {
+    
     [alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
 
-- (void)cellDidGrowToHeight:(CGFloat)height {
-    
-    _expanded = YES;
-    CGFloat currentX = 30;
-    
-    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-        self.frame = CGRectMake(0, 0, 320, height);
-        self.masterImageView.frame = CGRectMake(0, 0, 320, height);
-    } completion:^(BOOL finished) {
-        // Empty.
-    }];
+- (void)animateFromCellinRect:(CGRect)rect withCompletion:(void (^)())completion {
 
-    // Make the large image interactable.
-    self.imageScroll.scrollEnabled = YES;
+    // Take the image out of the cell.
+    [self.masterImageView removeFromSuperview];
+    [self insertSubview:self.masterImageView belowSubview:self.likeView];
+    self.masterImageView.frame = rect;
     
-    NSInteger index = 1;
-    for (NSString *path in _imagePaths) {
-        
-        IndexUIImageView *imageView = [[IndexUIImageView alloc] initWithFrame:CGRectMake(320, 0, 80, 80)];
-        imageView.sortIndex = index;
-        imageView.userInteractionEnabled = YES;
-        [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapImages:)]];
-        CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
-        CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
-        CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
-        UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
-//        imageView.backgroundColor = color;
-        [imageView setImageWithURL:[NSURL URLWithString:path]];
-        [_imageViews addObject:imageView];
-        [_imageScroll addSubview:imageView];
-        
-        [UIView animateWithDuration:0.5 delay:0.25 usingSpringWithDamping:0.6 initialSpringVelocity:1 options:0 animations:^{
-           
-            imageView.center = CGPointMake(currentX, imageView.center.y);
-            
-        } completion:^(BOOL finished) {
-                        
-        }];
-        
-        index ++;
-        currentX += 100;
+    // Take the label out of the cell.
+    for (UIView* subview in self.masterImageView.subviews) {
+        if ([subview isKindOfClass:[UILabel class]]) {
+            self.momentLabel = (UILabel *)subview;
+        }
     }
-    
+    [self.momentLabel removeFromSuperview];
+    [self insertSubview:self.momentLabel aboveSubview:self.likeView];
+    self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset,
+                                        rect.origin.y + kLabelVerticalOffset,
+                                        kLabelWidth,
+                                        kLabelHeight);
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, -47, kLabelWidth, kLabelHeight);
+        self.momentLabel.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:0.0];
+        self.masterImageView.frame = CGRectMake(0, 0, kImageSize, kImageSize);
+        
+    } completion:^(BOOL finished) {
+        // Empty.
+        completion();
+    }];
 }
 
-- (void)cellDidShrink {
-    
-    _expanded = NO;
-    [self.likeView removeFromSuperview];
-    self.imageScroll.scrollEnabled = NO;
-    
+- (void)animateFromScratchWithLabel:(UILabel *)label {
+    // Animate from off screen.
+    self.momentLabel = label;
+    self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, self.frame.size.height + kMomentLabelOffset,
+                                        kLabelWidth, kLabelHeight);
+    self.masterImageView.frame = CGRectMake(0, self.frame.size.height, kImageSize, kImageSize);
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-        self.frame = CGRectMake(0, 0, 320, _originalHeight);
-        self.masterImageView.frame = CGRectMake(0, 0, 320, _originalHeight);
-        
-        
+        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, kMomentLabelOffset, kLabelWidth, kLabelHeight);
+        self.masterImageView.frame = CGRectMake(0, 0, kImageSize, kImageSize);
+
     } completion:^(BOOL finished) {
         // Empty.
         
     }];
-    
 }
-
-/*- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    _masterImageView.frame = CGRectMake(scrollView.contentOffset.x, 0, _masterImageView.frame.size.width, _masterImageView.frame.size.height);
-
-}*/
 
 - (void)swapImages:(UITapGestureRecognizer *)gesture {
 
@@ -275,7 +232,7 @@ const int kThumbSize = 80;
     IndexUIImageView *imageView = _imageViews[removalIndex];
     
     [_imageViews removeObjectAtIndex:removalIndex];
-    int insertIndex = _masterImageView.sortIndex;
+    NSInteger insertIndex = _masterImageView.sortIndex;
     if (insertIndex > removalIndex) {
         insertIndex--;
     }
@@ -306,6 +263,13 @@ const int kThumbSize = 80;
         imageView.frame = _masterImageView.frame;
         _masterImageView = imageView;
         
+        if (_masterImageView.voted)
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
+        else {
+            
+            [_masterImageView.votedView setImage:[UIImage imageNamed:@"emptyHeart"] forState:UIControlStateNormal];
+        }
+        
         self.masterImageView.votedView.hidden=NO;
         
         [_imageViews sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -331,39 +295,16 @@ const int kThumbSize = 80;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+  
     return YES;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    
     if (gestureRecognizer.view == _masterImageView) {
         NSLog(@"not recognizing tap");
         return NO;
     }
-    
     return _expanded;
 }
-//
-//- (void)swapLarge:(UIImageView *)mainView WithSmall:(UIImageView*)smallView {
-//    
-//    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:0.75 options:0 animations:^{
-//        CGRect tmp = mainView.frame;
-//        
-//        mainView.frame = smallView.frame;
-//        smallView.frame = tmp;
-//    } completion:^(BOOL finished) {
-//        
-//    }];
-//
-//}
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end

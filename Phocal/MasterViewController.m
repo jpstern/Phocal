@@ -62,6 +62,12 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+}
+
 - (void)displayCamera {
     [_masterScroll setContentOffset:CGPointMake(320,0) animated:YES];
 }
@@ -89,69 +95,18 @@
     }
 }
 
-- (void)displayPhotoInCell:(MomentCell *)imageCell inRect:(CGRect)rect {
-    NSLog(@"Display photo.");
-    
-    self.selectedCell = imageCell;
-    self.selectedRect = rect;
-    self.photoDisplayView = [[PhotosContainerView alloc] initWithWindow:self.view.window
-                                                           andImageView:imageCell.image
-                                                                 inRect:rect];
-    [self.view addSubview:self.photoDisplayView];
-    
-    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                  action:@selector(takeDownViewer:)];
-    swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
-    
-    [self.photoDisplayView addGestureRecognizer:swipeUp];
-    
-    
+- (void)addViewToTop:(UIView *)view {
+    [self disableScroll];
+    [self.view addSubview:view];
+}
+
+- (void)disableScroll {
     [_masterScroll setScrollEnabled:NO];
     [_masterScroll setUserInteractionEnabled:NO];
 }
-
-- (void)takeDownViewer:(UISwipeGestureRecognizer *)gesture {
-    if (gesture.direction == UISwipeGestureRecognizerDirectionUp) {
-        [self.photoDisplayView removeFromSuperview];
-        for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
-            [self.photoDisplayView removeGestureRecognizer:recognizer];
-        }
-        
-        // Replace the photo and the label.
-        IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
-        UILabel* returnLabel = self.photoDisplayView.momentLabel;
-        [_masterScroll addSubview:returnImage];
-        [_masterScroll addSubview:returnLabel];
-        
-        // Tell the table view the data source has changed.
-        [(PhotosListViewController *)self.navController.viewControllers[0] replaceSelectedPhotoWithPhoto:returnImage];
-        
-        [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
-            returnImage.frame = CGRectMake(0, -50, self.selectedRect.size.width, self.selectedRect.size.height);
-            returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, -50 + kLabelOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
-        } completion:^(BOOL finished) {
-            // Attach the label back to the actual image view.
-            [returnLabel removeFromSuperview];
-            returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, kLabelOffset, returnLabel.frame.size.width, kLabelHeight);
-            [returnImage addSubview:returnLabel];
-            self.selectedCell.label = returnLabel;
-            
-            // Now animate the image back to it's place.
-            [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-                returnImage.frame = self.selectedRect;
-            } completion:^(BOOL finished) {
-                [returnImage removeFromSuperview];
-                [self.selectedCell.contentView addSubview:returnImage];
-                self.selectedCell.image = returnImage;
-                returnImage.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
-                
-                //
-                [[(PhotosListViewController *)self.navController.viewControllers[0] tableView] setScrollEnabled:YES];
-                [_masterScroll setScrollEnabled:YES];
-                [_masterScroll setUserInteractionEnabled:YES];
-            }];
-        }];
-    }
+- (void)enableScroll {
+    [_masterScroll setScrollEnabled:YES];
+    [_masterScroll setUserInteractionEnabled:YES];
 }
 
 - (void)didReceiveMemoryWarning
