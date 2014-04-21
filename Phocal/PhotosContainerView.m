@@ -42,10 +42,13 @@ const int kThumbSize = 80;
         
         _imageViews = [[NSMutableArray alloc] init];
         _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, kImagePaneOffset, self.frame.size.width, 300)];
-       // _likeView.image=imageView;
-
+        //_likeView.currectImgView=imageView;
+        _likeView.target = self;
+        _likeView.selector = @selector(voted);
         _imagePaths = [[NSMutableArray alloc] init];
         _originalHeight = 200;
+        
+       
         
         // Take the image out of the cell.
         self.masterImageView = imageView;
@@ -73,6 +76,17 @@ const int kThumbSize = 80;
             // Empty.
         }];
 
+        //**Add Liked Heart Tracker to View
+        _heartView = [[UIImageView alloc] initWithFrame:CGRectMake(280, 330, 20, 20)];
+
+        if(_masterImageView.voted)
+        {
+            [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
+        }
+        else
+        {
+            [_heartView setImage:nil];
+        }
         
         // Add the scroll view.
         int imageBottom = kImagePaneOffset + kImageSize;
@@ -85,6 +99,7 @@ const int kThumbSize = 80;
         
         // Add the views in order.
         [self addSubview:self.masterImageView];
+        [self addSubview:self.heartView];
         [self addSubview:_likeView];
         [self addSubview:self.momentLabel];
         [self addSubview:_imageScroll];
@@ -135,6 +150,19 @@ const int kThumbSize = 80;
     return self;
 }
 
+-(void) voted
+{
+    NSLog(@"Voted");
+    _masterImageView.voted=YES;
+    if(_masterImageView.voted)
+    {
+        [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
+    }
+    else
+    {
+        [_heartView setImage:nil];
+    }
+}
 - (void)cellDidGrowToHeight:(CGFloat)height {
     
     _expanded = YES;
@@ -210,6 +238,8 @@ const int kThumbSize = 80;
     
     NSInteger removalIndex = [_imageViews indexOfObject:gesture.view];
     
+    [self.heartView setImage:nil];
+    
     IndexUIImageView *imageView = _imageViews[removalIndex];
     
     [_imageViews removeObjectAtIndex:removalIndex];
@@ -243,6 +273,15 @@ const int kThumbSize = 80;
         // Make new large image.
         imageView.frame = _masterImageView.frame;
         _masterImageView = imageView;
+        
+        if(_masterImageView.voted)
+        {
+            [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
+        }
+        else
+        {
+            [_heartView setImage:nil];
+        }
         
         [_imageViews sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
            
