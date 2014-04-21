@@ -169,7 +169,7 @@
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
 //    session.sessionPreset = AVCaptureSessionPreset640x480; // TODO: should be full qual.
     _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
-    _previewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
 //    _previewLayer.frame = CGRectMake(0, 0, 320, 320 + 40);
     
     _previewLayer.frame = self.view.bounds;
