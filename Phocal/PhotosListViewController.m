@@ -95,8 +95,11 @@ const int kPhotoSize = 320;
             NSLog(@"no photos");
             return;
         }
-
-        _photoURLs = [NSMutableArray arrayWithArray:photos];
+        for (NSDictionary* photoDict in photos) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:photoDict];
+            [dict setObject:[[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]] forKey:@"URL"];
+            [_photoURLs addObject:dict];
+        }
 
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
