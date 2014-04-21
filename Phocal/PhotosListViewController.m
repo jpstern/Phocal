@@ -21,6 +21,7 @@ NSString* kImageBaseUrl = @"http://s3.amazonaws.com/Phocal/";
 const int kImageOffsetFromTop = 0;
 const int kImageOffsetFromBottom = 10;
 const int kPhotoSize = 320;
+const int kNavBarHeight = 64;
 
 @interface PhotosListViewController () {
     
@@ -259,7 +260,8 @@ const int kPhotoSize = 320;
     CGRect oldRect = [tableView rectForRowAtIndexPath:indexPath];
     oldRect.origin.y += (kImageOffsetFromTop);
     oldRect.size.height -= (kImageOffsetFromTop + kImageOffsetFromBottom);
-    CGRect newRect = [tableView convertRect:oldRect toView:self.view];
+    CGRect newRect = [tableView convertRect:oldRect toView:self.masterViewController.view];
+    newRect.origin.y -= kNavBarHeight; // take off the nav controller height
     self.selectedRect = newRect;
     
     [self displayPhotoFromCell:cell];
@@ -330,26 +332,30 @@ const int kPhotoSize = 320;
     UILabel* returnLabel = self.photoDisplayView.momentLabel;
     [returnLabel setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.6]];
 
-    [self.view addSubview:returnImage];
-    [self.view addSubview:returnLabel];
+    [returnImage removeFromSuperview];
+    returnImage.frame = CGRectMake(0, 64, kPhotoSize, kPhotoSize);
+    [self.masterViewController.view addSubview:returnImage];
+    [self.masterViewController.view addSubview:returnLabel];
     
     // Tell the table view the data source has changed.
     [self replaceSelectedPhotoWithPhoto:returnImage];
     
     self.title = @"";
     [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
-        returnImage.frame = CGRectMake(0, 0, self.selectedRect.size.width, self.selectedRect.size.height);
-        returnLabel.frame = CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
+        returnLabel.frame =
+            CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset + kNavBarHeight, kLabelWidth, kLabelHeight);
     } completion:^(BOOL finished) {
         // Attach the label back to the actual image view.
         [returnLabel removeFromSuperview];
-        returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, kLabelVerticalOffset, kLabelWidth, kLabelHeight);
+        returnLabel.frame = CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, kLabelWidth, kLabelHeight);
         [returnImage addSubview:returnLabel];
         self.selectedCell.label = returnLabel;
         
         // Now animate the image back to its place.
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-            returnImage.frame = self.selectedRect;
+            CGRect returnRect = self.selectedRect;
+            returnRect.origin.y += kNavBarHeight;
+            returnImage.frame = returnRect;
         } completion:^(BOOL finished) {
             [returnImage removeFromSuperview];
             [self.selectedCell.contentView addSubview:returnImage];
