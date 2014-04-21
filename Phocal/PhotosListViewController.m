@@ -310,6 +310,8 @@ const int kNavBarHeight = 64;
     self.selectedCell = nil;
     
     CGRect frame = self.view.frame;
+    frame.origin.y = kNavBarHeight;
+    frame.size.height = self.masterViewController.view.frame.size.height - kNavBarHeight;
     self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:frame andImageView:newPhoto];
     
     // Add the tap gesture for taking down the view.
