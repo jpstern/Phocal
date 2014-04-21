@@ -107,6 +107,14 @@
     [self.alertView show];
 }
 
+- (void)showErroModal {
+    self.alertView =
+    [[UIAlertView alloc] initWithTitle:@"Upload Error"
+                               message:@"Sorry, we couldn't create your Moment! Is your Internet working?"
+                              delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [self.alertView show];
+}
+
 -(void)dismissModal {
     [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
@@ -116,14 +124,22 @@
     // Post the photo to the DB right away.
     NSData *data = UIImageJPEGRepresentation(_takenPicture, 0.3);
     [self showSaveModal];
-    [[PhocalCore sharedClient] postPhoto:data withLocation:_takenLocation completion:^(NSArray *dict) {
+    [[PhocalCore sharedClient] postPhoto:data withLocation:_takenLocation completion:^(NSArray *arr) {
+        if (!arr || arr.count == 0) {
+            NSLog(@"Upload error.");
+            [_photoPreview removeFromSuperview];
+            _previewLayer.hidden = NO;
+            
+            // Take down the save modal and put up an error modal.
+            [self dismissModal];
+            [self showErroModal];
+            return;
+        }
+        
         [self.masterViewController displayMoments];
-        [self.masterViewController.photosListController addPhotoFromUpload:dict[0]];
+        [self.masterViewController.photosListController addPhotoFromUpload:arr[0]];
         [self dismissModal];
     }];
-    
-    [_photoPreview removeFromSuperview];
-    _previewLayer.hidden = NO;
 
     [UIView animateWithDuration:0.25 animations:^{
         
@@ -483,7 +499,23 @@
         UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(image,1.0);
         
-        [[PhocalCore sharedClient] postPhoto:imageData withLocation:loc completion:nil];
+        [self showSaveModal];
+        [[PhocalCore sharedClient] postPhoto:imageData withLocation:loc completion:^(NSArray *arr) {
+            if (!arr || arr.count == 0) {
+                NSLog(@"Upload error.");
+                [_photoPreview removeFromSuperview];
+                _previewLayer.hidden = NO;
+                
+                // Take down the save modal and put up an error modal.
+                [self dismissModal];
+                [self showErroModal];
+                return;
+            }
+            
+            [self.masterViewController displayMoments];
+            [self.masterViewController.photosListController addPhotoFromUpload:arr[0]];
+            [self dismissModal];
+        }];
         
         [self dismissViewControllerAnimated:YES completion:nil];
         

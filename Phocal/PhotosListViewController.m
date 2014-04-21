@@ -47,7 +47,9 @@ const int kNavBarHeight = 64;
     // Do our nav bar set up.
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     
-    [self setupNavForScroll];
+    [self enableScroll];
+    [self showListNavBar];
+    self.title = @"My Moments";
     
     // Set up our table view style.
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -59,39 +61,36 @@ const int kNavBarHeight = 64;
         
         self.edgesForExtendedLayout = UIRectEdgeNone;
         self.extendedLayoutIncludesOpaqueBars = YES;
-        
     }
 }
 
-- (void)setupNavForScroll {
-    
+- (void)enableScroll {
     [self.tableView setScrollEnabled:YES];
     [self.masterViewController enableScroll];
-    
+}
+
+- (void)lockScroll {
+    [self.masterViewController disableScroll];
+    [self.tableView setScrollEnabled:NO];
+}
+
+- (void)showListNavBar {
     self.navigationItem.rightBarButtonItem =
     [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
                                                   target:self
                                                   action:@selector(goToCamera)];
     
     [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
-    
     self.navigationItem.leftBarButtonItem = nil;
-    
-    self.title = @"My Moments";
 }
 
-- (void)lockScroll {
-    
-    [self.masterViewController disableScroll];
-    [self.tableView setScrollEnabled:NO];
+- (void)showMomentNavBarWithSelector:(SEL)sel {
     self.navigationItem.rightBarButtonItem = nil;
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                          target:self
-                                                                                          action:@selector(hideViewer)];
-    
+    self.navigationItem.leftBarButtonItem =
+    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                  target:self
+                                                  action:sel];
     [self.navigationItem.leftBarButtonItem setTintColor:[UIColor whiteColor]];
-    
 }
 
 - (void)hideViewer {
@@ -133,13 +132,16 @@ const int kNavBarHeight = 64;
 
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
-        
-        if (photos.count == 0 && !self.isShowingEmptyView) {
-            [self showNoPhotosView];
-        } else if (photos.count > 0 && self.isShowingEmptyView) {
-            [self hideNoPhotosView];
-        }
+        [self updateViewForNewMoments];
     }];
+}
+
+- (void)updateViewForNewMoments {
+    if (self.photoURLs.count == 0 && !self.isShowingEmptyView) {
+        [self showNoPhotosView];
+    } else if (self.photoURLs.count > 0 && self.isShowingEmptyView) {
+        [self hideNoPhotosView];
+    }
 }
 
 - (void)showNoPhotosView {
@@ -239,6 +241,8 @@ const int kNavBarHeight = 64;
     cell.image.voted = [photoDict[@"didVote"] boolValue];
     cell.image._id = photoDict[@"_id"];
     cell.image.label = photoDict[@"label"];
+    cell.label.text = photoDict[@"label"];
+
     
     // Fake 'em if we don't got 'em.
     if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {
@@ -246,27 +250,6 @@ const int kNavBarHeight = 64;
         cell.image.lng = [NSNumber numberWithFloat:-85.662872];
         photoDict[@"lat"] = [NSNumber numberWithFloat:44.741802];
         photoDict[@"lng"] = [NSNumber numberWithFloat:-85.662872];
-    }
-
-    // If we've already fetched the label for this geopoint, don't fetch it again.
-    if ([_photoURLs[indexPath.row] objectForKey:@"label"]!=nil){
-        cell.label.text = [_photoURLs[indexPath.row] objectForKey:@"label"];
-        
-    } else {
-        // Set the placeholder while we asynchronously fetch the label.
-//        cell.label.text = @"Getting location...";
-//        [[PhocalCore sharedClient] getLocationLabelForLat:cell.image.lat
-//                                                   andLng:cell.image.lng
-//                                               completion:^(NSDictionary *dict) {
-//            if (!dict) {
-//                return;
-//            }
-//               
-//            NSString* bestGuessLabel = dict[@"results"][0][@"name"];
-//            [_photoURLs[indexPath.row] setObject:bestGuessLabel forKey:@"label"];
-//            cell.label.text = bestGuessLabel;
-//        }];
-        
     }
     
     return cell;
@@ -301,10 +284,15 @@ const int kNavBarHeight = 64;
     CGRect frame = self.view.frame;
     self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:frame andImageView:imageCell.image];
     
+    // Add the tap gesture for taking down the view.
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(takeDownViewerAndReplaceCell:)];
     [self.photoDisplayView addGestureRecognizer:tap];
     
+    // Add the nav bar button.
+    [self showMomentNavBarWithSelector:@selector(takeDownViewerAndReplaceCell:)];
+    
+    // Disable scrolling.
     [self lockScroll];
     
     [self.masterViewController addViewToTop:self.photoDisplayView];
@@ -329,10 +317,17 @@ const int kNavBarHeight = 64;
     CGRect frame = self.view.frame;
     self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:frame andImageView:newPhoto];
     
+    // Add the tap gesture for taking down the view.
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                             action:@selector(takeDownViewerAndAddCell:)];
     [self.photoDisplayView addGestureRecognizer:tap];
-        
+    
+    // Add the nav bar button for taking down the view.
+    [self showMomentNavBarWithSelector:@selector(takeDownViewerAndAddCell:)];
+    
+    // Disable scrolling.
+    [self lockScroll];
+    
     [self.masterViewController addViewToTop:self.photoDisplayView];
     [self.photoDisplayView animateFromScratchToCompletion:^{
         self.title = newPhoto.label;
@@ -340,35 +335,54 @@ const int kNavBarHeight = 64;
         newPhotoDict[@"URL"] = [[PhocalCore sharedClient] photoURLForId:newPhoto._id];
         [_photoURLs addObject:newPhotoDict];
         [self.tableView reloadData];
+        [self updateViewForNewMoments];
     }];
+}
+- (void)removeGestureRecognizersFromView:(UIView *)view {
+    for (UIGestureRecognizer* recognizer in view.gestureRecognizers) {
+        [view removeGestureRecognizer:recognizer];
+    }
 }
 
 - (void)takeDownViewerAndReplaceCell:(UITapGestureRecognizer *)gesture {
-    [self.photoDisplayView removeFromSuperview];
-    for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
-        [self.photoDisplayView removeGestureRecognizer:recognizer];
-    }
+    [self removeGestureRecognizersFromView:self.photoDisplayView];
+    [self.photoDisplayView.imageScroll removeFromSuperview];
     
     // Replace the photo and the label.
-    IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
+    IndexUIImageView* returnImage = self.photoDisplayView.imageViews[0];
+    if (![self.photoDisplayView.masterImageView.URL isEqualToString:returnImage.URL]) {
+        returnImage.alpha = 0.0;
+    }
+    [self removeGestureRecognizersFromView:returnImage];
+    
     UILabel* returnLabel = self.photoDisplayView.momentLabel;
     [returnLabel setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.2]];
-
     [returnImage removeFromSuperview];
     returnImage.frame = CGRectMake(0, 64, kPhotoSize, kPhotoSize);
+    
     [self.masterViewController.view addSubview:returnImage];
     [self.masterViewController.view addSubview:returnLabel];
     
     // Tell the table view the data source has changed.
     [self replaceSelectedPhotoWithPhoto:returnImage];
     
-    // Re-enable scrolling.
-    [self setupNavForScroll];
-    
-    [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
+    self.title = @"";
+    [self showListNavBar];
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
         returnLabel.frame =
             CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset + kNavBarHeight, kLabelWidth, kLabelHeight);
+        self.photoDisplayView.masterImageView.alpha = 0.0;
+        
+        // If we aren't already looking at the image, animate its opacity.
+        if (![self.photoDisplayView.masterImageView.URL isEqualToString:returnImage.URL]) {
+            returnImage.alpha = 1.0;
+        }
     } completion:^(BOOL finished) {
+        self.title = @"My Moments";
+
+        // Actually tear down the photo display view.
+        [self.photoDisplayView removeFromSuperview];
+
         // Attach the label back to the actual image view.
         [returnLabel removeFromSuperview];
         returnLabel.frame = CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, kLabelWidth, kLabelHeight);
@@ -386,33 +400,48 @@ const int kNavBarHeight = 64;
             self.selectedCell.image = returnImage;
             returnImage.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
             
-            
+            // Re-enable scrolling.
+            [self enableScroll];
         }];
     }];
 }
 
 - (void)takeDownViewerAndAddCell:(UITapGestureRecognizer *)gesture {
-    [self.photoDisplayView removeFromSuperview];
-    for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
-        [self.photoDisplayView removeGestureRecognizer:recognizer];
-    }
+    [self removeGestureRecognizersFromView:self.photoDisplayView];
+    [self.photoDisplayView.imageScroll removeFromSuperview];
     
-    // Just animate the photo and the label offscreen.
-    IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
+    // Replace the photo and the label.
+    IndexUIImageView* returnImage = self.photoDisplayView.imageViews[0];
+    if (![self.photoDisplayView.masterImageView.URL isEqualToString:returnImage.URL]) {
+        returnImage.alpha = 0.0;
+    }
+    [self removeGestureRecognizersFromView:returnImage];
+    
     UILabel* returnLabel = self.photoDisplayView.momentLabel;
     [returnLabel setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.2]];
-    
     [returnImage removeFromSuperview];
     returnImage.frame = CGRectMake(0, 64, kPhotoSize, kPhotoSize);
+    
     [self.masterViewController.view addSubview:returnImage];
     [self.masterViewController.view addSubview:returnLabel];
     
     self.title = @"";
-    [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
+    [self showListNavBar];
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
         returnLabel.frame =
         CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset + kNavBarHeight, kLabelWidth, kLabelHeight);
-    } completion:^(BOOL finished) {
+        self.photoDisplayView.masterImageView.alpha = 0.0;
         
+        // If we aren't already looking at the image, animate its opacity.
+        if (![self.photoDisplayView.masterImageView.URL isEqualToString:returnImage.URL]) {
+            returnImage.alpha = 1.0;
+        }
+    } completion:^(BOOL finished) {
+        self.title = @"My Moments";
+        
+        // Actually tear down the view.
+        [self.photoDisplayView removeFromSuperview];
+
         // Attach the label back to the actual image view.
         [returnLabel removeFromSuperview];
         returnLabel.frame = CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, kLabelWidth, kLabelHeight);
@@ -425,10 +454,7 @@ const int kNavBarHeight = 64;
             [returnImage removeFromSuperview];
             
             // Re-enable scrolling.
-            [self.tableView setScrollEnabled:YES];
-            [self.masterViewController enableScroll];
-            
-            self.title = @"My Moments";
+            [self enableScroll];
         }];
     }];
 
