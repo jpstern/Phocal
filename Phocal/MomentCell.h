@@ -20,5 +20,6 @@ extern const int kLabelWidth;
 @property (nonatomic,strong) IndexUIImageView *image;
 @property (nonatomic,strong) UILabel *label;
 
++ (UILabel *)labelWithText:(NSString *)text;
 
 @end

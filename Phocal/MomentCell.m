@@ -29,6 +29,19 @@ const int kLabelWidth = 300;
 
 @implementation MomentCell
 
++ (UILabel *)labelWithText:(NSString *)text {
+    UILabel* newLabel = [[UILabel alloc] init];
+    [newLabel setFont:[UIFont boldSystemFontOfSize:17.0]];
+    [newLabel setFrame:CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, kLabelWidth, kLabelHeight)];
+    [newLabel setTextAlignment:NSTextAlignmentCenter];
+    [newLabel setTextColor:[UIColor whiteColor]];
+    [newLabel setAdjustsFontSizeToFitWidth:YES];
+    newLabel.text = text;
+    [newLabel setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.2]];
+
+    
+    return newLabel;
+}
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 
@@ -43,13 +56,7 @@ const int kLabelWidth = 300;
     }
     
     self.image = [[IndexUIImageView alloc] init];
-    self.label = [[UILabel alloc] init];
-    [self.label setFont:[UIFont boldSystemFontOfSize:17.0]];
-    [self.label setFrame:CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, kLabelWidth, kLabelHeight)];
-    [self.label setTextAlignment:NSTextAlignmentCenter];
-    [self.label setTextColor:[UIColor whiteColor]];
-    [self.label setAdjustsFontSizeToFitWidth:YES];
-    
+    self.label = [MomentCell labelWithText:@""];
     
     // Add the views.
     [self.image addSubview:self.label];
@@ -60,7 +67,6 @@ const int kLabelWidth = 300;
     self.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.backgroundColor = [UIColor clearColor];
-    [self.label setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.2]];
 
     return self;
     

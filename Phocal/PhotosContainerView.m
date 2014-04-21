@@ -21,8 +21,6 @@ const int kThumbSize = 80;
 
 @property (nonatomic, retain) UIGestureRecognizer* tapRecognizer;
 
-@property (nonatomic, strong) IndexUIImageView *initialMaster;
-
 @end
 
 @implementation PhotosContainerView
@@ -36,8 +34,7 @@ const int kThumbSize = 80;
         
         // Set our main image view.
         self.masterImageView = imageView;
-        self.masterImageView.sortIndex = 0;
-        _masterImageView.votedView.hidden=NO;
+        self.masterImageView.index = 0;
         
         [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
            self.backgroundColor = [UIColor colorWithHue:300.0 saturation:0.1 brightness:0.5 alpha:.95];
@@ -46,7 +43,8 @@ const int kThumbSize = 80;
          }];
         
         _imageViews = [[NSMutableArray alloc] init];
-        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 300)];
+        _likeView = [[LikeGestureView alloc] initWithFrame:CGRectMake(0, 0, kImageSize, kImageSize)];
+        [_likeView setUserInteractionEnabled:YES];
 
         //_likeView.currectImgView=imageView;
         _likeView.target = self;
@@ -60,23 +58,80 @@ const int kThumbSize = 80;
         [_imageScroll setShowsHorizontalScrollIndicator:NO];
         [_imageScroll setShowsVerticalScrollIndicator:NO];
         
+        // Add the download button.
+        UIButton *download = [UIButton buttonWithType:UIButtonTypeCustom];
+        download.frame = CGRectMake(15, 275, 30, 30);
+        //test.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
+        [download setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
+        [download addTarget:self action:@selector(download) forControlEvents:UIControlEventTouchUpInside];
+        
+        // Add the heart button.
+        _voteHeart = [UIButton buttonWithType:UIButtonTypeCustom];
+        _voteHeart.frame= CGRectMake(270, 270, 30, 30);
+        [_voteHeart addTarget:self action:@selector(voted) forControlEvents:UIControlEventTouchUpInside];
+        [self updateVoteViewForImage:self.masterImageView];
+        
+        // Add the swipe gesture recognizers.
+        UISwipeGestureRecognizer* swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                         action:@selector(swipeRight:)];
+        swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+        UISwipeGestureRecognizer* swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                        action:@selector(swipeLeft:)];
+        swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+        [_likeView addGestureRecognizer:swipeRight];
+        [_likeView addGestureRecognizer:swipeLeft];
+        
         // Add the views in order.
         [self addSubview:_likeView];
+        //[self addSubview:_swipeGestureView];
         [self addSubview:_imageScroll];
+        [self addSubview:download];
+        [self addSubview:_voteHeart];
         
         // Fetch the nearest photos.
         [self getClosestPhotos];
-        
-        if (_masterImageView.voted) {
-            
-            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
-        }
     }
     
     return self;
 }
 
+- (IndexUIImageView *)createAndAddThumbWithURL:(NSString *)thumbURL atIndex:(NSInteger)index {
+    int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
+
+    IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
+                               CGRectMake(kScrollMargin + index*kThumbSize + index*kScrollMargin,
+                                          thumbTop,
+                                          kThumbSize,
+                                          kThumbSize)];
+    
+    thumb.index = index;
+    thumb.userInteractionEnabled = YES;
+    [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                        action:@selector(swapImages:)]];
+    thumb.contentMode = UIViewContentModeScaleAspectFill;
+    
+    [thumb setImageWithURL:[NSURL URLWithString:thumbURL]
+          placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
+    // Add the image to the scroll view and our image views array.
+    [_imageScroll addSubview:thumb];
+    _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin + kThumbSize,
+                                          kScrollHeight);
+    [_imageViews addObject:thumb];
+
+    return thumb;
+}
+
 - (void)getClosestPhotos {
+    // Add a thumb of the main picture right away.
+    IndexUIImageView* mainThumb = [self createAndAddThumbWithURL:self.masterImageView.URL atIndex:0];
+    mainThumb.voted = self.masterImageView.voted;
+    mainThumb.lat = self.masterImageView.lat;
+    mainThumb.lng = self.masterImageView.lng;
+    mainThumb._id = self.masterImageView._id;
+    mainThumb.label = self.masterImageView.label;
+    mainThumb.URL = self.masterImageView.URL;
+    
     // Fetch the closest photos to this one.
     [[PhocalCore sharedClient] getClosestPhotosForLat:self.masterImageView.lat andLng:self.masterImageView.lng completion:^(NSArray * photos) {
         if (!photos) {
@@ -84,47 +139,22 @@ const int kThumbSize = 80;
         }
         
         NSLog(@"Got %lu closest photos", (unsigned long)photos.count);
-        int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
-        int index = 0;
+        int index = 1;
         for (NSDictionary* photoDict in photos) {
-            // If this photo is the one we're currently looking at, don't add it.
+            // If this photo is the one we're currently looking at, don't add it again.
             NSString* newPhotoURL = [[PhocalCore sharedClient] photoURLForId:photoDict[@"_id"]];
             if ([newPhotoURL isEqualToString:self.masterImageView.URL]) {
                 continue;
             }
             
-            IndexUIImageView* thumb = [[IndexUIImageView alloc] initWithFrame:
-                                       CGRectMake(kScrollMargin + index*kThumbSize + index*kScrollMargin,
-                                                  thumbTop,
-                                                  kThumbSize,
-                                                  kThumbSize)];
-            thumb.voted = [photoDict[@"didVote"] boolValue];
-            thumb._id = photoDict[@"_id"];
-            thumb.sortIndex = index + 1;
-            thumb.userInteractionEnabled = YES;
-            [thumb addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                action:@selector(swapImages:)]];
-            thumb.contentMode = UIViewContentModeScaleAspectFill;
-            
+            IndexUIImageView* thumb = [self createAndAddThumbWithURL:newPhotoURL atIndex:index];
             // Set the image properties.
             thumb.lat = photoDict[@"lat"];
             thumb.lng = photoDict[@"lng"];
+            thumb.voted = [photoDict[@"didVote"] boolValue];
+            thumb._id = photoDict[@"_id"];
             thumb.URL = newPhotoURL;
-            [thumb setImageWithURL:[NSURL URLWithString:newPhotoURL]
-                  placeholderImage:[UIImage imageNamed:@"placeholder"]];
-            
-            // Add the image to the scroll view and our image views array.
-            [_imageScroll addSubview:thumb];
-            _imageScroll.contentSize = CGSizeMake(_imageScroll.contentSize.width + kScrollMargin + kThumbSize,
-                                                  kScrollHeight);
-            [_imageViews addObject:thumb];
-            
-            UIButton *test = [UIButton buttonWithType:UIButtonTypeCustom];
-            test.frame = CGRectMake(15, 275, 30, 30);
-            //test.center = CGPointMake(_listButton.center.x, _bottomContainer.frame.size.height / 2);
-            [test setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
-            [test addTarget:self action:@selector(download) forControlEvents:UIControlEventTouchUpInside];
-            [self addSubview:test];
+            thumb.label = photoDict[@"label"];
             
             index++;
         }
@@ -134,13 +164,29 @@ const int kThumbSize = 80;
     }];
 }
 
+- (void)updateVoteViewForImage:(IndexUIImageView *)view {
+    if (view.voted) {
+        [self.voteHeart setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
+    } else {
+        [self.voteHeart setImage:[UIImage imageNamed:@"emptyHeart"] forState:UIControlStateNormal];
+    }
+}
+
 - (void)voted
 {
+    [self.voteHeart setImage:[UIImage imageNamed:@"fullHeart"]forState:UIControlStateNormal];
 
     [[PhocalCore sharedClient] likePhotoForID:_masterImageView._id];
     NSLog(@"Voted");
-    _masterImageView.voted=YES;
-    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]forState:UIControlStateNormal];
+    
+    // Update the main image view and the thumb.
+    _masterImageView.voted = YES;
+    
+    for (IndexUIImageView* thumb in self.imageViews) {
+        if ([thumb.URL isEqualToString:_masterImageView.URL]) {
+            thumb.voted = YES;
+        }
+    }
 }
 
 - (void)download{
@@ -202,19 +248,73 @@ const int kThumbSize = 80;
     }];
 }
 
-- (void)animateFromScratchWithLabel:(UILabel *)label {
+- (void)animateFromScratchToCompletion:(void (^)())completion {
     // Animate from off screen.
-    self.momentLabel = label;
+    self.momentLabel = [MomentCell labelWithText:self.masterImageView.label];
     self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, self.frame.size.height + kMomentLabelOffset,
                                         kLabelWidth, kLabelHeight);
     self.masterImageView.frame = CGRectMake(0, self.frame.size.height, kImageSize, kImageSize);
+    
+    [self insertSubview:self.masterImageView belowSubview:self.likeView];
+    [self insertSubview:self.momentLabel aboveSubview:self.likeView];
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
-        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, kMomentLabelOffset, kLabelWidth, kLabelHeight);
+        self.momentLabel.frame = CGRectMake(kLabelHorizontalOffset, -37, kLabelWidth, kLabelHeight);
+        self.momentLabel.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:0.0];
         self.masterImageView.frame = CGRectMake(0, 0, kImageSize, kImageSize);
 
     } completion:^(BOOL finished) {
         // Empty.
-        
+        completion();
+    }];
+}
+
+- (void)swipeRight:(UISwipeGestureRecognizer *)gesture {
+    NSLog(@"swipe right");
+    if (self.masterImageView.index == 0) {
+        return;
+    }
+    
+    IndexUIImageView* nextImage = [self.imageViews objectAtIndex:self.masterImageView.index - 1];
+    IndexUIImageView* bigNextImage = [nextImage copy];
+    bigNextImage.frame = CGRectMake(-320, 0, kImageSize, kImageSize);
+    [bigNextImage setImageWithURL:[NSURL URLWithString:nextImage.URL]
+                 placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
+    [self insertSubview:bigNextImage belowSubview:self.likeView];
+    [self.likeView setUserInteractionEnabled:NO];
+    [self updateVoteViewForImage:bigNextImage];
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        self.masterImageView.frame = CGRectMake(640, 0, kImageSize, kImageSize);
+        bigNextImage.frame = CGRectMake(0, 0, kImageSize, kImageSize);
+    } completion:^(BOOL finished) {
+        [self.masterImageView removeFromSuperview];
+        self.masterImageView = bigNextImage;
+        [self.likeView setUserInteractionEnabled:YES];
+    }];
+}
+
+- (void)swipeLeft:(UISwipeGestureRecognizer *)gesture {
+    NSLog(@"swipe left");
+    if (self.masterImageView.index == (self.imageViews.count - 1)) {
+        return;
+    }
+    
+    IndexUIImageView* nextImage = [self.imageViews objectAtIndex:self.masterImageView.index + 1];
+    IndexUIImageView* bigNextImage = [nextImage copy];
+    bigNextImage.frame = CGRectMake(320, 0, kImageSize, kImageSize);
+    [bigNextImage setImageWithURL:[NSURL URLWithString:nextImage.URL]
+                 placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
+    [self insertSubview:bigNextImage belowSubview:self.likeView];
+    [self.likeView setUserInteractionEnabled:NO];
+    [self updateVoteViewForImage:bigNextImage];
+    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        self.masterImageView.frame = CGRectMake(-320, 0, kImageSize, kImageSize);
+        bigNextImage.frame = CGRectMake(0, 0, kImageSize, kImageSize);
+    } completion:^(BOOL finished) {
+        [self.masterImageView removeFromSuperview];
+        self.masterImageView = bigNextImage;
+        [self.likeView setUserInteractionEnabled:YES];
     }];
 }
 
@@ -225,71 +325,28 @@ const int kThumbSize = 80;
         return;
     }
     
-    NSInteger removalIndex = [_imageViews indexOfObject:gesture.view];
-    
-    self.masterImageView.votedView.hidden=YES;
-    
-    IndexUIImageView *imageView = _imageViews[removalIndex];
-    
-    [_imageViews removeObjectAtIndex:removalIndex];
-    NSInteger insertIndex = _masterImageView.sortIndex;
-    if (insertIndex > removalIndex) {
-        insertIndex--;
+    if (![gesture.view isKindOfClass:[IndexUIImageView class]]) {
+        NSLog(@"click didn't come from thumb!");
+        return;
     }
-    [_imageViews insertObject:_masterImageView atIndex:insertIndex];
     
-    [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+    IndexUIImageView* imageView = (IndexUIImageView *)gesture.view;
         
-        
-        // Remove gesture recognizer on small image.
-        for (UIGestureRecognizer* recognizer in imageView.gestureRecognizers) {
-            [imageView removeGestureRecognizer:recognizer];
-        }
-        
-        // Take the images to be swapped out of their superviews.
-        [_masterImageView removeFromSuperview];
-        [imageView removeFromSuperview];
-        
-        // Add the images their new views.
-        [self insertSubview:imageView belowSubview:_likeView];
-        [_imageScroll addSubview:_masterImageView];
-        
-        // Attach tap handler for new thumb.
-        _masterImageView.userInteractionEnabled = YES;
-        [_masterImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                       action:@selector(swapImages:)]];
-
-        // Make new large image.
-        imageView.frame = _masterImageView.frame;
-        _masterImageView = imageView;
-        
-        if (_masterImageView.voted)
-            [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"] forState:UIControlStateNormal];
-        else {
-            
-            [_masterImageView.votedView setImage:[UIImage imageNamed:@"emptyHeart"] forState:UIControlStateNormal];
-        }
-        
-        self.masterImageView.votedView.hidden=NO;
-        
-        [_imageViews sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-           
-            NSNumber *tag1 = @([obj1 sortIndex]);
-            NSNumber *tag2 = @([obj2 sortIndex]);
-            
-            return [tag1 compare:tag2];
-        }];
-        
-        CGFloat currentX = 0;
-        int thumbTop = (kScrollHeight / 2 - kThumbSize / 2);
-        for (UIImageView *view in _imageViews) {
-        
-            view.frame = CGRectMake(currentX + kScrollMargin, thumbTop, kThumbSize, kThumbSize);
-            currentX += kThumbSize + kScrollMargin;
-        }
-        
+    IndexUIImageView* newMaster = [imageView copy];
+    newMaster.frame = self.masterImageView.frame;
+    [newMaster setImageWithURL:[NSURL URLWithString:newMaster.URL] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    newMaster.alpha = 0.0;
+    [self insertSubview:newMaster belowSubview:self.likeView];
+    
+    [self.likeView setUserInteractionEnabled:NO];
+    [self updateVoteViewForImage:newMaster];
+    [UIView animateWithDuration:0.6 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+        self.masterImageView.alpha = 0.0;
+        newMaster.alpha = 1.0;
     } completion:^(BOOL finished) {
-        // Empty.
+        [self.masterImageView removeFromSuperview];
+        self.masterImageView = newMaster;
+        [self.likeView setUserInteractionEnabled:YES];
     }];
     
 }

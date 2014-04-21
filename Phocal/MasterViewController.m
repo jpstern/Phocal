@@ -11,7 +11,6 @@
 #import "PhotosContainerView.h"
 #import "PhotosListViewController.h"
 #import "CameraViewController.h"
-#import "DummyViewController.h"
 
 @interface MasterViewController ()
 
@@ -43,6 +42,7 @@
     UIView *viewControllerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
     
     self.navController = [self.storyboard instantiateViewControllerWithIdentifier:@"navController"];
+    self.photosListController = [self.navController viewControllers][0];
     self.navController.navigationBar.barTintColor = [UIColor colorWithRed:22/255.0 green:135/255.0 blue:182/255.0 alpha:1];
   
     [viewControllerView addSubview:self.navController.view];
@@ -70,6 +70,10 @@
 
 - (void)displayCamera {
     [_masterScroll setContentOffset:CGPointMake(320,0) animated:YES];
+}
+
+- (void)displayMoments {
+    [_masterScroll setContentOffset:CGPointMake(0, 0)];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

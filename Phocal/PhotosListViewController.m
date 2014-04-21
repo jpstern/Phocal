@@ -8,7 +8,6 @@
 
 #import "PhotosListViewController.h"
 
-#import "ImageCell.h"
 #import "MasterViewController.h"
 #import "PhotosContainerView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
@@ -179,6 +178,9 @@ const int kNavBarHeight = 64;
     replacedPhotoDict[@"URL"] = photo.URL;
     replacedPhotoDict[@"lat"] = photo.lat;
     replacedPhotoDict[@"lng"] = photo.lng;
+    replacedPhotoDict[@"didVote"] = (photo.voted) ? @(1) : @(0);
+    replacedPhotoDict[@"_id"] = photo._id;
+    replacedPhotoDict[@"label"] = photo.label;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -236,6 +238,7 @@ const int kNavBarHeight = 64;
     cell.image.lng = photoDict[@"lng"];
     cell.image.voted = [photoDict[@"didVote"] boolValue];
     cell.image._id = photoDict[@"_id"];
+    cell.image.label = photoDict[@"label"];
     
     // Fake 'em if we don't got 'em.
     if ([cell.image.lat isEqualToNumber:[NSNumber numberWithInt:0]]) {
@@ -290,15 +293,6 @@ const int kNavBarHeight = 64;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    /*if(_idx!=-1 && indexPath.row==_idx)
-    {
-        
-        CGRect screenRect = [[UIScreen mainScreen]bounds];
-        CGFloat screenHeight = screenRect.size.height;
-        return 300.0;
-    }*/
-    
     return kPhotoSize + kImageOffsetFromTop + kImageOffsetFromBottom;
 }
 
@@ -308,7 +302,7 @@ const int kNavBarHeight = 64;
     self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:frame andImageView:imageCell.image];
     
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(takeDownViewer:)];
+                                                                          action:@selector(takeDownViewerAndReplaceCell:)];
     [self.photoDisplayView addGestureRecognizer:tap];
     
     [self lockScroll];
@@ -320,27 +314,36 @@ const int kNavBarHeight = 64;
     }];
 }
 
-- (void)displayPhotoFromUpload:(IndexUIImageView *)photo {
+- (void)addPhotoFromUpload:(NSDictionary *)photoMetadata {
+    IndexUIImageView * newPhoto = [[IndexUIImageView alloc] init];
+    newPhoto._id = photoMetadata[@"_id"];
+    newPhoto.URL = [[PhocalCore sharedClient] photoURLForId:newPhoto._id];
+    newPhoto.voted = [photoMetadata[@"didVote"] boolValue];
+    newPhoto.lat = photoMetadata[@"lat"];
+    newPhoto.lng = photoMetadata[@"lng"];
+    newPhoto.label = photoMetadata[@"label"];
+    [newPhoto setImageWithURL:[NSURL URLWithString:newPhoto.URL] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
     self.selectedCell = nil;
     
     CGRect frame = self.view.frame;
-    //frame.origin.y = 0;
-    self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:frame andImageView:photo];
+    self.photoDisplayView = [[PhotosContainerView alloc] initWithFrame:frame andImageView:newPhoto];
     
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                            action:@selector(takeDownViewer:)];
+                                                                            action:@selector(takeDownViewerAndAddCell:)];
     [self.photoDisplayView addGestureRecognizer:tap];
-    
-    // This is a test label.
-    UILabel* label = [[UILabel alloc] init];
-    label.textAlignment = NSTextAlignmentCenter;
-    label.text = @"Fake Label";
-    
+        
     [self.masterViewController addViewToTop:self.photoDisplayView];
-    [self.photoDisplayView animateFromScratchWithLabel:label];
+    [self.photoDisplayView animateFromScratchToCompletion:^{
+        self.title = newPhoto.label;
+        NSMutableDictionary* newPhotoDict = [NSMutableDictionary dictionaryWithDictionary:photoMetadata];
+        newPhotoDict[@"URL"] = [[PhocalCore sharedClient] photoURLForId:newPhoto._id];
+        [_photoURLs addObject:newPhotoDict];
+        [self.tableView reloadData];
+    }];
 }
 
-- (void)takeDownViewer:(UITapGestureRecognizer *)gesture {
+- (void)takeDownViewerAndReplaceCell:(UITapGestureRecognizer *)gesture {
     [self.photoDisplayView removeFromSuperview];
     for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
         [self.photoDisplayView removeGestureRecognizer:recognizer];
@@ -348,9 +351,8 @@ const int kNavBarHeight = 64;
     
     // Replace the photo and the label.
     IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
-    returnImage.votedView.hidden=YES;
     UILabel* returnLabel = self.photoDisplayView.momentLabel;
-    [returnLabel setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.6]];
+    [returnLabel setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.2]];
 
     [returnImage removeFromSuperview];
     returnImage.frame = CGRectMake(0, 64, kPhotoSize, kPhotoSize);
@@ -387,6 +389,49 @@ const int kNavBarHeight = 64;
             
         }];
     }];
+}
+
+- (void)takeDownViewerAndAddCell:(UITapGestureRecognizer *)gesture {
+    [self.photoDisplayView removeFromSuperview];
+    for (UIGestureRecognizer* recognizer in self.photoDisplayView.gestureRecognizers) {
+        [self.photoDisplayView removeGestureRecognizer:recognizer];
+    }
+    
+    // Just animate the photo and the label offscreen.
+    IndexUIImageView* returnImage = self.photoDisplayView.masterImageView;
+    UILabel* returnLabel = self.photoDisplayView.momentLabel;
+    [returnLabel setBackgroundColor:[[UIColor lightGrayColor] colorWithAlphaComponent:.2]];
+    
+    [returnImage removeFromSuperview];
+    returnImage.frame = CGRectMake(0, 64, kPhotoSize, kPhotoSize);
+    [self.masterViewController.view addSubview:returnImage];
+    [self.masterViewController.view addSubview:returnLabel];
+    
+    self.title = @"";
+    [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
+        returnLabel.frame =
+        CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset + kNavBarHeight, kLabelWidth, kLabelHeight);
+    } completion:^(BOOL finished) {
+        
+        // Attach the label back to the actual image view.
+        [returnLabel removeFromSuperview];
+        returnLabel.frame = CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, kLabelWidth, kLabelHeight);
+        [returnImage addSubview:returnLabel];
+        
+        // Now animate the image and the label out.
+        [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
+            returnImage.frame = CGRectMake(0, 700, kPhotoSize, kPhotoSize);
+        } completion:^(BOOL finished) {
+            [returnImage removeFromSuperview];
+            
+            // Re-enable scrolling.
+            [self.tableView setScrollEnabled:YES];
+            [self.masterViewController enableScroll];
+            
+            self.title = @"My Moments";
+        }];
+    }];
+
 }
 
 

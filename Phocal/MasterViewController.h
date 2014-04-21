@@ -9,22 +9,23 @@
 #import <UIKit/UIKit.h>
 
 @class MomentCell;
-@class PhotosContainerView;
+@class PhotosListViewController;
 @class IndexUIImageView;
 
 @interface MasterViewController : UIViewController <UIScrollViewDelegate>
 
 
 @property (nonatomic, strong) IBOutlet UIScrollView *masterScroll;
-@property (nonatomic, strong) PhotosContainerView* photoDisplayView;
 @property (nonatomic, strong) MomentCell* selectedCell;
 @property (nonatomic, assign) CGRect selectedRect;
 @property (nonatomic, strong) UINavigationController* navController;
+@property (nonatomic, strong) PhotosListViewController* photosListController;
 
 - (void)disableScroll;
 - (void)enableScroll;
 
 - (void)addViewToTop:(UIView *)view;
 - (void)displayCamera;
+- (void)displayMoments;
 
 @end

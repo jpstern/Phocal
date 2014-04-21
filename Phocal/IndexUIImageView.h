@@ -10,12 +10,13 @@
 
 @interface IndexUIImageView : UIImageView
 
+@property (nonatomic, assign) NSInteger index;
+
 @property (nonatomic, strong) NSString *_id;
-@property (nonatomic, assign) NSInteger sortIndex;
 @property (nonatomic, retain) NSNumber* lat;
 @property (nonatomic, retain) NSNumber* lng;
 @property (nonatomic, retain) NSString* URL;
 @property (nonatomic, assign) BOOL voted;
-@property (nonatomic, strong) UIButton *votedView;
+@property (nonatomic, strong) NSString* label;
 
 @end

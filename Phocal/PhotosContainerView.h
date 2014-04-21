@@ -21,9 +21,9 @@
 @property (nonatomic, strong) UILabel* momentLabel;
 @property (nonatomic, strong) NSMutableArray *imageViews;
 
-@property (nonatomic, strong) NSArray *imagePaths;
 @property (nonatomic, strong) UIScrollView *imageScroll;
 @property (nonatomic, strong) LikeGestureView* likeView;
+@property (nonatomic, strong) UIButton* voteHeart;
 
 @property (nonatomic, strong) NSMutableDictionary *photoDict;
 
@@ -33,7 +33,7 @@
 
 - (id)initWithFrame:(CGRect)frame andImageView:(IndexUIImageView *)imageView;
 - (void)animateFromCellinRect:(CGRect)rect withCompletion:(void (^)())completion;
-- (void)animateFromScratchWithLabel:(UILabel *)label;
+- (void)animateFromScratchToCompletion:(void (^)())completion;
 
 
 @end
