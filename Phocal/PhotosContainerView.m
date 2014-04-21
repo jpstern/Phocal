@@ -148,7 +148,30 @@ const int kThumbSize = 80;
 }
 
 - (void)download{
+    self.alert = [[UIAlertView alloc] initWithTitle:nil
+                                                    message:@"Saved to camera roll!"
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:nil];
     
+    [self.alert show];
+    
+    [self timedAlert];
+    
+    
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImageWriteToSavedPhotosAlbum(self.masterImageView.image, nil, nil, nil);
+    });
+}
+-(void)timedAlert
+{
+    [self performSelector:@selector(dismissAlert:) withObject:self.alert afterDelay:1.5];
+}
+
+-(void)dismissAlert:(UIAlertView *) alertView
+{
+    [alertView dismissWithClickedButtonIndex:0 animated:YES];
 }
 
 - (void)cellDidGrowToHeight:(CGFloat)height {
