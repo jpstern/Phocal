@@ -23,6 +23,7 @@
     BOOL showingBack;
     AVCaptureFlashMode flashMode;
     NSString *flashTitle;
+    
 }
 
 @property (nonatomic, strong) AVCaptureStillImageOutput *output;
@@ -50,6 +51,8 @@
 
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
 
+@property (nonatomic, strong) NSArray *titles;
+@property (nonatomic, strong) UILabel *titleLabel;
 @end
 
 @implementation CameraViewController
@@ -73,15 +76,21 @@
     
     [UIView animateWithDuration:0.25 animations:^{
         
+        _flip.alpha = 1;
+        _flash.alpha = 1;
         _retake.alpha = 0;
         _save.alpha = 0;
+        
+        _titleLabel.alpha = 0;
         
         _uploadThumb.alpha = 1;
         _takePhoto.alpha = 1;
         _listButton.alpha = 1;
         
     } completion:^(BOOL finished) {
-        
+
+        [_save removeFromSuperview];
+        [_retake removeFromSuperview];
     }];
 }
 
@@ -92,14 +101,21 @@
 
     [UIView animateWithDuration:0.25 animations:^{
         
+        _flip.alpha = 1;
+        _flash.alpha = 1;
         _retake.alpha = 0;
         _save.alpha = 0;
+        
+        _titleLabel.alpha = 0;
         
         _uploadThumb.alpha = 1;
         _takePhoto.alpha = 1;
         _listButton.alpha = 1;
         
     } completion:^(BOOL finished) {
+     
+        [_save removeFromSuperview];
+        [_retake removeFromSuperview];
         
     }];
     
@@ -123,13 +139,7 @@
         CGFloat scale = width / self.view.frame.size.width;
         
         image = [image imageCrop:image];
-//    
-//        image = [UIImage imageWithCGImage:image.CGImage scale:1 orientation:UIImageOrientationRight];
-//
-//        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1280, 1280));
-////        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, 1080, 1280));
-//        image = [UIImage imageWithCGImage:image.CGImage scale:1280/1080 orientation:UIImageOrientationRight];
-//        CGImageRelease(imageRef);
+
         
         _takenPicture = image;
         _takenLocation = location;
@@ -149,21 +159,34 @@
         
         
         _retake = [UIButton buttonWithType:UIButtonTypeCustom];
-        _retake.frame = CGRectMake(10, 10, 100, 50);
-        [_retake setTitle:@"Retake" forState:UIControlStateNormal];
+        _retake.frame = CGRectMake(30, 0, 44, 44);
+        _retake.center = CGPointMake(_retake.center.x, _bottomContainer.frame.size.height / 2);
+        [_retake setImage:[UIImage imageNamed:@"trash"] forState:UIControlStateNormal];
+//        [_retake setTitle:@"Retake" forState:UIControlStateNormal];
         [_retake addTarget:self action:@selector(cancelPhoto) forControlEvents:UIControlEventTouchUpInside];
         _retake.alpha = 0;
         [_bottomContainer addSubview:_retake];
         
         _save = [UIButton buttonWithType:UIButtonTypeCustom];
-        _save.frame = CGRectMake(210, 10, 100, 50);
-        [_save setTitle:@"Save" forState:UIControlStateNormal];
+        _save.frame = CGRectMake(234, 0, 44, 44);
+        _save.center = CGPointMake(_save.center.x, _bottomContainer.frame.size.height / 2);
+        [_save setImage:[UIImage imageNamed:@"sendPhoto"] forState:UIControlStateNormal];
+//        [_save setTitle:@"Save" forState:UIControlStateNormal];
         [_save addTarget:self action:@selector(savePhoto) forControlEvents:UIControlEventTouchUpInside];
         _save.alpha = 0;
         [_bottomContainer addSubview:_save];
         
+        
+        int index = rand() % _titles.count;
+        _titleLabel.text = _titles[index];
+        NSLog(@"%d", index);
         [UIView animateWithDuration:0.25 animations:^{
            
+            _flip.alpha = 0;
+            _flash.alpha = 0;
+            
+            _titleLabel.alpha = 1;
+            
             _retake.alpha = 1;
             _save.alpha = 1;
             
@@ -252,6 +275,9 @@
 {
     [super viewDidLoad];
     
+    _titles = @[@"NICE!", @"GOOD SHOT!", @"ANSEL! IS THAT YOU?", @"NICE ANGLE!", @"YOU ARE A GOD!", @"THE CROWD GOES WILD!", @"NICE PHOCUS... GET IT?", @"CLASSIC!", @"GREAT PIC!", @"CHA CHING!", @"LOOKS GREAT!", @"IMPRESSIVE!", @"DON'T QUIT YOUR DAY JOB!", @"WOW!"];
+    
+    
     // Do any additional setup after loading the view.
     _session = [[AVCaptureSession alloc] init];
     _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_session];
@@ -301,6 +327,14 @@
     _headerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
     [self.view addSubview:_headerView];
     
+    _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, _headerView.frame.size.height)];
+    _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:25];
+    _titleLabel.textColor = [UIColor whiteColor];
+    _titleLabel.adjustsFontSizeToFitWidth = YES;
+    _titleLabel.alpha = 0;
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:_titleLabel];
+    
     _flash = [UIButton buttonWithType:UIButtonTypeCustom];
     _flash.frame = CGRectMake(220, 0, 80, 44);
     _flash.center = CGPointMake(_flash.center.x, _headerView.frame.size.height / 2);
@@ -322,7 +356,7 @@
     [self.view addSubview:_bottomContainer];
     
     _takePhoto = [UIButton buttonWithType:UIButtonTypeCustom];
-    _takePhoto.frame = CGRectMake(0, 0, 85, 85);
+    _takePhoto.frame = CGRectMake(0, 0, 70, 70);
     _takePhoto.center = CGPointMake(_bottomContainer.frame.size.width / 2, _bottomContainer.frame.size.height / 2);
     [_takePhoto setImage:[UIImage imageNamed:@"cameraButton"] forState:UIControlStateNormal];
     [_takePhoto addTarget:self action:@selector(takeImageHandler) forControlEvents:UIControlEventTouchUpInside];
@@ -454,13 +488,15 @@
 }
 
 - (void)takePhoto:(void(^)(UIImage *, CLLocation *loc))done {
-        
+    
+    _takePhoto.enabled = NO;
     AVCaptureConnection *connection = [_output connectionWithMediaType:AVMediaTypeVideo];
     
     [[LocationDelegate sharedInstance] refresh:^(CLLocation *loc) {
         
         [_output captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         
+            _takePhoto.enabled = YES;
             NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
             UIImage *image = [UIImage imageWithData:jpegData];
             
