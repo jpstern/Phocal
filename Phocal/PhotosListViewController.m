@@ -47,13 +47,7 @@ const int kPhotoSize = 320;
     // Do our nav bar set up.
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     
-    self.navigationItem.rightBarButtonItem =
-    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
-                                                  target:self
-                                                  action:@selector(goToCamera)];
-    
-    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
-    self.title = @"My Moments";
+    [self setupNavForScroll];
     
     // Set up our table view style.
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -67,6 +61,42 @@ const int kPhotoSize = 320;
         self.extendedLayoutIncludesOpaqueBars = YES;
         
     }
+}
+
+- (void)setupNavForScroll {
+    
+    [self.tableView setScrollEnabled:YES];
+    [self.masterViewController enableScroll];
+    
+    self.navigationItem.rightBarButtonItem =
+    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
+                                                  target:self
+                                                  action:@selector(goToCamera)];
+    
+    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
+    
+    self.navigationItem.leftBarButtonItem = nil;
+    
+    self.title = @"My Moments";
+}
+
+- (void)lockScroll {
+    
+    [self.masterViewController disableScroll];
+    [self.tableView setScrollEnabled:NO];
+    self.navigationItem.rightBarButtonItem = nil;
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                          target:self
+                                                                                          action:@selector(hideViewer)];
+    
+    [self.navigationItem.leftBarButtonItem setTintColor:[UIColor whiteColor]];
+    
+}
+
+- (void)hideViewer {
+    NSLog(@"HIDE THE VIEWER");
+    //[self takeDownViewer:nil];
 }
 
 - (void)goToCamera
@@ -279,8 +309,7 @@ const int kPhotoSize = 320;
                                                                           action:@selector(takeDownViewer:)];
     [self.photoDisplayView addGestureRecognizer:tap];
     
-    [self.masterViewController disableScroll];
-    [self.tableView setScrollEnabled:NO];
+    [self lockScroll];
     
     [self.masterViewController addViewToTop:self.photoDisplayView];
     self.title = @"";
@@ -327,7 +356,9 @@ const int kPhotoSize = 320;
     // Tell the table view the data source has changed.
     [self replaceSelectedPhotoWithPhoto:returnImage];
     
-    self.title = @"";
+    // Re-enable scrolling.
+    [self setupNavForScroll];
+    
     [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
         returnImage.frame = CGRectMake(0, 0, self.selectedRect.size.width, self.selectedRect.size.height);
         returnLabel.frame = CGRectMake(kLabelHorizontalOffset, kLabelVerticalOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
@@ -347,11 +378,7 @@ const int kPhotoSize = 320;
             self.selectedCell.image = returnImage;
             returnImage.frame = CGRectMake(0, kImageOffsetFromTop, kPhotoSize, kPhotoSize);
             
-            // Re-enable scrolling.
-            [self.tableView setScrollEnabled:YES];
-            [self.masterViewController enableScroll];
             
-            self.title = @"My Moments";
         }];
     }];
 }
