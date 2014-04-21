@@ -128,11 +128,11 @@
         
         [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:0 animations:^{
             returnImage.frame = CGRectMake(0, -50, self.selectedRect.size.width, self.selectedRect.size.height);
-            returnLabel.frame = CGRectMake(0, -50 + kLabelOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
+            returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, -50 + kLabelOffset, returnLabel.frame.size.width, returnLabel.frame.size.height);
         } completion:^(BOOL finished) {
             // Attach the label back to the actual image view.
             [returnLabel removeFromSuperview];
-            returnLabel.frame = CGRectMake(0, kLabelOffset, kPhotoSize, kLabelHeight);
+            returnLabel.frame = CGRectMake(returnLabel.frame.origin.x, kLabelOffset, returnLabel.frame.size.width, kLabelHeight);
             [returnImage addSubview:returnLabel];
             self.selectedCell.label = returnLabel;
             
