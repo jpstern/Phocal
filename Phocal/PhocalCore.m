@@ -46,6 +46,17 @@
     return client;
 }
 
+- (void)likePhotoForID:(NSString *)photoID completion:(id)completion {
+    
+    NSString *path = [NSString stringWithFormat:@"phots/%@/vote", photoID];
+    
+    [self POST:path parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+    }];
+}
+
 - (void)postPhoto:(NSData *)imageData withLocation:(CLLocation*)location {
     
     [self POST:@"photos" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
