@@ -15,5 +15,6 @@
 @property (nonatomic, retain) NSNumber* lng;
 @property (nonatomic, retain) NSString* URL;
 @property (nonatomic, assign) BOOL voted;
+@property (nonatomic, strong) UIImageView *votedView;
 
 @end

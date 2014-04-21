@@ -78,15 +78,15 @@ const int kThumbSize = 80;
 
         //**Add Liked Heart Tracker to View
         _heartView = [[UIImageView alloc] initWithFrame:CGRectMake(280, 330, 20, 20)];
-
-        if(_masterImageView.voted)
+        _masterImageView.votedView.hidden=NO;
+       /* if(_masterImageView.voted)
         {
             [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
         }
         else
         {
             [_heartView setImage:nil];
-        }
+        }*/
         
         // Add the scroll view.
         int imageBottom = kImagePaneOffset + kImageSize;
@@ -99,7 +99,7 @@ const int kThumbSize = 80;
         
         // Add the views in order.
         [self addSubview:self.masterImageView];
-        [self addSubview:self.heartView];
+        //[self addSubview:self.heartView];
         [self addSubview:_likeView];
         [self addSubview:self.momentLabel];
         [self addSubview:_imageScroll];
@@ -159,14 +159,8 @@ const int kThumbSize = 80;
 {
     NSLog(@"Voted");
     _masterImageView.voted=YES;
-    if(_masterImageView.voted)
-    {
-        [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
-    }
-    else
-    {
-        [_heartView setImage:nil];
-    }
+    [_masterImageView.votedView setImage:[UIImage imageNamed:@"fullHeart"]];
+    
 }
 - (void)cellDidGrowToHeight:(CGFloat)height {
     
@@ -222,10 +216,12 @@ const int kThumbSize = 80;
     [UIView animateWithDuration:0.8 delay:0 usingSpringWithDamping:0.7 initialSpringVelocity:0.75 options:0 animations:^{
         self.frame = CGRectMake(0, 0, 320, _originalHeight);
         self.masterImageView.frame = CGRectMake(0, 0, 320, _originalHeight);
+        
+        
     } completion:^(BOOL finished) {
         // Empty.
+        
     }];
-    
     
 }
 
@@ -243,7 +239,7 @@ const int kThumbSize = 80;
     
     NSInteger removalIndex = [_imageViews indexOfObject:gesture.view];
     
-    [self.heartView setImage:nil];
+    self.masterImageView.votedView.hidden=YES;
     
     IndexUIImageView *imageView = _imageViews[removalIndex];
     
@@ -279,14 +275,7 @@ const int kThumbSize = 80;
         imageView.frame = _masterImageView.frame;
         _masterImageView = imageView;
         
-        if(_masterImageView.voted)
-        {
-            [_heartView setImage:[UIImage imageNamed:@"heart.png"]];
-        }
-        else
-        {
-            [_heartView setImage:nil];
-        }
+        self.masterImageView.votedView.hidden=NO;
         
         [_imageViews sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
            
@@ -311,7 +300,6 @@ const int kThumbSize = 80;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    
     return YES;
 }
 
@@ -321,6 +309,7 @@ const int kThumbSize = 80;
         NSLog(@"not recognizing tap");
         return NO;
     }
+    
     return _expanded;
 }
 //
