@@ -65,13 +65,15 @@ const int kNavBarHeight = 64;
 }
 
 - (void)enableScroll {
-    [self.tableView setScrollEnabled:YES];
     [self.masterViewController enableScroll];
+    [self.tableView setScrollEnabled:YES];
+    [self.tableView setUserInteractionEnabled:YES];
 }
 
 - (void)lockScroll {
     [self.masterViewController disableScroll];
     [self.tableView setScrollEnabled:NO];
+    [self.tableView setUserInteractionEnabled:NO];
 }
 
 - (void)showListNavBar {
