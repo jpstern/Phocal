@@ -2,12 +2,12 @@
 
 $(document).ready(function() {
 
-    $(".nav a").click(function(e) {
-        e.preventDefault();
-
-        var id = $(this).attr("href")
-        console.log(id)
-        showPane(id);
+    $("a").click(function(e) {
+        var id = $(this).attr("href");
+        if (id[0] == "#") {
+            e.preventDefault();
+            showPane(id);
+        }
     });
 
     function showPane(id) {

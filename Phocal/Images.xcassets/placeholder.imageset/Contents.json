@@ -3,11 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "placeholder.png"
+      "filename" : "Phocal_tmp.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "Phocal_tmp2x.png"
     }
   ],
   "info" : {
