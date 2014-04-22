@@ -35,7 +35,6 @@
 		B30833C819032CB6000CBA99 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		B4C8E301998E46FBA12C4E78 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A10B80E192C6433D8F741B0D /* libPods.a */; };
 		F542BFA81903219000DFB2BE /* LocationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA71903219000DFB2BE /* LocationDelegate.m */; };
-		F542BFAB190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */; };
 		F542BFAE1903382100DFB2BE /* MomentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F542BFAD1903382100DFB2BE /* MomentCell.m */; };
 /* End PBXBuildFile section */
 
@@ -93,8 +92,6 @@
 		F19AE05970974A588932E45D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		F542BFA61903219000DFB2BE /* LocationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationDelegate.h; sourceTree = "<group>"; };
 		F542BFA71903219000DFB2BE /* LocationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationDelegate.m; sourceTree = "<group>"; };
-		F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+ImageMetadata.m"; sourceTree = "<group>"; };
-		F542BFAA190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+ImageMetadata.h"; sourceTree = "<group>"; };
 		F542BFAC1903382100DFB2BE /* MomentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MomentCell.h; sourceTree = "<group>"; };
 		F542BFAD1903382100DFB2BE /* MomentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MomentCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -165,8 +162,6 @@
 			children = (
 				F542BFAC1903382100DFB2BE /* MomentCell.h */,
 				F542BFAD1903382100DFB2BE /* MomentCell.m */,
-				F542BFA9190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m */,
-				F542BFAA190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.h */,
 				F542BFA61903219000DFB2BE /* LocationDelegate.h */,
 				F542BFA71903219000DFB2BE /* LocationDelegate.m */,
 				808AAA711903011B00D5C511 /* UIViewController+Master.h */,
@@ -285,7 +280,7 @@
 				ORGANIZATIONNAME = Josh;
 				TargetAttributes = {
 					80EA82EB18E5D22D00981338 = {
-						DevelopmentTeam = XM9FUD8J48;
+						DevelopmentTeam = 22993U86TR;
 					};
 					80EA830C18E5D22D00981338 = {
 						TestTargetID = 80EA82EB18E5D22D00981338;
@@ -383,7 +378,6 @@
 				72A3BB5218F1BE6400B06A0F /* PhotosListViewController.m in Sources */,
 				80EA82FC18E5D22D00981338 /* main.m in Sources */,
 				80EA832618E60FAC00981338 /* PhocalCore.m in Sources */,
-				F542BFAB190325D100DFB2BE /* NSMutableDictionary+ImageMetadata.m in Sources */,
 				808AAA731903011B00D5C511 /* UIViewController+Master.m in Sources */,
 				808AAA981904C60100D5C511 /* TutorialViewController.m in Sources */,
 			);

@@ -144,6 +144,11 @@
             return;
         }
         
+        _headerView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+        _bottomContainer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6];
+        [_photoPreview removeFromSuperview];
+        _previewLayer.hidden = NO;
+
         [self.masterViewController displayMoments];
         [self.masterViewController.photosListController addPhotoFromUpload:arr[0]];
         [self dismissModal];
