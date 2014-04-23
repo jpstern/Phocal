@@ -7,7 +7,7 @@
         background-size:   cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
-        color:white;
+        color: black;
     }
 
     .header {
@@ -19,6 +19,7 @@
     }
     section {
         min-height: 300px;
+        padding:15px;
     }
     .center { /* a class */
         text-align: center;
@@ -28,7 +29,7 @@
     }
     #title a {
         text-decoration:none;
-        color: white;
+        color: black;
     }
     .jumbo {
         font-weight: 100;
@@ -55,8 +56,35 @@
         border: 2px solid white;
     }
 
+    #phone {
+        width:250px;
+        margin-top:50px;
+        position:fixed;
+    }
+
+    #store {
+        margin-top: 40px;
+        width:220px;
+    }
+
+    .team {
+        font-size:15px;
+        font-weight: bold;
+        margin-top:10px;
+    }
+
+    .team_prof {
+        padding: 15px;
+    }
+
+    .team_pic {
+        width:100%;
+        border-radius: 50%;
+    }
+
     .foot {
         padding: 5px;
         text-align: center;
         margin-bottom: 20px;
+        color: white;
     }
